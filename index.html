@@ -1246,7 +1246,7 @@
             }
         }
 
-        // Modifique a função playSound para tocar um som especial no inicio
+        // Modifique a função playSound para remover o som especial do inicio
         function playSound(accentType) {
             if (isMuted) return;
             if (!audioContext) {
@@ -1264,15 +1264,8 @@
             let freq = 520;
             let vol = 0.25;
             
-            // Verifica se é o beat de inicio
-            const beatNumber = currentBeatPosition + 1;
-            const isInicio = isInicioBeat(beatNumber);
-            
-            if (isInicio) {
-                freq = 1040; // Tom mais agudo para o inicio
-                vol = 0.55; // Volume mais alto
-                osc.type = 'triangle'; // Timbre diferente para destaque
-            } else if (accentType === 'primary') { 
+            // Removeu a verificação do inicio - agora só usa accentType
+            if (accentType === 'primary') { 
                 freq = 880; 
                 vol = 0.45; 
             } else if (accentType === 'secondary') { 
@@ -1296,6 +1289,7 @@
             const accentType = getAccentType(beatNumber, accentEnabled, timeSig, beats);
             
             playSound(accentType);
+            //aqui
             highlightCurrentBeat(beatIndex);
             updateBeatCounter();
             
