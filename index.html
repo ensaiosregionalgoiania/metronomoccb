@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Metrônomo - Hinário</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(115deg, #2c3e66 0%, #1e2a44 100%);
+            color: white;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 0.7em;
+            opacity: 0.85;
+        }
+
+        .content {
+            padding: 16px;
+        }
+
+        .selection-area {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 20px;
+        }
+
+        .hymn-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .nav-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: #3b4b7a;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            flex-shrink: 0;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.94);
+            background: #2c3e66;
+        }
+
+        .hymn-input-group {
+            flex: 1;
+        }
+
+        .hymn-input {
+            width: 100%;
+            padding: 12px 8px;
+            border: 2px solid #cbd5e1;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            text-align: center;
+            font-weight: 600;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .hymn-input:focus {
+            outline: none;
+            border-color: #3b4b7a;
+        }
+
+        .hint {
+            font-size: 0.65rem;
+            color: #475569;
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        .hymn-info {
+            background: white;
+            padding: 14px;
+            border-radius: 20px;
+            margin-top: 16px;
+        }
+
+        /* Nome do hino em uma linha */
+        .hymn-name-row {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .hymn-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 40px;
+            display: inline-block;
+        }
+
+        /* Compasso em linha separada */
+        .time-sig-row {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .time-sig-badge {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #3b4b7a;
+            background: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        .speed-control {
+            margin: 16px 0;
+        }
+
+        .speed-control label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.85rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #cbd5e1;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b4b7a;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .speed-values {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .current-speed {
+            text-align: center;
+            margin: 12px 0 8px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2c3e66;
+            background: #eef2ff;
+            border-radius: 50px;
+            padding: 6px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+
+        .control-btn {
+            padding: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-play {
+            background: #2c6e3c;
+            color: white;
+        }
+        .btn-play:active {
+            background: #1f5430;
+            transform: scale(0.97);
+        }
+        .btn-stop {
+            background: #b91c1c;
+            color: white;
+        }
+        .btn-stop:active {
+            background: #991b1b;
+            transform: scale(0.97);
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin: 12px 0;
+            padding: 10px 0;
+            justify-content: center;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: #0f172a;
+        }
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #3b4b7a;
+        }
+
+        /* Área principal do metrônomo - simplificada */
+        .metronome-visual {
+            text-align: center;
+            margin-top: 16px;
+            padding: 12px;
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Contador e figuras lado a lado */
+        .beat-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .counter-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(102,126,234,0.3);
+            flex-shrink: 0;
+        }
+        .counter-number span {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .counter-label {
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        .beat-figures-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .figure-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 55px;
+            padding: 8px 4px;
+            background: white;
+            border-radius: 16px;
+            transition: all 0.1s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .figure-unit.active-beat {
+            background: #667eea;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+            border-color: #667eea;
+        }
+
+        .figure-unit.active-beat .figure-symbol {
+            color: white;
+        }
+
+        .figure-unit.active-beat .figure-number {
+            color: white;
+        }
+
+        .figure-unit.strong-primary {
+            border-left: 3px solid #dc2626;
+        }
+        .figure-unit.strong-secondary {
+            border-left: 3px solid #16a34a;
+        }
+        .figure-unit.active-beat.strong-primary {
+            background: #dc2626;
+        }
+        .figure-unit.active-beat.strong-secondary {
+            background: #16a34a;
+        }
+
+        .figure-symbol {
+            font-size: 1.5rem;
+            font-family: 'Segoe UI', monospace;
+            line-height: 1;
+        }
+
+        .figure-number {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 2px;
+        }
+
+        /* Legenda compacta */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.6rem;
+            font-weight: 500;
+        }
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 8px;
+            border-radius: 30px;
+            margin-top: 12px;
+            text-align: center;
+            font-size: 0.7rem;
+        }
+
+        @keyframes pulse-beat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse-beat {
+            animation: pulse-beat 0.1s ease;
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 12px;
+            }
+            .figure-unit {
+                min-width: 48px;
+                padding: 6px 2px;
+            }
+            .figure-symbol {
+                font-size: 1.3rem;
+            }
+            .counter-number {
+                width: 60px;
+                height: 60px;
+            }
+            .counter-number span {
+                font-size: 1.8rem;
+            }
+            .current-speed {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Adicione ao final do style */
+        .figure-unit.inicio-beat {
+            background: #ff6b6b;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+            border-color: #ff6b6b;
+            animation: pulse-inicio 0.3s ease;
+        }
+
+        .figure-unit.inicio-beat .figure-symbol {
+            color: white;
+        }
+
+        .figure-unit.inicio-beat .figure-number {
+            color: white;
+        }
+
+        @keyframes pulse-inicio {
+            0% { transform: scale(1); background: #ff6b6b; }
+            50% { transform: scale(1.1); background: #ff8787; }
+            100% { transform: scale(1.05); background: #ff6b6b; }
+        }
+
+        .inicio-info {
+            background: #fff5f5;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 0 auto;
+            border: 1px solid #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Metrônomo</h1>
+            <p>Hinos 1-480 | Coro 1-6</p>
+        </div>
+        
+        <div class="content">
+            <div class="selection-area">
+                <div class="hymn-nav">
+                    <button class="nav-btn" id="prevBtn">◀</button>
+                    <div class="hymn-input-group">
+                        <input type="text" id="hymnInput" class="hymn-input" value="1" autocomplete="off" inputmode="numeric">
+                    </div>
+                    <button class="nav-btn" id="nextBtn">▶</button>
+                </div>
+                <div class="hint">Digite 1-480 ou "coro 1" a "coro 6"</div>
+                
+                <div id="hymnInfo" class="hymn-info">
+                    <!-- Nome do hino em linha única -->
+                    <div class="hymn-name-row">
+                        <div class="hymn-name" id="hymnName">-</div>
+                    </div>
+                    
+                    <!-- Compasso -->
+                    <div class="time-sig-row">
+                        <div class="time-sig-badge" id="timeSignature">-</div>
+                    </div>
+                    
+                    <div class="speed-control">
+                        <label>⚡ BPM</label>
+                        <input type="range" id="speedSlider" min="40" max="200" step="1" value="120">
+                        <div class="speed-values">
+                            <span>Mín: <span id="minSpeed">-</span></span>
+                            <span>Méd: <span id="avgSpeed">-</span></span>
+                            <span>Máx: <span id="maxSpeed">-</span></span>
+                        </div>
+                        <div class="current-speed">
+                            <span id="currentSpeed">120</span> BPM
+                        </div>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="accentCheckbox" checked> 🎯 Fortes
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="muteCheckbox"> 🔇 Silenciar
+                        </label>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="control-btn btn-play" id="playBtn">▶ Tocar</button>
+                        <button class="control-btn btn-stop" id="stopBtn">⏹ Parar</button>
+                    </div>
+                    
+                    <div class="metronome-visual">
+                        <div class="beat-info">
+                            <div class="counter-number">
+                                <span id="currentBeatCounter">1</span>
+                            </div>
+                            <div id="beatFiguresRow" class="beat-figures-row">
+                                <!-- Figuras dinâmicas -->
+                            </div>
+                        </div>
+                        <!-- Adicionar este elemento -->
+                        <div id="timeSignatureInfo" class="time-signature-info" style="font-size: 0.7rem; margin-top: 8px;"></div>
+    
+                        <!-- Adicionar este elemento -->
+                        <div id="accentDescription" class="accent-desc" style="font-size: 0.65rem; margin-top: 6px; color: #475569;"></div>                        
+                        <!-- Atualize a legenda no HTML -->
+                        <div class="legend">
+                            <div class="legend-item"><div class="legend-color" style="background: #e2e8f0;"></div><span>normal</span></div>
+                            <div class="legend-item"><div class="legend-color" style="background: #dc2626;"></div><span>1º</span></div>
+                            <div class="legend-item"><div class="legend-color" style="background: #16a34a;"></div><span>4º,7º,10º</span></div>
+                            <div class="legend-item"><div class="legend-color" style="background: #667eea;"></div><span>atual</span></div>
+                            <div class="legend-item"><div class="legend-color" style="background: #ff6b6b;"></div><span>início</span></div>
+                        </div>                    
+                    </div>
+                </div>
+                
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados dos hinos
+        const hymnsData = {
+            "1": { nome: "Cristo meu Mestre", compasso: "4/4", velMin: 56, velMed: 61, velMax: 66, inicio: 1 },
+            "2": { nome: "De Deus tu és eleita", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "3": { nome: "Faz-nos ouvir Tua voz", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1 },
+            "4": { nome: "Ouve a nossa oração", compasso: "6/4", velMin: 112, velMed: 125, velMax: 138, inicio: 1 },
+            "5": { nome: "A Rocha celestial", compasso: "6/8", velMin: 112, velMed: 128, velMax: 144, inicio: 1 },
+            "6": { nome: "Glória ao Justo fiel Cordeiro", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "7": { nome: "Granjeai granjeai os talentos", compasso: "6/4", velMin: 80, velMed: 90, velMax: 100, inicio: 6 },
+            "8": { nome: "Oh! Vem sim vem", compasso: "6/8", velMin: 112, velMed: 125, velMax: 138, inicio: 1 },
+            "9": { nome: "Luminosa é a senda", compasso: "3/4", velMin: 63, velMed: 67, velMax: 72, inicio: 3 },
+            "10": { nome: "Prossegui vitoriosos em Cristo", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "11": { nome: "Ó igreja de Deus resplandece", compasso: "4/4", velMin: 72, velMed: 78, velMax: 84, inicio: 4 },
+            "12": { nome: "Sempre em Jesus confiarei", compasso: "3/4", velMin: 58, velMed: 67, velMax: 76, inicio: 3 },
+            "13": { nome: "Confiemos em Deus", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 4 },
+            "14": { nome: "Manda os Teus dons celestes", compasso: "6/8", velMin: 112, velMed: 128, velMax: 144, inicio: 6 },
+            "15": { nome: "Ó alma que choras", compasso: "12/8", velMin: 108, velMed: 120, velMax: 132, inicio: 1 },
+            "16": { nome: "Promessa excelente", compasso: "6/4", velMin: 100, velMed: 110, velMax: 120, inicio: 6 },
+            "17": { nome: "Ó Senhor vem visitar-me", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "18": { nome: "É Jesus meu Refúgio", compasso: "3/4", velMin: 76, velMed: 84, velMax: 92, inicio: 3 },
+            "19": { nome: "Manda-nos Teu Poder", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 4 },
+            "20": { nome: "Teu Espírito derrama", compasso: "4/4", velMin: 72, velMed: 78, velMax: 84, inicio: 4 },
+            "21": { nome: "Não mais oprimidos seremos", compasso: "6/8", velMin: 116, velMed: 127, velMax: 138, inicio: 6 },
+            "22": { nome: "Guia-me ó Senhor", compasso: "6/8", velMin: 104, velMed: 118, velMax: 132, inicio: 1 },
+            "23": { nome: "O Senhor é o meu Pastor", compasso: "6/4", velMin: 96, velMed: 108, velMax: 120, inicio: 1 },
+            "24": { nome: "Dá-me graça, Senhor", compasso: "6/4", velMin: 88, velMed: 94, velMax: 100, inicio: 6 },
+            "25": { nome: "Um grande bem precioso bem", compasso: "3/4", velMin: 54, velMed: 63, velMax: 72, inicio: 2.5 },
+            "26": { nome: "Julga-me Senhor", compasso: "4/4", velMin: 69, velMed: 78, velMax: 88, inicio: 1 },
+            "27": { nome: "O Senhor é minha Luz", compasso: "6/8", velMin: 116, velMed: 130, velMax: 144, inicio: 5 },
+            "28": { nome: "Para o céu marchemos", compasso: "4/4", velMin: 69, velMed: 74, velMax: 80, inicio: 1 },
+            "29": { nome: "Senhor Jesus Tu és o meu Rochedo", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 4.5 },
+            "30": { nome: "Confiarei sempre no Senhor", compasso: "6/8", velMin: 100, velMed: 116, velMax: 132, inicio: 1 },
+            "31": { nome: "Forte Rocha", compasso: "2/2", velMin: 60, velMed: 68, velMax: 76, inicio: 1 },
+            "32": { nome: "Eu me escondo em Ti Senhor", compasso: "2/4", velMin: 56, velMed: 64, velMax: 72, inicio: 1 },
+            "33": { nome: "Jesus é o nosso Guia", compasso: "6/8", velMin: 112, velMed: 122, velMax: 132, inicio: 1 },
+            "34": { nome: "O Mestre que desceu dos ceús", compasso: "3/4", velMin: 54, velMed: 60, velMax: 66, inicio: 3 },
+            "35": { nome: "Eis que multidão mui grande", compasso: "6/8", velMin: 108, velMed: 114, velMax: 120, inicio: 6 },
+            "36": { nome: "A fiel proteção", compasso: "6/4", velMin: 84, velMed: 92, velMax: 100, inicio: 6 },
+            "37": { nome: "Se a nossa vida entregarmos a Jesus", compasso: "4/4", velMin: 69, velMed: 78, velMax: 88, inicio: 1 },
+            "38": { nome: "Ó Senhor és minha vida", compasso: "4/4", velMin: 56, velMed: 64, velMax: 72, inicio: 1 },
+            "39": { nome: "Eu desejo Senhor", compasso: "4/4", velMin: 60, velMed: 66, velMax: 72, inicio: 3 },
+            "40": { nome: "Quanto em mim Tu operaste", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 4 },
+            "41": { nome: "O teu coração vem a Cristo entregar", compasso: "9/8", velMin: 120, velMed: 132, velMax: 144, inicio: 6 },
+            "42": { nome: "Ó minha alma por que te abates?", compasso: "12/8", velMin: 50, velMed: 55, velMax: 60, inicio: 9 },
+            "43": { nome: "Trema o céu a terra o mar", compasso: "3/4", velMin: 60, velMed: 70, velMax: 80, inicio: 3 },
+            "44": { nome: "Sol da justiça", compasso: "9/8", velMin: 112, velMed: 128, velMax: 144, inicio: 7 },
+            "45": { nome: "Oh! Quanto nos amaste!", compasso: "9/4", velMin: 96, velMed: 108, velMax: 120, inicio: 1 },
+            "46": { nome: "Grandioso é o nosso Deus", compasso: "6/8", velMin: 92, velMed: 109, velMax: 126, inicio: 1 },
+            "47": { nome: "Sublime é o perdão!", compasso: "6/8", velMin: 120, velMed: 136, velMax: 152, inicio: 6 },
+            "48": { nome: "Creio no Senhor", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "49": { nome: "Venho adorar-Te, santo Criador", compasso: "6/4", velMin: 108, velMed: 120, velMax: 132, inicio: 1 },
+            "50": { nome: "Glória a Jesus Aleluia", compasso: "6/8", velMin: 108, velMed: 126, velMax: 144, inicio: 1 },
+            "51": { nome: "A Palavra do Senhor é Pão celestial", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "52": { nome: "Luz eternal é Jesus", compasso: "6/8", velMin: 108, velMed: 126, velMax: 144, inicio: 1 },
+            "53": { nome: "Nós somos luz do mundo", compasso: "4/4", velMin: 72, velMed: 82, velMax: 92, inicio: 1 },
+            "54": { nome: "Um tesouro glorioso achei", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "55": { nome: "Paz seja em vós", compasso: "6/8", velMin: 112, velMed: 122, velMax: 132, inicio: 1 },
+            "56": { nome: "Põe em Deus a confiança", compasso: "4/4", velMin: 72, velMed: 78, velMax: 84, inicio: 1 },
+            "57": { nome: "É estreita a porta para a salvação", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 1 },
+            "58": { nome: "Sou crente em Jesus", compasso: "4/4", velMin: 69, velMed: 80, velMax: 92, inicio: 4 },
+            "59": { nome: "Faz-me mais perseverante", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "60": { nome: "Oh! Vem a Jesus", compasso: "6/8", velMin: 116, velMed: 124, velMax: 132, inicio: 6 },
+            "61": { nome: "A minha alma deseja ver-Te", compasso: "9/8", velMin: 132, velMed: 138, velMax: 144, inicio: 7 },
+            "62": { nome: "Ó Criador forte Rocha és", compasso: "3/4", velMin: 63, velMed: 71, velMax: 80, inicio: 3 },
+            "63": { nome: "Se vós baterdes Ele vos abre", compasso: "9/8", velMin: 46, velMed: 51, velMax: 56, inicio: 7 },
+            "64": { nome: "Tu que vives sem destino", compasso: "3/4", velMin: 69, velMed: 78, velMax: 88, inicio: 1 },
+            "65": { nome: "Igual ao Mestre", compasso: "6/8", velMin: 42, velMed: 48, velMax: 54, inicio: 1 },
+            "66": { nome: "Cansado estás? Vem a Jesus", compasso: "3/4", velMin: 60, velMed: 66, velMax: 72, inicio: 2.5 },
+            "67": { nome: "Vinde a Mim!", compasso: "3/4", velMin: 63, velMed: 71, velMax: 80, inicio: 3.5 },
+            "68": { nome: "Sem tardar vai a Cristo", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "69": { nome: "A família de Jesus", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 4 },
+            "70": { nome: "Senhor Tu és a minha esperança", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 3.5 },
+            "71": { nome: "Ó Senhor Jesus eu recorro a Ti", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "72": { nome: "Nome glorioso o de Jesus", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 1 },
+            "73": { nome: "Semearei semearei", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "74": { nome: "Vamos produzir frutos de louvor", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 1 },
+            "75": { nome: "Vem a Jesus ó alma errante", compasso: "3/4", velMin: 69, velMed: 76, velMax: 84, inicio: 1 },
+            "76": { nome: "Cristo Jesus Sua mão me dá", compasso: "6/4", velMin: 100, velMed: 113, velMax: 126, inicio: 1 },
+            "77": { nome: "Vamos lançar a semente", compasso: "6/8", velMin: 112, velMed: 125, velMax: 138, inicio: 1 },
+            "78": { nome: "Glória a Jesus Glória a Jesus", compasso: "6/8", velMin: 112, velMed: 122, velMax: 132, inicio: 1 },
+            "79": { nome: "Bom é estarmos nós aqui", compasso: "3/4", velMin: 60, velMed: 70, velMax: 80, inicio: 3 },
+            "80": { nome: "Por Cristo resgatado", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 1 },
+            "81": { nome: "A vida deu por ti", compasso: "6/8", velMin: 108, velMed: 114, velMax: 120, inicio: 6 },
+            "82": { nome: "Oh Que grande amor", compasso: "2/4", velMin: 54, velMed: 63, velMax: 72, inicio: 2 },
+            "83": { nome: "Vinde às bodas", compasso: "6/4", velMin: 88, velMed: 100, velMax: 112, inicio: 6 },
+            "84": { nome: "Quão amável é a Tua casa", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 1 },
+            "85": { nome: "Anunciai o santo Evangelho", compasso: "4/4", velMin: 66, velMed: 79, velMax: 92, inicio: 1 },
+            "86": { nome: "Grande Tu és ó Pai", compasso: "6/4", velMin: 80, velMed: 94, velMax: 108, inicio: 4 },
+            "87": { nome: "Eis que vem Jesus", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "88": { nome: "Minha oração", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 3.5 },
+            "89": { nome: "Oh Grande Deus", compasso: "4/4", velMin: 80, velMed: 88, velMax: 96, inicio: 1 },
+            "90": { nome: "Teu destino é a glória", compasso: "3/4", velMin: 63, velMed: 69, velMax: 76, inicio: 3 },
+            "91": { nome: "No esconderijo do Onipotente", compasso: "6/4", velMin: 106, velMed: 113, velMax: 120, inicio: 1 },
+            "92": { nome: "O santo Evangelho", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "93": { nome: "Aceitando ao Senhor...", compasso: "3/4", velMin: 60, velMed: 66, velMax: 72, inicio: 3 },
+            "94": { nome: "Quem sustenta a nossa vida", compasso: "4/4!3/4", velMin: 56, velMed: 66, velMax: 76, inicio: 4 },
+            "95": { nome: "Vinde ó benditos de Meu Pai", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 4 },
+            "96": { nome: "Vinde adoremos a Deus", compasso: "3/4", velMin: 72, velMed: 82, velMax: 92, inicio: 1 },
+            "97": { nome: "Cristo Jesus nosso bom Pastor", compasso: "6/8", velMin: 42, velMed: 47, velMax: 52, inicio: 1 },
+            "98": { nome: "Cristo Jesus tudo pode", compasso: "6/4", velMin: 88, velMed: 107, velMax: 126, inicio: 1 },
+            "99": { nome: "Jesus Cristo é o Amigo celestial", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 4 },
+            "100": { nome: "Todos juntos jubilemos", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "101": { nome: "Cantemos juntos louvores a Deus", compasso: "4/4", velMin: 60, velMed: 66, velMax: 72, inicio: 4 },
+            "102": { nome: "Sinto a voz divina do meu fiel Pastor", compasso: "6/8", velMin: 116, velMed: 130, velMax: 144, inicio: 1 },
+            "103": { nome: "Bendize ó minha alma", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 1 },
+            "104": { nome: "Santo Santo és Senhor", compasso: "3/4", velMin: 69, velMed: 76, velMax: 84, inicio: 3 },
+            "105": { nome: "Volta ao teu lar Paternal!", compasso: "12/8", velMin: 44, velMed: 52, velMax: 60, inicio: 1 },
+            "106": { nome: "Em nome do nosso Redentor", compasso: "3/4", velMin: 63, velMed: 67, velMax: 72, inicio: 3 },
+            "107": { nome: "O fim de tudo chegará", compasso: "6/8", velMin: 40, velMed: 45, velMax: 50, inicio: 6 },
+            "108": { nome: "É Jesus a Fonte de riqueza", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "109": { nome: "Vem ó Senhor ajudar-me", compasso: "6/8", velMin: 112, velMed: 122, velMax: 132, inicio: 1 },
+            "110": { nome: "Vigiai irmãos", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "111": { nome: "Do sepulcro ressurgiu triunfante", compasso: "3/4", velMin: 63, velMed: 71, velMax: 80, inicio: 33 },
+            "112": { nome: "Sigamos sempre ao Senhor", compasso: "6/8", velMin: 112, velMed: 125, velMax: 138, inicio: 6 },
+            "113": { nome: "O Senhor seja louvado", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "114": { nome: "Clama ao Mestre Cristo Jesus", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "115": { nome: "Minha alma engrandece...", compasso: "3/4", velMin: 88, velMed: 100, velMax: 112, inicio: 1 },
+            "116": { nome: "Amo ao Senhor", compasso: "6/8", velMin: 108, velMed: 123, velMax: 138, inicio: 6 },
+            "117": { nome: "Jesus habita em meu coração", compasso: "6/8", velMin: 132, velMed: 142, velMax: 152, inicio: 6 },
+            "118": { nome: "Fiel Salvador é Jesus", compasso: "6/8", velMin: 100, velMed: 110, velMax: 120, inicio: 6 },
+            "119": { nome: "Luz aos meus pés é a Tua Palavra", compasso: "4/4", velMin: 88, velMed: 100, velMax: 112, inicio: 1 },
+            "120": { nome: "Nossa cruz tomemos", compasso: "4/4", velMin: 86, velMed: 89, velMax: 92, inicio: 1 },
+            "121": { nome: "O meu socorro vem do Senhor", compasso: "9/8", velMin: 120, velMed: 132, velMax: 144, inicio: 7 },
+            "122": { nome: "Alegrei-me quando me disseram...", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 4 },
+            "123": { nome: "Ó Jesus és meu Guardião", compasso: "3/4", velMin: 63, velMed: 73, velMax: 84, inicio: 1 },
+            "124": { nome: "Vivo na graça", compasso: "6/4", velMin: 80, velMed: 88, velMax: 96, inicio: 1 },
+            "125": { nome: "Mais grato a Ti", compasso: "6/8", velMin: 104, velMed: 112, velMax: 120, inicio: 4 },
+            "126": { nome: "Levemos a mensagem de amor", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 4 },
+            "127": { nome: "Meu bom Jesus Contigo almejo estar", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 1 },
+            "128": { nome: "Teu filho sou ó Criador", compasso: "6/8", velMin: 108, velMed: 120, velMax: 132, inicio: 4 },
+            "129": { nome: "Salvo estou por Jesus", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "130": { nome: "A minha alma", compasso: "6/8", velMin: 112, velMed: 128, velMax: 144, inicio: 1 },
+            "131": { nome: "Ó Senhor glorioso Deus da perfeição", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 1 },
+            "132": { nome: "Eis-me Senhor aos Teus pés", compasso: "6/8", velMin: 108, velMed: 120, velMax: 132, inicio: 1 },
+            "133": { nome: "Quão bom e quão suave é...", compasso: "4/4", velMin: 88, velMed: 100, velMax: 112, inicio: 4 },
+            "134": { nome: "Teu amor ó Cordeiro divinal", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "135": { nome: "Bendito o Rei que veio dos céu!", compasso: "4/4", velMin: 72, velMed: 78, velMax: 84, inicio: 1 },
+            "136": { nome: "Benignidade eterna é a de Deus", compasso: "6/8", velMin: 112, velMed: 128, velMax: 144, inicio: 1 },
+            "137": { nome: "Senhor vem selar-nos", compasso: "6/8", velMin: 112, velMed: 125, velMax: 138, inicio: 1 },
+            "138": { nome: "Louvemos ao bom Jesus", compasso: "6/8", velMin: 104, velMed: 124, velMax: 144, inicio: 6 },
+            "139": { nome: "Ó Senhor Tu me conheces", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "140": { nome: "Sou feliz", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 1 },
+            "141": { nome: "Cristo o Verbo", compasso: "6/8", velMin: 100, velMed: 110, velMax: 120, inicio: 6 },
+            "142": { nome: "Ó Pai celestial", compasso: "6/8", velMin: 88, velMed: 100, velMax: 112, inicio: 6 },
+            "143": { nome: "Porfiemos irmãos por entrar nos céus", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "144": { nome: "A vida eterna", compasso: "3/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "145": { nome: "Pródigo filho vai!", compasso: "6/8", velMin: 108, velMed: 123, velMax: 138, inicio: 1 },
+            "146": { nome: "De Deus veio a Luz", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "147": { nome: "É bom louvar ao Criador", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 4 },
+            "148": { nome: "Louvor a Deus o Criador", compasso: "3/4", velMin: 56, velMed: 64, velMax: 72, inicio: 2.5 },
+            "149": { nome: "Ó irmãos por fé louvemos a Jesus", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 1 },
+            "150": { nome: "Jesus Cristo meu Senhor", compasso: "4/4", velMin: 54, velMed: 61, velMax: 69, inicio: 4 },
+            "151": { nome: "Se de Cristo o Nome amares", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 1 },
+            "152": { nome: "Venho à casa do Senhor", compasso: "4/4", velMin: 72, velMed: 82, velMax: 92, inicio: 4 },
+            "153": { nome: "O divinal Cordeiro", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "154": { nome: "Terá que renascer", compasso: "6/8", velMin: 108, velMed: 117, velMax: 126, inicio: 6 },
+            "155": { nome: "Olha a Cristo o Redentor", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1 },
+            "156": { nome: "Cristo entrou nos céus primeiro", compasso: "4/4", velMin: 68, velMed: 78, velMax: 88, inicio: 1 },
+            "157": { nome: "Ouve a voz que te convida...", compasso: "3/4", velMin: 60, velMed: 66, velMax: 72, inicio: 3 },
+            "158": { nome: "Meu lar está no céu", compasso: "2/4", velMin: 60, velMed: 66, velMax: 72, inicio: 1 },
+            "159": { nome: "Deus amou o mundo", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1 },
+            "160": { nome: "Sou o Caminho a Verdade e a Vida", compasso: "4/4", velMin: 88, velMed: 100, velMax: 112, inicio: 1 },
+            "161": { nome: "Cristo quer salvar", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4.5 },
+            "162": { nome: "Cristo salvou-me", compasso: "9/8", velMin: 40, velMed: 44, velMax: 48, inicio: 7 },
+            "163": { nome: "Neste mundo de ilusão", compasso: "6/8", velMin: 112, velMed: 125, velMax: 138, inicio: 1 },
+            "164": { nome: "Louvemos sempre alegres", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 4 },
+            "165": { nome: "Foi o Senhor Jesus", compasso: "6/8", velMin: 112, velMed: 128, velMax: 144, inicio: 1 },
+            "166": { nome: "A graça inefável de Deus", compasso: "6/8", velMin: 96, velMed: 111, velMax: 126, inicio: 6 },
+            "167": { nome: "Água viva", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 4 },
+            "168": { nome: "A Palavra do Senhor", compasso: "4/4", velMin: 69, velMed: 74, velMax: 80, inicio: 4 },
+            "169": { nome: "Aos pés de Deus estamos", compasso: "6/8", velMin: 100, velMed: 113, velMax: 126, inicio: 1 },
+            "170": { nome: "Pai eternal envia dos céus...", compasso: "9/8", velMin: 112, velMed: 128, velMax: 144, inicio: 7 },
+            "171": { nome: "Vida eterna Vida eterna!", compasso: "4/4", velMin: 56, velMed: 66, velMax: 76, inicio: 4 },
+            "172": { nome: "Um culto santo ao Senhor", compasso: "3/4", velMin: 54, velMed: 58, velMax: 63, inicio: 2.5 },
+            "173": { nome: "Para ouvir aqui estamos", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 1 },
+            "174": { nome: "Vem atender ao Seu chamado", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 4 },
+            "175": { nome: "O Senhor Jesus te chama", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 1 },
+            "176": { nome: "Por Ti vivo ó Deus potente", compasso: "4/4", velMin: 63, velMed: 69, velMax: 76, inicio: 4 },
+            "177": { nome: "Eu necessito achegar-me", compasso: "9/8", velMin: 40, velMed: 45, velMax: 50, inicio: 1 },
+            "178": { nome: "A Palavra preciosa", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "179": { nome: "Trabalhai Trabalhai!", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "180": { nome: "Jesus é a Luz que veio ao mundo...", compasso: "4/4", velMin: 76, velMed: 82, velMax: 88, inicio: 4 },
+            "181": { nome: "Só em Cristo só em Cristo", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "182": { nome: "Brevemente retornará Jesus Cristo", compasso: "3/4", velMin: 56, velMed: 61, velMax: 66, inicio: 3 },
+            "183": { nome: "Cristo Jesus é a Porta dos céus", compasso: "6/8", velMin: 112, velMed: 125, velMax: 138, inicio: 1 },
+            "184": { nome: "Nós Te louvamos por fé grande Deus", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1 },
+            "185": { nome: "Deus mandou Sua Luz", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 1 },
+            "186": { nome: "Cristo Luz do mundo", compasso: "3/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "187": { nome: "Jesus Cristo habita em nós", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "188": { nome: "O Mestre habita em mim", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "189": { nome: "Oh! Que preciosa paz", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 1 },
+            "190": { nome: "Amados não temamos", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 4.5 },
+            "191": { nome: "Vem vem consolar-me", compasso: "6/8", velMin: 100, velMed: 113, velMax: 126, inicio: 6 },
+            "192": { nome: "Quão fiel promessa Jesus nos fez", compasso: "6/8", velMin: 108, velMed: 117, velMax: 126, inicio: 6 },
+            "193": { nome: "Nada jamais me faltará", compasso: "9/8", velMin: 120, velMed: 132, velMax: 144, inicio: 4 },
+            "194": { nome: "Vós chorareis e vos lamentareis", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 4 },
+            "195": { nome: "Senhor estou disposto", compasso: "3/4", velMin: 69, velMed: 78, velMax: 88, inicio: 3 },
+            "196": { nome: "Sem Deus Pai", compasso: "6/4", velMin: 88, velMed: 100, velMax: 112, inicio: 1 },
+            "197": { nome: "Senhor por Teu poder", compasso: "6/4", velMin: 84, velMed: 94, velMax: 104, inicio: 6 },
+            "198": { nome: "Nosso Pai celeste sabe e provê", compasso: "4/4", velMin: 76, velMed: 88, velMax: 100, inicio: 4 },
+            "199": { nome: "Senhor Tu és a minha porção", compasso: "6/4", velMin: 88, velMed: 104, velMax: 120, inicio: 6 },
+            "200": { nome: "Não se turbe o vosso coração", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "201": { nome: "Deus nos guarde...", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 1 },
+            "202": { nome: "Em Ti me alegro Senhor", compasso: "6/4", velMin: 112, velMed: 122, velMax: 132, inicio: 6 },
+            "203": { nome: "O meu vero Amigo é Jesus", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "204": { nome: "Só Jesus é Amigo verdadeiro", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "205": { nome: "Salvo por Seu poder", compasso: "12/8", velMin: 42, velMed: 49, velMax: 56, inicio: 12 },
+            "206": { nome: "Tu és o Amigo", compasso: "6/8", velMin: 100, velMed: 119, velMax: 138, inicio: 6 },
+            "207": { nome: "Cristo é fiel", compasso: "4/4", velMin: 69, velMed: 80, velMax: 92, inicio: 1 },
+            "208": { nome: "Conserva a paz ó minha alma", compasso: "2/2", velMin: 44, velMed: 49, velMax: 54, inicio: 1.5 },
+            "209": { nome: "Oh! Marchai soldados", compasso: "4/4", velMin: 72, velMed: 78, velMax: 84, inicio: 1 },
+            "210": { nome: "Grandes promessas", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 1 },
+            "211": { nome: "O Senhor Jesus passava...", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "212": { nome: "Testemunhas verazes nós somos", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 4 },
+            "213": { nome: "Quando vier do céu", compasso: "6/8", velMin: 104, velMed: 118, velMax: 132, inicio: 1 },
+            "214": { nome: "Como foi para os céus assim virá", compasso: "4/4", velMin: 66, velMed: 71, velMax: 76, inicio: 4 },
+            "215": { nome: "Em breve ao céu irei", compasso: "12/8", velMin: 44, velMed: 52, velMax: 60, inicio: 10 },
+            "216": { nome: "Irmãos amemos ao Senhor", compasso: "6/8", velMin: 100, velMed: 116, velMax: 132, inicio: 6 },
+            "217": { nome: "Vamos unidos a Deus louvar", compasso: "6/8", velMin: 112, velMed: 128, velMax: 144, inicio: 1 },
+            "218": { nome: "Oh Jubilemos devotos de Cristo", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "219": { nome: "Novos céus nós aguardamos", compasso: "6/8", velMin: 40, velMed: 45, velMax: 50, inicio: 1 },
+            "220": { nome: "Cristo voltará", compasso: "4/4", velMin: 56, velMed: 66, velMax: 76, inicio: 1 },
+            "221": { nome: "A descida do Espírito Santo", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 1 },
+            "222": { nome: "Brevemente virá o Senhor Jesus", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "223": { nome: "Muitos por fé aceitaram Jesus", compasso: "6/8", velMin: 104, velMed: 118, velMax: 132, inicio: 1 },
+            "224": { nome: "Só Jesus concede paz e salvação", compasso: "2/2", velMin: 54, velMed: 60, velMax: 66, inicio: 1 },
+            "225": { nome: "Senhor com Tua voz me chamas", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 4 },
+            "226": { nome: "A história do Evangelho", compasso: "4/4", velMin: 69, velMed: 72, velMax: 76, inicio: 4 },
+            "227": { nome: "Procuras tu ao Salvador?", compasso: "3/4", velMin: 56, velMed: 66, velMax: 76, inicio: 2.5 },
+            "228": { nome: "Salvação! Salvação!", compasso: "3/4", velMin: 63, velMed: 71, velMax: 80, inicio: 3 },
+            "229": { nome: "Eu vivia no pecado", compasso: "4/4", velMin: 69, velMed: 80, velMax: 92, inicio: 4 },
+            "230": { nome: "A Ti rendemos graças", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "231": { nome: "Provemos irmãos do amor do Senhor", compasso: "6/8", velMin: 104, velMed: 118, velMax: 132, inicio: 6 },
+            "232": { nome: "Seguro estou", compasso: "3/4", velMin: 60, velMed: 72, velMax: 84, inicio: 2.5 },
+            "233": { nome: "Avante santos e fiéis de Deus", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "234": { nome: "O meu ser entrego a Cristo", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "235": { nome: "Um amor imenso", compasso: "4/4", velMin: 84, velMed: 94, velMax: 104, inicio: 1 },
+            "236": { nome: "Há um lugar de eterna paz", compasso: "4/4", velMin: 63, velMed: 69, velMax: 76, inicio: 3.5 },
+            "237": { nome: "Deus é por mim", compasso: "6/4", velMin: 100, velMed: 113, velMax: 126, inicio: 1 },
+            "238": { nome: "Teu servo ouve fala Senhor", compasso: "9/8", velMin: 108, velMed: 120, velMax: 132, inicio: 7 },
+            "239": { nome: "Eis que a noite é passada", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "240": { nome: "Não me cansarei de cantar", compasso: "6/8", velMin: 112, velMed: 122, velMax: 132, inicio: 6 },
+            "241": { nome: "A Justiça divina", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 1 },
+            "242": { nome: "Profundo é o saber de Deus Criador", compasso: "3/4", velMin: 63, velMed: 69, velMax: 76, inicio: 3 },
+            "243": { nome: "É Jesus o nosso Intercessor", compasso: "4/4", velMin: 72, velMed: 82, velMax: 92, inicio: 4 },
+            "244": { nome: "Cristo intercede por ti", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 1 },
+            "245": { nome: "Não pode entender o mundo", compasso: "3/4", velMin: 63, velMed: 73, velMax: 84, inicio: 1 },
+            "246": { nome: "Irmãos já resgatados", compasso: "6/8", velMin: 116, velMed: 124, velMax: 132, inicio: 6 },
+            "247": { nome: "Se fores tentado", compasso: "6/8", velMin: 100, velMed: 116, velMax: 132, inicio: 1 },
+            "248": { nome: "Glória Aleluia Sinto Jesus", compasso: "9/8", velMin: 112, velMed: 125, velMax: 138, inicio: 7 },
+            "249": { nome: "A Caridade", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 4 },
+            "250": { nome: "Com meu Redentor viverei nos céus", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "251": { nome: "Firme nas mãos de Cristo", compasso: "4/4", velMin: 72, velMed: 82, velMax: 92, inicio: 1 },
+            "252": { nome: "Exaltação ao Deus Onipotente", compasso: "4/4", velMin: 80, velMed: 90, velMax: 100, inicio: 1 },
+            "253": { nome: "Foi alegre ditoso o dia", compasso: "4/4", velMin: 72, velMed: 78, velMax: 84, inicio: 4 },
+            "254": { nome: "De Jesus a graça divina", compasso: "4/4", velMin: 52, velMed: 59, velMax: 66, inicio: 1 },
+            "255": { nome: "Jesus é a nossa Rocha", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4.5 },
+            "256": { nome: "Sem Deus Pai vivi no mundo", compasso: "6/4", velMin: 100, velMed: 110, velMax: 120, inicio: 1 },
+            "257": { nome: "Remiu-nos por graça", compasso: "6/8", velMin: 116, velMed: 130, velMax: 144, inicio: 6 },
+            "258": { nome: "Louvemos ao nosso Senhor", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 4 },
+            "259": { nome: "Só triunfará o de sincero coração", compasso: "4/4", velMin: 72, velMed: 82, velMax: 92, inicio: 1 },
+            "260": { nome: "Sou servo inútil ó Deus piedoso", compasso: "6/8", velMin: 108, velMed: 117, velMax: 126, inicio: 1 },
+            "261": { nome: "Vivo por Cristo", compasso: "2/2", velMin: 50, velMed: 58, velMax: 66, inicio: 1 },
+            "262": { nome: "Senhor a Tua igreja", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "263": { nome: "Cristo é Luz resplandecente", compasso: "4/4", velMin: 72, velMed: 78, velMax: 84, inicio: 1 },
+            "264": { nome: "Redentor celeste e santo", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "265": { nome: "Bênçãos dos céus prometidas", compasso: "6/8", velMin: 120, velMed: 132, velMax: 144, inicio: 1 },
+            "266": { nome: "Vinde às fileiras", compasso: "2/4", velMin: 54, velMed: 61, velMax: 69, inicio: 1 },
+            "267": { nome: "Graça maravilhosa", compasso: "4/4", velMin: 80, velMed: 86, velMax: 92, inicio: 1 },
+            "268": { nome: "Ó Deus bendito", compasso: "6/8", velMin: 126, velMed: 139, velMax: 152, inicio: 1 },
+            "269": { nome: "Ressuscitados por graça fomos", compasso: "9/8", velMin: 104, velMed: 118, velMax: 132, inicio: 1 },
+            "270": { nome: "Deste mundo mais nada esperarei", compasso: "4/4", velMin: 69, velMed: 80, velMax: 92, inicio: 4 },
+            "271": { nome: "Graças dou a Ti ó bom Deus", compasso: "3/4", velMin: 80, velMed: 88, velMax: 96, inicio: 1 },
+            "272": { nome: "Louvarei ao bom Jesus", compasso: "6/8", velMin: 42, velMed: 47, velMax: 52, inicio: 1 },
+            "273": { nome: "Jesus me deu celeste hino", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 3.5 },
+            "274": { nome: "Na plenitude estarei", compasso: "3/4", velMin: 56, velMed: 61, velMax: 66, inicio: 2.5 },
+            "275": { nome: "Avante eu vou", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 4.5 },
+            "276": { nome: "Ó Senhor da glória", compasso: "4/4", velMin: 58, velMed: 65, velMax: 72, inicio: 1 },
+            "277": { nome: "Oh! Quanto é bom louvarmos", compasso: "6/8", velMin: 120, velMed: 132, velMax: 144, inicio: 1 },
+            "278": { nome: "Éramos mortos nas obras más", compasso: "6/8", velMin: 112, velMed: 122, velMax: 132, inicio: 1 },
+            "279": { nome: "Oh! Não temas igreja de Deus", compasso: "4/4", velMin: 69, velMed: 80, velMax: 92, inicio: 4 },
+            "280": { nome: "De Deus a armadura", compasso: "6/8", velMin: 116, velMed: 130, velMax: 144, inicio: 6 },
+            "281": { nome: "Soldados valorosos nós somos", compasso: "4/4", velMin: 88, velMed: 94, velMax: 100, inicio: 4 },
+            "282": { nome: "Constantemente oremos a Deus", compasso: "6/4", velMin: 92, velMed: 109, velMax: 126, inicio: 1 },
+            "283": { nome: "Quero ó Senhor ir Contigo ao céu", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 3.5 },
+            "284": { nome: "Louvor nos céus altíssimos", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "285": { nome: "Glória e louvor a Jesus darei", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 1 },
+            "286": { nome: "Nome precioso para mim", compasso: "4/4", velMin: 63, velMed: 69, velMax: 76, inicio: 4 },
+            "287": { nome: "Irmãos amados sempre avante", compasso: "9/8", velMin: 120, velMed: 132, velMax: 144, inicio: 7 },
+            "288": { nome: "Ó irmãos com Cristo avante", compasso: "6/4", velMin: 108, velMed: 114, velMax: 120, inicio: 4 },
+            "289": { nome: "Avante sempre avante", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 4.5 },
+            "290": { nome: "Sempre avante!", compasso: "4/4", velMin: 72, velMed: 82, velMax: 92, inicio: 1 },
+            "291": { nome: "Irmãos avante avante!", compasso: "4/4", velMin: 76, velMed: 84, velMax: 92, inicio: 4 },
+            "292": { nome: "Oh! Quanto é bom o Redentor!", compasso: "4/4", velMin: 63, velMed: 75, velMax: 88, inicio: 4 },
+            "293": { nome: "Tu és Oleiro", compasso: "9/4", velMin: 92, velMed: 109, velMax: 126, inicio: 7 },
+            "294": { nome: "Avante! Coragem! Marchemos", compasso: "6/4", velMin: 104, velMed: 118, velMax: 132, inicio: 6 },
+            "295": { nome: "Fui Senhor por Ti remido", compasso: "3/4", velMin: 54, velMed: 61, velMax: 69, inicio: 3 },
+            "296": { nome: "Teu Nome é soberano ó Redentor", compasso: "3/4!4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 3 },
+            "297": { nome: "Senhor conforta meu coração", compasso: "6/8", velMin: 108, velMed: 117, velMax: 126, inicio: 6 },
+            "298": { nome: "Avante sempre sem temer!", compasso: "4/4", velMin: 69, velMed: 78, velMax: 88, inicio: 4 },
+            "299": { nome: "Em nome de Jesus", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "300": { nome: "Tudo o que os falta", compasso: "4/4", velMin: 63, velMed: 75, velMax: 88, inicio: 1 },
+            "301": { nome: "Nossa esperança é Jesus", compasso: "4/4", velMin: 66, velMed: 77, velMax: 88, inicio: 1 },
+            "302": { nome: "Que gloriosa Esperança é Jesus!", compasso: "3/4", velMin: 63, velMed: 71, velMax: 80, inicio: 3 },
+            "303": { nome: "O Senhor não mudará", compasso: "3/4", velMin: 60, velMed: 70, velMax: 80, inicio: 3 },
+            "304": { nome: "Cristo é a Esperança", compasso: "3/4", velMin: 63, velMed: 69, velMax: 76, inicio: 1 },
+            "305": { nome: "Oh! Que fundamento", compasso: "4/4", velMin: 88, velMed: 100, velMax: 112, inicio: 4 },
+            "306": { nome: "Bendizei ao Altíssimo Deus", compasso: "6/4", velMin: 92, velMed: 104, velMax: 116, inicio: 6 },
+            "307": { nome: "Cristo nos dará da Sua plenitude", compasso: "4/4", velMin: 72, velMed: 78, velMax: 84, inicio: 4 },
+            "308": { nome: "Soa a trombeta", compasso: "6/8", velMin: 108, velMed: 117, velMax: 126, inicio: 1 },
+            "309": { nome: "Galardão nos espera", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 1 },
+            "310": { nome: "Nós Te louvamos ó Rei dos reis", compasso: "2/4", velMin: 58, velMed: 65, velMax: 72, inicio: 1 },
+            "311": { nome: "Teus tesouros revelaste", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "312": { nome: "Tributos de louvor", compasso: "4/4", velMin: 80, velMed: 92, velMax: 104, inicio: 4 },
+            "313": { nome: "Arrebatado aos céus", compasso: "6/8", velMin: 112, velMed: 122, velMax: 132, inicio: 6 },
+            "314": { nome: "O Teu poder supremo", compasso: "4/4", velMin: 84, velMed: 92, velMax: 100, inicio: 4 },
+            "315": { nome: "Contempla do céu", compasso: "6/4", velMin: 80, velMed: 90, velMax: 100, inicio: 6 },
+            "316": { nome: "Tua vida é triste?", compasso: "6/8", velMin: 44, velMed: 50, velMax: 56, inicio: 1 },
+            "317": { nome: "Sinto o Senhor por fé em mim", compasso: "6/8", velMin: 92, velMed: 112, velMax: 132, inicio: 1 },
+            "318": { nome: "Ó Salvador vem converter o pecador", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3.5 },
+            "319": { nome: "Foi Jesus Quem me salvou", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "320": { nome: "Que prazer é andar com Cristo", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "321": { nome: "Bendito seja o Deus vivente", compasso: "4/4", velMin: 58, velMed: 63, velMax: 69, inicio: 4 },
+            "322": { nome: "Vem Rei eterno", compasso: "6/4", velMin: 104, velMed: 118, velMax: 132, inicio: 1 },
+            "323": { nome: "Oh! Não busques ansioso", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 1 },
+            "324": { nome: "Do mal o Salvador veio me tirar", compasso: "4/4", velMin: 63, velMed: 69, velMax: 76, inicio: 4.5 },
+            "325": { nome: "Louvemos ao Rei dos reis", compasso: "6/8", velMin: 112, velMed: 123, velMax: 135, inicio: 6 },
+            "326": { nome: "Sempre a Cristo fiéis", compasso: "6/8", velMin: 100, velMed: 110, velMax: 120, inicio: 6 },
+            "327": { nome: "Soldados somos do Senhor", compasso: "4/4", velMin: 76, velMed: 84, velMax: 92, inicio: 4 },
+            "328": { nome: "Grande é o Teu poder Senhor", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 4 },
+            "329": { nome: "Com fé combate", compasso: "6/8", velMin: 96, velMed: 117, velMax: 138, inicio: 1 },
+            "330": { nome: "Ao findar a jornada", compasso: "4/4", velMin: 60, velMed: 74, velMax: 88, inicio: 4 },
+            "331": { nome: "Vem a Cristo sem tardar", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 4 },
+            "332": { nome: "É Cristo Quem cuida de ti", compasso: "6/8", velMin: 116, velMed: 124, velMax: 132, inicio: 1 },
+            "333": { nome: "Peregrino sou no mundo", compasso: "3/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "334": { nome: "Há uma pátria perfeita...", compasso: "4/4", velMin: 69, velMed: 74, velMax: 80, inicio: 4 },
+            "335": { nome: "Eu almejo nessa pátria entrar...", compasso: "3/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "336": { nome: "Sempre brilhar devemos", compasso: "4/4", velMin: 66, velMed: 77, velMax: 88, inicio: 1 },
+            "337": { nome: "Por fé seguimos ao Senhor", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4.5 },
+            "338": { nome: "O Senhor é sempiterno", compasso: "4/4", velMin: 66, velMed: 77, velMax: 88, inicio: 1 },
+            "339": { nome: "Glória sem par", compasso: "6/4", velMin: 112, velMed: 122, velMax: 132, inicio: 1 },
+            "340": { nome: "No mundo sou peregrino", compasso: "6/4", velMin: 108, velMed: 120, velMax: 132, inicio: 1 },
+            "341": { nome: "Com fé espera no Senhor", compasso: "6/8", velMin: 92, velMed: 112, velMax: 132, inicio: 6 },
+            "342": { nome: "Sião celestial", compasso: "9/4!6/4", velMin: 88, velMed: 100, velMax: 112, inicio: 9 },
+            "343": { nome: "Lá no céu cantaremos", compasso: "4/4", velMin: 72, velMed: 80, velMax: 88, inicio: 1 },
+            "344": { nome: "Vou encontrar meu Deus", compasso: "6/4", velMin: 96, velMed: 111, velMax: 126, inicio: 1 },
+            "345": { nome: "Regozijo-me em falar do Salvador", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "346": { nome: "Longe do mal e perto de Ti", compasso: "9/4!6/4", velMin: 96, velMed: 106, velMax: 116, inicio: 1 },
+            "347": { nome: "Ontem, hoje e eternamente", compasso: "6/8", velMin: 116, velMed: 127, velMax: 138, inicio: 1 },
+            "348": { nome: "Em Cristo espera, sem vacilar", compasso: "3/4!4/4", velMin: 63, velMed: 34.5, velMax: 76, inicio: 42 },
+            "349": { nome: "Irmãos amados", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 3.5 },
+            "350": { nome: "A jornada farei", compasso: "3/4", velMin: 76, velMed: 84, velMax: 92, inicio: 3 },
+            "351": { nome: "Senhor, à Tua presença", compasso: "6/8", velMin: 100, velMed: 108, velMax: 116, inicio: 6 },
+            "352": { nome: "Sinto viva esperança", compasso: "3/4!4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 3 },
+            "353": { nome: "Eleitos nós somos", compasso: "2/2", velMin: 58, velMed: 63, velMax: 69, inicio: 2.5 },
+            "354": { nome: "Jerusalém celestial!", compasso: "3/4", velMin: 69, velMed: 74, velMax: 80, inicio: 3 },
+            "355": { nome: "A Ti, Deus, eu consagrei-me", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 1 },
+            "356": { nome: "Por preço elevado jesus resgatou-me", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 4.5 },
+            "357": { nome: "Face a face O verei", compasso: "3/4", velMin: 56, velMed: 64, velMax: 72, inicio: 2.5 },
+            "358": { nome: "O Teu precioso sangue", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 1 },
+            "359": { nome: "Ó irmãos, de Deus diletos", compasso: "3/4!4/4", velMin: 56, velMed: 66, velMax: 76, inicio: 3 },
+            "360": { nome: "Do mal apartados devemos estar", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "361": { nome: "Tudo entende o Salvador", compasso: "6/4", velMin: 108, velMed: 117, velMax: 126, inicio: 1 },
+            "362": { nome: "Que bela herança!", compasso: "9/8", velMin: 112, velMed: 132, velMax: 152, inicio: 7 },
+            "363": { nome: "Aos Teus pés estou Senhor", compasso: "3/4", velMin: 54, velMed: 63, velMax: 72, inicio: 3 },
+            "364": { nome: "Os tempos já chegados são...", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 4 },
+            "365": { nome: "Contrito venho a Ti", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "366": { nome: "Pela fé tereis vitória", compasso: "4/4", velMin: 69, velMed: 78, velMax: 88, inicio: 1 },
+            "367": { nome: "Ao que vive para sempre...", compasso: "3/4", velMin: 60, velMed: 70, velMax: 80, inicio: 3 },
+            "368": { nome: "Deus nos elegeu para Si", compasso: "4/4!3/4", velMin: 66, velMed: 75, velMax: 84, inicio: 1 },
+            "369": { nome: "Sentes bater em teu coração?", compasso: "6/8", velMin: 120, velMed: 129, velMax: 138, inicio: 1 },
+            "370": { nome: "Têm os santos do Senhor", compasso: "4/4", velMin: 69, velMed: 78, velMax: 88, inicio: 4 },
+            "371": { nome: "Aos Teus pés me apresento", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "372": { nome: "Da igreja fiel Fundamento é Jesus", compasso: "6/4", velMin: 88, velMed: 104, velMax: 120, inicio: 6 },
+            "373": { nome: "Cristo Jesus o Redentor", compasso: "3/4", velMin: 63, velMed: 71, velMax: 80, inicio: 1 },
+            "374": { nome: "Santo! Santo! Santo!", compasso: "4/4", velMin: 56, velMed: 66, velMax: 76, inicio: 1 },
+            "375": { nome: "A paz Eu vos deixo", compasso: "2/2", velMin: 40, velMed: 47, velMax: 54, inicio: 2.5 },
+            "376": { nome: "Senhor preciso mais...", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "377": { nome: "No céu Senhor no céu", compasso: "2/4", velMin: 54, velMed: 63, velMax: 72, inicio: 1.5 },
+            "378": { nome: "Grandioso és Tu", compasso: "4/4", velMin: 56, velMed: 64, velMax: 72, inicio: 3.5 },
+            "379": { nome: "Grande festa haverá nos céus", compasso: "4/4", velMin: 76, velMed: 80, velMax: 84, inicio: 4 },
+            "380": { nome: "Com Jesus eternamente viverei", compasso: "4/4", velMin: 66, velMed: 73, velMax: 80, inicio: 4 },
+            "381": { nome: "Mui breve virá mui breve virá", compasso: "6/8", velMin: 100, velMed: 113, velMax: 126, inicio: 1 },
+            "382": { nome: "Creio nas fiéis promessas do meu Deus", compasso: "4/4", velMin: 72, velMed: 78, velMax: 84, inicio: 1 },
+            "383": { nome: "Cristo é a Estrela", compasso: "6/8", velMin: 104, velMed: 118, velMax: 132, inicio: 1 },
+            "384": { nome: "Nos resgatou e nos lavou", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 4 },
+            "385": { nome: "Vinde após Mim", compasso: "3/4", velMin: 66, velMed: 77, velMax: 88, inicio: 1 },
+            "386": { nome: "Pela morte de Jesus", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 1 },
+            "387": { nome: "Ó Salvador, que recebeste poder", compasso: "4/4", velMin: 104, velMed: 115, velMax: 126, inicio: 1 },
+            "388": { nome: "Na cidade santa", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 1 },
+            "389": { nome: "Cristo Jesus chama os Seus", compasso: "6/8", velMin: 100, velMed: 119, velMax: 138, inicio: 1 },
+            "390": { nome: "Eis que vem o Verdadeiro", compasso: "3/4", velMin: 60, velMed: 68, velMax: 76, inicio: 3 },
+            "391": { nome: "Um peregrino sou aqui", compasso: "3/4", velMin: 58, velMed: 65, velMax: 72, inicio: 2.5 },
+            "392": { nome: "Com Jesus, a Esperança", compasso: "4/4", velMin: 53, velMed: 68, velMax: 84, inicio: 4 },
+            "393": { nome: "Ó bom Jesus, meu caro Jesus", compasso: "6/8", velMin: 108, velMed: 117, velMax: 126, inicio: 1 },
+            "394": { nome: "Nas moradas do Senhor", compasso: "4/4", velMin: 69, velMed: 74, velMax: 80, inicio: 4 },
+            "395": { nome: "'Eis-Me aqui', dirá o Criador", compasso: "4/4", velMin: 92, velMed: 102, velMax: 112, inicio: 1 },
+            "396": { nome: "Vamos, ó irmãos, marchar", compasso: "4/4", velMin: 63, velMed: 69, velMax: 76, inicio: 4 },
+            "397": { nome: "Paz, sublime paz", compasso: "3/4", velMin: 66, velMed: 73, velMax: 80, inicio: 1 },
+            "398": { nome: "Não tardará a volta do Senhor", compasso: "2/2", velMin: 50, velMed: 56, velMax: 63, inicio: 2.5 },
+            "399": { nome: "Sou a videira", compasso: "9/8", velMin: 120, velMed: 132, velMax: 144, inicio: 7 },
+            "400": { nome: "Divina Fonte é Jesus", compasso: "3/4", velMin: 56, velMed: 66, velMax: 76, inicio: 3 },
+            "401": { nome: "Revela Teu querer", compasso: "3/4", velMin: 63, velMed: 75, velMax: 88, inicio: 3 },
+            "402": { nome: "Ó irmãos a Deus devemos...", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 1 },
+            "403": { nome: "Pefa fé uma vez...", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 4 },
+            "404": { nome: "Por fé, recebe o grande Mestre", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "405": { nome: "Só por Cristo temos salvação", compasso: "4/4", velMin: 63, velMed: 69, velMax: 76, inicio: 4 },
+            "406": { nome: "A voz de Cristo te convida: Vem!", compasso: "4/4", velMin: 72, velMed: 78, velMax: 84, inicio: 4 },
+            "407": { nome: "És bendito eternamente!", compasso: "4/4", velMin: 66, velMed: 77, velMax: 88, inicio: 4 },
+            "408": { nome: "Jesus Cristo é o Pão celeste", compasso: "3/2", velMin: 46, velMed: 50, velMax: 54, inicio: 3 },
+            "409": { nome: "Breve voltará Jesus Cristo", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "410": { nome: "O sangue precioso", compasso: "2/2", velMin: 46, velMed: 53, velMax: 60, inicio: 2.5 },
+            "411": { nome: "O vitupério de Jesus", compasso: "3/4", velMin: 54, velMed: 61, velMax: 69, inicio: 3 },
+            "412": { nome: "Senhor, recordamos aqui...", compasso: "3/4", velMin: 46, velMed: 52, velMax: 58, inicio: 3 },
+            "413": { nome: "Foi por mim que morreste", compasso: "4/4", velMin: 50, velMed: 59, velMax: 69, inicio: 4 },
+            "414": { nome: "Teu sangue imaculado", compasso: "4/4", velMin: 54, velMed: 61, velMax: 69, inicio: 1 },
+            "415": { nome: "Na cruz morreu o Cordeiro", compasso: "9/8!6/8", velMin: 80, velMed: 90, velMax: 100, inicio: 1 },
+            "416": { nome: "No Calvário...", compasso: "4/4", velMin: 52, velMed: 57, velMax: 63, inicio: 4 },
+            "417": { nome: "Recordemo-nos sempre do Mestre", compasso: "6/4", velMin: 84, velMed: 96, velMax: 108, inicio: 6 },
+            "418": { nome: "Só Jesus Cristo, santo Cordeiro", compasso: "9/8", velMin: 112, velMed: 125, velMax: 138, inicio: 7 },
+            "419": { nome: "Fazei isto em memória de Mim", compasso: "2/2", velMin: 69, velMed: 78, velMax: 88, inicio: 1 },
+            "420": { nome: "Foi no Calvário...", compasso: "4/4", velMin: 50, velMed: 58, velMax: 66, inicio: 4 },
+            "421": { nome: "Recorda, por fé, minha alma", compasso: "6/8", velMin: 80, velMed: 96, velMax: 112, inicio: 6 },
+            "422": { nome: "Jesus Cristo, fiel Cordeiro", compasso: "6/8!4/4", velMin: 80, velMed: 90, velMax: 100, inicio: 4 },
+            "423": { nome: "Só o sangue precioso e expiador", compasso: "4/4", velMin: 63, velMed: 69, velMax: 76, inicio: 4 },
+            "424": { nome: "Ó Jesus, por nós morreste", compasso: "4/4", velMin: 58, velMed: 69, velMax: 80, inicio: 2 },
+            "425": { nome: "Cristo Supremo", compasso: "9/8", velMin: 108, velMed: 117, velMax: 126, inicio: 7 },
+            "426": { nome: "Lá no céu, o lar de amor", compasso: "3/4", velMin: 44, velMed: 52, velMax: 60, inicio: 3 },
+            "427": { nome: "Os que no Senhor dormiram", compasso: "4/4", velMin: 44, velMed: 51, velMax: 58, inicio: 1 },
+            "428": { nome: "O dia de Cristo bem perto está", compasso: "3/4", velMin: 56, velMed: 58, velMax: 60, inicio: 3 },
+            "429": { nome: "A trombeta soará", compasso: "4/4", velMin: 50, velMed: 55, velMax: 60, inicio: 1 },
+            "430": { nome: "Preciosa é, aos olhos do Criador...", compasso: "6/8", velMin: 96, velMed: 104, velMax: 112, inicio: 1 },
+            "431": { nome: "Ó meninos, estamos reunidos", compasso: "4/4", velMin: 63, velMed: 75, velMax: 88, inicio: 4 },
+            "432": { nome: "Vem, ó divino Mestre", compasso: "4/4", velMin: 84, velMed: 96, velMax: 108, inicio: 4 },
+            "433": { nome: "Na santa escola", compasso: "3/4", velMin: 63, velMed: 73, velMax: 84, inicio: 3 },
+            "434": { nome: "A minha alma sente paz no Senhor", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 3.5 },
+            "435": { nome: "Ó Jesus, quanto és piedoso!", compasso: "3/4", velMin: 63, velMed: 69, velMax: 76, inicio: 3 },
+            "436": { nome: "Alegria sinto em servir Jesus", compasso: "4/4", velMin: 69, velMed: 78, velMax: 88, inicio: 4 },
+            "437": { nome: "Os meninos viram Jesus passar", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 1 },
+            "438": { nome: "Oh! Que amor celeste!", compasso: "6/8", velMin: 100, velMed: 119, velMax: 138, inicio: 6 },
+            "439": { nome: "Somos jovens", compasso: "4/4", velMin: 66, velMed: 79, velMax: 92, inicio: 4 },
+            "440": { nome: "Lembra-te do teu Criador!", compasso: "4/4", velMin: 63, velMed: 77, velMax: 92, inicio: 1 },
+            "441": { nome: "Eu sou um cordeirinho", compasso: "2/2", velMin: 52, velMed: 60, velMax: 69, inicio: 2.5 },
+            "442": { nome: "Bênçãos, bênçãos Deus derramará", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 1 },
+            "443": { nome: "Ó meninos, Deus vos convida", compasso: "4/4", velMin: 60, velMed: 74, velMax: 88, inicio: 1 },
+            "444": { nome: "Ó meninos, exaltemos", compasso: "3/4", velMin: 63, velMed: 71, velMax: 80, inicio: 3 },
+            "445": { nome: "Ajuntemos um tesouro eterno", compasso: "4/4", velMin: 72, velMed: 82, velMax: 92, inicio: 1 },
+            "446": { nome: "Vós, ó jovens do Senhor", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 4 },
+            "447": { nome: "Brilha mais e mais", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "448": { nome: "Sou criança, Senhor", compasso: "6/8", velMin: 92, velMed: 109, velMax: 126, inicio: 6 },
+            "449": { nome: "O meu nome no céu escreveste, Senhor", compasso: "3/4", velMin: 66, velMed: 79, velMax: 92, inicio: 3 },
+            "450": { nome: "Vamos, queridos, escolher a boa parte", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 1 },
+            "451": { nome: "Jamais esquecerei Tua mercê", compasso: "6/8", velMin: 104, velMed: 118, velMax: 132, inicio: 1 },
+            "452": { nome: "Jesus, ó divinal Pastor", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 4 },
+            "453": { nome: "Consagrados sejamos a Deus", compasso: "6/4", velMin: 88, velMed: 102, velMax: 116, inicio: 6 },
+            "454": { nome: "Cidadão dos céus", compasso: "6/8", velMin: 104, velMed: 115, velMax: 126, inicio: 1 },
+            "455": { nome: "Quão ditoso é caminhar com Jesus!", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 1 },
+            "456": { nome: "Somos jóias preciosas", compasso: "3/4", velMin: 60, velMed: 70, velMax: 80, inicio: 3 },
+            "457": { nome: "Comigo está Jesus", compasso: "6/8", velMin: 104, velMed: 124, velMax: 144, inicio: 6 },
+            "458": { nome: "Cristo me ama", compasso: "2/4", velMin: 56, velMed: 66, velMax: 76, inicio: 1 },
+            "459": { nome: "Vamos nos preparar!", compasso: "12/8", velMin: 112, velMed: 128, velMax: 144, inicio: 10 },
+            "460": { nome: "Vamos todos juntos cantar", compasso: "4/4", velMin: 69, velMed: 78, velMax: 88, inicio: 1 },
+            "461": { nome: "Abrigado em Jesus", compasso: "4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 4 },
+            "462": { nome: "Gloriosa é a história", compasso: "3/4!4/4", velMin: 69, velMed: 76, velMax: 84, inicio: 3 },
+            "463": { nome: "Mocidade! Vamos combater!", compasso: "4/4", velMin: 66, velMed: 77, velMax: 88, inicio: 1 },
+            "464": { nome: "Reunidos nós estamos", compasso: "3/4", velMin: 60, velMed: 66, velMax: 72, inicio: 3 },
+            "465": { nome: "Deus tem por nós imenso amor", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 4 },
+            "466": { nome: "A criança consagrada", compasso: "3/4", velMin: 63, velMed: 71, velMax: 80, inicio: 3 },
+            "467": { nome: "Vamos com Jesus", compasso: "2/4", velMin: 63, velMed: 71, velMax: 80, inicio: 2.5 },
+            "468": { nome: "Toda a criança", compasso: "2/4", velMin: 63, velMed: 71, velMax: 80, inicio: 1 },
+            "469": { nome: "Pai nosso, que estás nos céus", compasso: "4/4", velMin: 76, velMed: 80, velMax: 84, inicio: 4 },
+            "470": { nome: "Jesus Cristo, Seus fiéis, ensina", compasso: "4/4", velMin: 69, velMed: 80, velMax: 92, inicio: 1 },
+            "471": { nome: "Que grande bem é andar com Cristo!", compasso: "4/4", velMin: 58, velMed: 67, velMax: 76, inicio: 3.5 },
+            "472": { nome: "Glorificarei, glorificarei", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 1 },
+            "473": { nome: "Forasteiro sou no mundo", compasso: "4/4", velMin: 66, velMed: 75, velMax: 84, inicio: 4 },
+            "474": { nome: "Oh! Glória! Bendito é o Senhor!", compasso: "4/4", velMin: 60, velMed: 72, velMax: 84, inicio: 1 },
+            "475": { nome: "Se eu for aqui provado", compasso: "4/4", velMin: 60, velMed: 72, velMax: 84, inicio: 4.5 },
+            "476": { nome: "Deixai a Mim vir os pequeninos...", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 3.5 },
+            "477": { nome: "Vinde, crianças", compasso: "4/4", velMin: 63, velMed: 73, velMax: 84, inicio: 1 },
+            "478": { nome: "Cedo retorna o Senhor", compasso: "4/4", velMin: 63, velMed: 71, velMax: 80, inicio: 4 },
+            "479": { nome: "Somos jovens consagrados", compasso: "3/4", velMin: 63, velMed: 71, velMax: 80, inicio: 3 },
+            "480": { nome: "Jovens, amai o conselho", compasso: "6/8", velMin: 108, velMed: 123, velMax: 138, inicio: 1 },
+            "C1": { nome: "Aleluia! Aleluia!", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4 },
+            "C2": { nome: "Toda a glória a Jesus", compasso: "2/4", velMin: 54, velMed: 60, velMax: 66, inicio: 1 },
+            "C3": { nome: "Ação de graças darei", compasso: "4/4", velMin: 58, velMed: 67, velMax: 76, inicio: 4 },
+            "C4": { nome: "Glória, glórias nas alturas!", compasso: "4/4", velMin: 60, velMed: 72, velMax: 84, inicio: 1 },
+            "C5": { nome: "Majestoso é Cristo Jesus!", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 4 },
+            "C6": { nome: "A Jesus eu cantarei louvor", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1 }
+        };
+        //for (let i = 21; i <= 480; i++) {
+        //    hymnsData[i.toString()] = { nome: `Hino ${i}`, compasso: "4/4", velMin: 60, velMed: 70, velMax: 80 };
+        //}
+
+        let currentHymn = null;
+        let metronomeInterval = null;
+        let currentBeatPosition = 0;
+        let beatsPerMeasure = 4;
+        let audioContext = null;
+        let isMuted = false;
+        let inicioValue = 0
+        function getFigureSymbol(timeSignature) {
+            // Compassos com unidade de tempo = Mínima (𝅗𝅥)
+            if (timeSignature === '2/2' || timeSignature === '3/2' || timeSignature === '4/2') {
+                return '𝅗𝅥';  // Mínima
+            }
+            // Compassos com unidade de tempo = Mínima Pontuada (6/4, 9/4, 12/4)
+            if (timeSignature === '6/4' || timeSignature === '9/4' || timeSignature === '12/4') {
+                return '𝅗𝅥.';  // Mínima pontuada
+            }
+            // Compassos compostos (6/8, 9/8, 12/8) usam Semínima Pontuada
+            if (timeSignature === '6/8' || timeSignature === '9/8' || timeSignature === '12/8') {
+                return '𝅘𝅥.';  // Semínima pontuada
+            }
+            // Compassos simples padrão: Semínima
+            return '𝅘𝅥';
+        }
+
+        function getStrongBeats(timeSignature, beats) {
+            const isCompound = isCompoundTime(timeSignature);
+            
+            // Compassos simples: apenas 1º tempo forte
+            if (!isCompound) return [1];
+            
+            // Para TODOS os compassos compostos (6/8, 9/8, 12/8, 6/4, 9/4, 12/4)
+            // Tempos fortes a cada 3 subdivisões: 1º, 4º, 7º, 10º...
+            const strong = [];
+            for (let i = 1; i <= beats; i += 3) {
+                strong.push(i);
+            }
+            return strong;
+        }
+
+        function getAccentType(beatNumber, accentEnabled, timeSignature, beats) {
+            if (!accentEnabled) return null;
+            const strongBeats = getStrongBeats(timeSignature, beats);
+            if (strongBeats.includes(beatNumber)) {
+                return beatNumber === 1 ? 'primary' : 'secondary';
+            }
+            return null;
+        }
+
+        function createBeatFiguresUI() {
+            const container = document.getElementById('beatFiguresRow');
+            container.innerHTML = '';
+            const timeSig = currentHymn.compasso;
+            const beats = beatsPerMeasure;
+            const accentEnabled = document.getElementById('accentCheckbox').checked;
+            const isCompound = isCompoundTime(timeSig);
+            const figureSymbol = getFigureSymbol(timeSig);
+            const strongBeats = getStrongBeats(timeSig, beats);
+            
+            // Para compassos com unidade de tempo Mínima (2/2, 3/2) - individuais
+            if (timeSig === '2/2' || timeSig === '3/2' || timeSig === '4/2') {
+                for (let i = 0; i < beats; i++) {
+                    const beatNumber = i + 1;
+                    const isStrong = strongBeats.includes(beatNumber);
+                    let accentClass = '';
+                    if (isStrong) {
+                        accentClass = beatNumber === 1 ? 'strong-primary' : 'strong-secondary';
+                    }
+                    
+                    const figureDiv = document.createElement('div');
+                    figureDiv.className = `figure-unit ${accentClass}`;
+                    figureDiv.dataset.beatIndex = i;
+                    
+                    const symbolSpan = document.createElement('div');
+                    symbolSpan.className = 'figure-symbol';
+                    symbolSpan.textContent = figureSymbol;
+                    
+                    const numberSpan = document.createElement('div');
+                    numberSpan.className = 'figure-number';
+                    numberSpan.textContent = `${beatNumber}º`;
+                    
+                    figureDiv.appendChild(symbolSpan);
+                    figureDiv.appendChild(numberSpan);
+                    container.appendChild(figureDiv);
+                }
+            }
+            // Para TODOS os compassos compostos (6/8, 9/8, 12/8, 6/4, 9/4, 12/4) - agrupa de 3 em 3
+            else if (isCompound) {
+                const groups = beats / 3;
+                for (let g = 0; g < groups; g++) {
+                    const firstBeatOfGroup = g * 3 + 1;
+                    const isStrong = strongBeats.includes(firstBeatOfGroup);
+                    let accentClass = '';
+                    if (isStrong) {
+                        accentClass = firstBeatOfGroup === 1 ? 'strong-primary' : 'strong-secondary';
+                    }
+                    
+                    const figureDiv = document.createElement('div');
+                    figureDiv.className = `figure-unit ${accentClass}`;
+                    figureDiv.dataset.groupIndex = g;
+                    
+                    const symbolSpan = document.createElement('div');
+                    symbolSpan.className = 'figure-symbol';
+                    symbolSpan.textContent = figureSymbol;
+                    
+                    const numberSpan = document.createElement('div');
+                    numberSpan.className = 'figure-number';
+                    numberSpan.textContent = `${firstBeatOfGroup}º-${firstBeatOfGroup+2}º`;
+                    
+                    figureDiv.appendChild(symbolSpan);
+                    figureDiv.appendChild(numberSpan);
+                    container.appendChild(figureDiv);
+                }
+            }
+            // Compassos simples padrão (4/4, 3/4, 2/4, etc.)
+            else {
+                for (let i = 0; i < beats; i++) {
+                    const beatNumber = i + 1;
+                    const isStrong = strongBeats.includes(beatNumber);
+                    let accentClass = '';
+                    if (isStrong) {
+                        accentClass = beatNumber === 1 ? 'strong-primary' : 'strong-secondary';
+                    }
+                    
+                    const figureDiv = document.createElement('div');
+                    figureDiv.className = `figure-unit ${accentClass}`;
+                    figureDiv.dataset.beatIndex = i;
+                    
+                    const symbolSpan = document.createElement('div');
+                    symbolSpan.className = 'figure-symbol';
+                    symbolSpan.textContent = figureSymbol;
+                    
+                    const numberSpan = document.createElement('div');
+                    numberSpan.className = 'figure-number';
+                    numberSpan.textContent = `${beatNumber}º`;
+                    
+                    figureDiv.appendChild(symbolSpan);
+                    figureDiv.appendChild(numberSpan);
+                    container.appendChild(figureDiv);
+                }
+            }
+        }
+
+        // Modifique a função highlightCurrentBeat para incluir o destaque do inicio
+        function highlightCurrentBeat(beatIndex) {
+            const timeSig = currentHymn.compasso;
+            const isCompound = isCompoundTime(timeSig);
+            const figures = document.querySelectorAll('.figure-unit');
+            const beatNumber = beatIndex + 1;
+            const isInicio = isInicioBeat(beatNumber);
+            
+            figures.forEach(fig => {
+                fig.classList.remove('active-beat', 'pulse-beat', 'inicio-beat');
+            });
+            
+            // Para TODOS os compassos compostos (6/8, 9/8, 12/8, 6/4, 9/4, 12/4) - agrupados
+            if (isCompound) {
+                const groupIndex = Math.floor(beatIndex / 3);
+                if (figures[groupIndex]) {
+                    figures[groupIndex].classList.add('active-beat', 'pulse-beat');
+                    if (isInicio) {
+                        figures[groupIndex].classList.add('inicio-beat');
+                        // Remove a classe após um breve momento
+                        setTimeout(() => figures[groupIndex]?.classList.remove('inicio-beat'), 200);
+                    }
+                    setTimeout(() => figures[groupIndex]?.classList.remove('pulse-beat'), 120);
+                }
+            }
+            // Para compassos 2/2, 3/2 (cada figura é um tempo individual)
+            else if (timeSig === '2/2' || timeSig === '3/2' || timeSig === '4/2') {
+                if (figures[beatIndex]) {
+                    figures[beatIndex].classList.add('active-beat', 'pulse-beat');
+                    if (isInicio) {
+                        figures[beatIndex].classList.add('inicio-beat');
+                        setTimeout(() => figures[beatIndex]?.classList.remove('inicio-beat'), 200);
+                    }
+                    setTimeout(() => figures[beatIndex]?.classList.remove('pulse-beat'), 120);
+                }
+            }
+            // Compassos simples padrão
+            else {
+                if (figures[beatIndex]) {
+                    figures[beatIndex].classList.add('active-beat', 'pulse-beat');
+                    if (isInicio) {
+                        figures[beatIndex].classList.add('inicio-beat');
+                        setTimeout(() => figures[beatIndex]?.classList.remove('inicio-beat'), 200);
+                    }
+                    setTimeout(() => figures[beatIndex]?.classList.remove('pulse-beat'), 120);
+                }
+            }
+        }
+
+        // Modifique a função playSound para tocar um som especial no inicio
+        function playSound(accentType) {
+            if (isMuted) return;
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            let freq = 520;
+            let vol = 0.25;
+            
+            // Verifica se é o beat de inicio
+            const beatNumber = currentBeatPosition + 1;
+            const isInicio = isInicioBeat(beatNumber);
+            
+            if (isInicio) {
+                freq = 1040; // Tom mais agudo para o inicio
+                vol = 0.55; // Volume mais alto
+                osc.type = 'triangle'; // Timbre diferente para destaque
+            } else if (accentType === 'primary') { 
+                freq = 880; 
+                vol = 0.45; 
+            } else if (accentType === 'secondary') { 
+                freq = 660; 
+                vol = 0.38; 
+            }
+            
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(vol, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+            osc.start();
+            osc.stop(now + 0.2);
+        }
+
+        // Modifique a função executeBeat para incluir o destaque do contador
+        function executeBeat(beatIndex) {
+            const beatNumber = beatIndex + 1;
+            const accentEnabled = document.getElementById('accentCheckbox').checked;
+            const timeSig = currentHymn.compasso;
+            const beats = beatsPerMeasure;
+            const accentType = getAccentType(beatNumber, accentEnabled, timeSig, beats);
+            
+            playSound(accentType);
+            highlightCurrentBeat(beatIndex);
+            updateBeatCounter();
+            
+            // Destaca o contador se for o beat de início
+            if (isInicioBeat(beatNumber)) {
+                highlightBeatCounterForStart();
+            }
+        }
+
+        function startMetronome() {
+            if (!currentHymn) {
+                if (!processHymnInput()) { alert('Digite um hino válido!'); return; }
+                updateHymnInfo();
+            }
+            stopMetronome();
+            
+            const bpm = parseInt(document.getElementById('speedSlider').value);
+            const intervalMs = (60 / bpm) * 1000;
+            const beats = beatsPerMeasure;
+            
+            currentBeatPosition = 0;
+            executeBeat(currentBeatPosition);
+            currentBeatPosition = (currentBeatPosition + 1) % beats;
+            
+            metronomeInterval = setInterval(() => {
+                executeBeat(currentBeatPosition);
+                currentBeatPosition = (currentBeatPosition + 1) % beats;
+            }, intervalMs);
+        }
+
+        function stopMetronome() {
+            if (metronomeInterval) {
+                clearInterval(metronomeInterval);
+                metronomeInterval = null;
+            }
+            document.querySelectorAll('.figure-unit').forEach(fig => fig.classList.remove('active-beat'));
+            currentBeatPosition = 0;
+            updateBeatCounter();
+        }
+
+        function processHymnInput() {
+            const input = document.getElementById('hymnInput').value.trim().toLowerCase();
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.style.display = 'none';
+            let hymnKey = null;
+            const coroMatch = input.match(/^coro\s*(\d+)$/i);
+            if (coroMatch) {
+                let num = parseInt(coroMatch[1]);
+                if (num >= 1 && num <= 6) hymnKey = `coro${num}`;
+                else { errorDiv.textContent = 'Coro inválido (1-6)'; errorDiv.style.display='block'; return false; }
+            } else if (/^\d+$/.test(input)) {
+                let num = parseInt(input);
+                if (num >= 1 && num <= 480) hymnKey = num.toString();
+                else { errorDiv.textContent = 'Número inválido (1-480)'; errorDiv.style.display='block'; return false; }
+            } else {
+                errorDiv.textContent = 'Formato inválido'; errorDiv.style.display='block'; return false;
+            }
+            currentHymn = hymnsData[hymnKey];
+            if (!currentHymn) { errorDiv.textContent = 'Hino não encontrado'; errorDiv.style.display='block'; return false; }
+            return true;
+        }
+
+        function refreshAfterToggle() {
+            if (currentHymn) {
+                createBeatFiguresUI();
+                if (metronomeInterval) {
+                    startMetronome();
+                }
+            }
+        }
+
+        // Event listeners
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            let val = document.getElementById('hymnInput').value.trim().toLowerCase();
+            if (val.startsWith('coro')) {
+                let num = parseInt(val.replace('coro','')) || 1;
+                if (num > 1) document.getElementById('hymnInput').value = `coro ${num-1}`;
+                else document.getElementById('hymnInput').value = '480';
+            } else {
+                let n = parseInt(val) || 1;
+                n = n-1; if (n<1) n=480;
+                document.getElementById('hymnInput').value = n;
+            }
+            updateHymnInfo();
+        });
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            let val = document.getElementById('hymnInput').value.trim().toLowerCase();
+            if (val.startsWith('coro')) {
+                let num = parseInt(val.replace('coro','')) || 1;
+                if (num < 6) document.getElementById('hymnInput').value = `coro ${num+1}`;
+                else document.getElementById('hymnInput').value = '1';
+            } else {
+                let n = parseInt(val) || 1;
+                n = n+1; if (n>480) n=1;
+                document.getElementById('hymnInput').value = n;
+            }
+            updateHymnInfo();
+        });
+        document.getElementById('hymnInput').addEventListener('keypress', e => { if(e.key === 'Enter') updateHymnInfo(); });
+        document.getElementById('speedSlider').addEventListener('input', (e) => {
+            document.getElementById('currentSpeed').textContent = e.target.value;
+            if (metronomeInterval) startMetronome();
+        });
+        document.getElementById('accentCheckbox').addEventListener('change', refreshAfterToggle);
+        document.getElementById('muteCheckbox').addEventListener('change', (e) => { isMuted = e.target.checked; });
+        document.getElementById('playBtn').addEventListener('click', startMetronome);
+        document.getElementById('stopBtn').addEventListener('click', stopMetronome);
+        document.body.addEventListener('click', () => { if (audioContext && audioContext.state === 'suspended') audioContext.resume(); });
+        
+        updateHymnInfo();
+
+        function getFigureName(timeSignature) {
+            // Compassos com unidade de tempo = Mínima
+            if (timeSignature === '2/2' || timeSignature === '3/2' || timeSignature === '4/2') {
+                return 'Mínima';
+            }
+            // Compassos com unidade de tempo = Mínima Pontuada
+            if (timeSignature === '6/4' || timeSignature === '9/4' || timeSignature === '12/4') {
+                return 'Mínima pontuada';
+            }
+            // Compassos compostos (6/8, 9/8, 12/8)
+            if (timeSignature === '6/8' || timeSignature === '9/8' || timeSignature === '12/8') {
+                return 'Semínima pontuada';
+            }
+            // Compassos simples padrão
+            return 'Semínima';
+        }
+        
+        function isCompoundTime(timeSignature) {
+            // Compassos compostos que seguem a regra de tempos fortes a cada 3 movimentos
+            const compoundPatterns = ['6/8', '9/8', '12/8', '6/4', '9/4', '12/4'];
+            return compoundPatterns.includes(timeSignature);
+        }
+
+        // Também modifique a função updateBeatCounter para garantir que o contador seja atualizado
+        function updateBeatCounter() {
+            const beatNumber = currentBeatPosition + 1;
+            document.getElementById('currentBeatCounter').textContent = beatNumber;
+            
+            // Se for o beat de início, destaca imediatamente
+            if (currentHymn && isInicioBeat(beatNumber)) {
+                highlightBeatCounterForStart();
+            }
+        }
+        function updateHymnInfo() {
+            if (!processHymnInput()) { 
+                stopMetronome(); 
+                return; 
+            }
+            
+            // Verifica se é o hino 419
+            const hymnNumber = document.getElementById('hymnInput').value.trim().toLowerCase();
+            const isHymn419 = (hymnNumber === '419');
+            const isHymnAndamentoAlterado = (hymnNumber === '42' || hymnNumber === '63' || hymnNumber === '65' ||  hymnNumber === '97' || 
+                                            hymnNumber === '105' || hymnNumber === '107' || hymnNumber === '162' || hymnNumber === '177' || 
+                                            hymnNumber === '205' || hymnNumber === '215' || hymnNumber === '219' || hymnNumber === '272' || 
+                                            hymnNumber === '316');
+            
+            const displayVal = document.getElementById('hymnInput').value.trim();
+            const isCoro = displayVal.toLowerCase().startsWith('coro');
+            const nomeDisplay = isCoro ? `🎵 ${currentHymn.nome}` : currentHymn.nome;
+            
+            document.getElementById('hymnName').textContent = nomeDisplay;
+            
+            document.getElementById('minSpeed').textContent = currentHymn.velMin;
+            document.getElementById('avgSpeed').textContent = currentHymn.velMed;
+            document.getElementById('maxSpeed').textContent = currentHymn.velMax;
+            
+            const slider = document.getElementById('speedSlider');
+            if (isHymnAndamentoAlterado) {
+                slider.min = currentHymn.velMin * 3;
+                slider.max = currentHymn.velMax * 3;
+                slider.value = currentHymn.velMax * 3;
+            } else {
+                slider.min = currentHymn.velMin;
+                slider.max = currentHymn.velMax;
+                slider.value = currentHymn.velMax;
+            }
+
+            // Mostra o compasso original (2/2) mas usa 4/4 internamente
+            let mostrarNota = '';
+            if (isHymn419) {
+                document.getElementById('timeSignature').textContent = "2/2";
+                mostrarNota = ' (𝅘𝅥) ';
+            } else {
+                document.getElementById('timeSignature').textContent = currentHymn.compasso;
+                if (isHymnAndamentoAlterado) {
+                    mostrarNota = ' (' + currentHymn.velMax * 3 + '𝅘𝅥𝅮) ';
+                }
+            }
+
+            document.getElementById('currentSpeed').textContent = currentHymn.velMax + mostrarNota;
+            
+            // Define beatsPerMeasure baseado no hino 419
+            if (isHymn419) {
+                beatsPerMeasure = 4; // Força 4/4 para o hino 419
+            } else {
+                beatsPerMeasure = parseInt(currentHymn.compasso.split('/')[0]);
+            }
+            
+            // Define o timeSig para as funções internas
+            let effectiveTimeSig = currentHymn.compasso;
+            if (isHymn419) {
+                effectiveTimeSig = "4/4"; // Usa 4/4 internamente
+            }
+            
+            // Obtém informações da figura
+            const figureName = getFigureName(effectiveTimeSig);
+            const figureSymbol = getFigureSymbol(effectiveTimeSig);
+            const isCompound = isCompoundTime(effectiveTimeSig);
+            
+            // Monta a descrição do compasso
+            let timeSigDescription = '';
+            if (isHymn419) {
+                timeSigDescription = `🎼 4/4 • 4 tempos • Figura: Semínima (𝅘𝅥)`;
+            } else if (effectiveTimeSig === '2/2' || effectiveTimeSig === '3/2' || effectiveTimeSig === '4/2') {
+                timeSigDescription = `🎼 ${effectiveTimeSig} • ${beatsPerMeasure} tempos • Figura: ${figureName} (${figureSymbol}) = 2 semínimas`;
+            } else if (effectiveTimeSig === '6/8' || effectiveTimeSig === '9/8' || effectiveTimeSig === '12/8') {
+                const groups = beatsPerMeasure / 3;
+                timeSigDescription = `🎼 ${effectiveTimeSig} • ${beatsPerMeasure} movimentos • ${groups} x ${figureName} (${figureSymbol}) • cada figura = 3 colcheias`;
+            } else if (effectiveTimeSig === '6/4' || effectiveTimeSig === '9/4' || effectiveTimeSig === '12/4') {
+                const groups = beatsPerMeasure / 3;
+                timeSigDescription = `🎼 ${effectiveTimeSig} • ${beatsPerMeasure} movimentos • ${groups} x ${figureName} (${figureSymbol}) • cada figura = 3 semínimas`;
+            } else {
+                timeSigDescription = `🎼 ${effectiveTimeSig} • ${beatsPerMeasure} tempos • Figura: ${figureName} (${figureSymbol})`;
+            }
+            document.getElementById('timeSignatureInfo').innerHTML = timeSigDescription;
+            
+            // Cria as figuras usando o compasso efetivo
+            createBeatFiguresUIWithEffectiveTime(effectiveTimeSig);
+            
+            // Atualiza a descrição do destaque
+            const accentEnabled = document.getElementById('accentCheckbox').checked;
+            const strongBeats = getStrongBeats(effectiveTimeSig, beatsPerMeasure);
+            
+            if (accentEnabled) {
+                if (strongBeats.length > 1) {
+                    document.getElementById('accentDescription').innerHTML = `🎯 Destaque ativo: tempos fortes → ${strongBeats.map(p => `${p}º`).join(', ')} (a cada 3 movimentos)`;
+                } else {
+                    document.getElementById('accentDescription').innerHTML = `🎯 Destaque ativo: apenas 1º tempo forte`;
+                }
+            } else {
+                document.getElementById('accentDescription').innerHTML = `⚪ Destaque desativado: todos os tempos iguais`;
+            }
+            
+            // Adiciona informação sobre o início (campo inicio)
+            //aqui
+            if (currentHymn.inicio !== undefined && currentHymn.inicio !== null) {
+                inicioValue = currentHymn.inicio;
+                //console.log(inicioValue)
+                let inicioText = '';
+                
+                if (inicioValue % 1 !== 0) {
+                    const beat = Math.floor(inicioValue);
+                    const fraction = Math.round((inicioValue % 1) * 100);
+                    inicioText = `Início no ${beat}º tempo (${fraction}% do tempo)`;
+                } else {
+                    inicioText = `Início no ${inicioValue}º tempo`;
+                }
+                
+                // Remove elemento antigo se existir
+                let inicioInfo = document.getElementById('inicioInfo');
+                if (!inicioInfo) {
+                    inicioInfo = document.createElement('div');
+                    inicioInfo.id = 'inicioInfo';
+                    inicioInfo.className = 'inicio-info';
+                    const visualDiv = document.querySelector('.metronome-visual');
+                    if (visualDiv) {
+                        visualDiv.appendChild(inicioInfo);
+                    }
+                }
+                inicioInfo.innerHTML = `🎬 ${inicioText} • será destacado em vermelho`;
+                inicioInfo.style.fontSize = '0.65rem';
+                inicioInfo.style.marginTop = '6px';
+                inicioInfo.style.color = '#ff6b6b';
+                inicioInfo.style.fontWeight = '500';
+                inicioInfo.style.backgroundColor = '#fff5f5';
+                inicioInfo.style.padding = '4px 8px';
+                inicioInfo.style.borderRadius = '20px';
+                inicioInfo.style.border = '1px solid #ff6b6b';
+                inicioInfo.style.display = 'inline-block';
+                inicioInfo.style.margin = '0 auto';
+            } else {
+                // Remove o elemento se não houver inicio
+                const inicioInfo = document.getElementById('inicioInfo');
+                if (inicioInfo) {
+                    inicioInfo.remove();
+                }
+            }
+            
+            stopMetronome();
+            currentBeatPosition = 0;
+            updateBeatCounter();
+        }
+
+        function createBeatFiguresUIWithEffectiveTime(effectiveTimeSig) {
+            const container = document.getElementById('beatFiguresRow');
+            container.innerHTML = '';
+            const beats = beatsPerMeasure;
+            const accentEnabled = document.getElementById('accentCheckbox').checked;
+            const isCompound = isCompoundTime(effectiveTimeSig);
+            const figureSymbol = getFigureSymbol(effectiveTimeSig);
+            const strongBeats = getStrongBeats(effectiveTimeSig, beats);
+            
+            // Para compassos compostos - agrupa de 3 em 3
+            if (isCompound) {
+                const groups = beats / 3; // Será 2, 3 ou 4 grupos
+                for (let g = 0; g < groups; g++) {
+                    const firstBeatOfGroup = g * 3 + 1;
+                    // Verifica se o primeiro movimento do grupo é forte
+                    const isStrong = strongBeats.includes(firstBeatOfGroup);
+                    let accentClass = '';
+                    if (isStrong) {
+                        accentClass = firstBeatOfGroup === 1 ? 'strong-primary' : 'strong-secondary';
+                    }
+                    
+                    const figureDiv = document.createElement('div');
+                    figureDiv.className = `figure-unit ${accentClass}`;
+                    figureDiv.dataset.groupIndex = g;
+                    
+                    const symbolSpan = document.createElement('div');
+                    symbolSpan.className = 'figure-symbol';
+                    symbolSpan.textContent = figureSymbol;
+                    
+                    const numberSpan = document.createElement('div');
+                    numberSpan.className = 'figure-number';
+                    // Mostra o número do grupo (1º, 2º, 3º, 4º)
+                    numberSpan.textContent = `${g + 1}º`;
+                    
+                    figureDiv.appendChild(symbolSpan);
+                    figureDiv.appendChild(numberSpan);
+                    container.appendChild(figureDiv);
+                }
+            }
+            // Para compassos simples (4/4, 3/4, 2/4, etc.)
+            else {
+                for (let i = 0; i < beats; i++) {
+                    const beatNumber = i + 1;
+                    const isStrong = strongBeats.includes(beatNumber);
+                    let accentClass = '';
+                    if (isStrong) {
+                        accentClass = beatNumber === 1 ? 'strong-primary' : 'strong-secondary';
+                    }
+                    
+                    const figureDiv = document.createElement('div');
+                    figureDiv.className = `figure-unit ${accentClass}`;
+                    figureDiv.dataset.beatIndex = i;
+                    
+                    const symbolSpan = document.createElement('div');
+                    symbolSpan.className = 'figure-symbol';
+                    symbolSpan.textContent = figureSymbol;
+                    
+                    const numberSpan = document.createElement('div');
+                    numberSpan.className = 'figure-number';
+                    numberSpan.textContent = `${beatNumber}º`;
+                    
+                    figureDiv.appendChild(symbolSpan);
+                    figureDiv.appendChild(numberSpan);
+                    container.appendChild(figureDiv);
+                }
+            }
+        }
+
+        // Adicione esta função para verificar se o beat atual corresponde ao inicio
+        function isInicioBeat(beatNumber) {
+            if (!currentHymn || !currentHymn.inicio) return false;
+            const inicio = currentHymn.inicio;
+            
+            // Para números decimais como 2.5, 3.5, 4.5
+            if (inicio % 1 !== 0) {
+                // Para compassos compostos (6/8, 9/8, 12/8, 6/4, 9/4, 12/4)
+                if (isCompoundTime(currentHymn.compasso)) {
+                    const groupIndex = Math.floor((beatNumber - 1) / 3);
+                    const beatInGroup = ((beatNumber - 1) % 3) + 1;
+                    // Verifica se é o beat específico dentro do grupo
+                    return (groupIndex + 1) === Math.floor(inicio) && beatInGroup === Math.round((inicio % 1) * 3);
+                }
+                // Para compassos simples
+                else {
+                    return beatNumber === Math.floor(inicio) && 
+                        Math.abs(beatNumber - inicio) < 0.1;
+                }
+            }
+            // Para números inteiros
+            return beatNumber === inicio;
+        }
+
+        // Adicione esta função após a função isInicioBeat
+        function highlightBeatCounterForStart() {
+            const counterElement = document.getElementById('currentBeatCounter');
+            if (!counterElement) return;
+            
+            // Adiciona a classe de destaque
+            counterElement.style.transition = 'background-color 0.1s ease';
+            counterElement.style.backgroundColor = '#ff6b6b';
+            counterElement.style.color = 'white';
+            counterElement.style.transform = 'scale(1.1)';
+            counterElement.style.transition = 'all 0.1s ease';
+            
+            // Remove o destaque após 0.3 segundos
+            setTimeout(() => {
+                counterElement.style.backgroundColor = '';
+                counterElement.style.color = '';
+                counterElement.style.transform = '';
+                counterElement.style.transition = '';
+            }, 300);
+        }
+        
+
+    </script>
+</body>
+</html>
