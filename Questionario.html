@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Identifique a Armadura de Clave</title>
+    <script src="https://abcjs.net/abcjs-basic-min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        /* Card do Quiz */
+        .quiz-card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .pontuacao {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .progresso {
+            background: #e0e0e0;
+            border-radius: 25px;
+            height: 10px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .progresso-bar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 100%;
+            border-radius: 25px;
+            transition: width 0.3s ease;
+        }
+
+        .questao-numero {
+            text-align: center;
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .pergunta {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .pergunta h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 1.4em;
+        }
+
+        .armadura-container {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 30px;
+            display: inline-block;
+            width: 100%;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        #partituraPergunta {
+            min-height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .opcoes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 30px 0 20px;
+        }
+
+        .opcao-btn {
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+        }
+
+        .opcao-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            background: #e8e8e8;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .opcao-btn.correto {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .opcao-btn.incorreto {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .opcao-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .feedback {
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .feedback.correto {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .feedback.incorreto {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .proximo-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 20px auto 0;
+            width: fit-content;
+        }
+
+        .proximo-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .resultado-final {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .resultado-final h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .resultado-final .nota {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .resultado-final .mensagem {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            color: #555;
+        }
+
+        .reiniciar-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .reiniciar-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        footer {
+            text-align: center;
+            color: rgba(255,255,255,0.4);
+            margin-top: 25px;
+            font-size: 0.8em;
+        }
+
+        @media (max-width: 550px) {
+            .quiz-card {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .opcao-btn {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+            
+            .pergunta h2 {
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Identifique a Armadura</h1>
+        <div class="subtitulo">Observe a armadura de clave e escolha a tonalidade correta</div>
+
+        <div class="quiz-card">
+            <div class="quiz-header">
+                <div class="pontuacao" id="pontuacao">Pontuação: 0 / 0</div>
+                <div class="progresso">
+                    <div class="progresso-bar" id="progressoBar" style="width: 0%"></div>
+                </div>
+            </div>
+            <div class="questao-numero" id="questaoNumero">Questão 1 de 15</div>
+            <div id="quizContent"></div>
+        </div>
+
+        <footer>
+            <p>🎼 Selecione a tonalidade correta para cada armadura de clave</p>
+        </footer>
+    </div>
+
+    <script>
+        // Todas as armaduras
+        const armaduras = [
+            { tonalidade: "Dó maior", codigo: "C", acidentes: "Nenhum" },
+            { tonalidade: "Sol maior", codigo: "G", acidentes: "Fá♯" },
+            { tonalidade: "Ré maior", codigo: "D", acidentes: "Fá♯, Dó♯" },
+            { tonalidade: "Lá maior", codigo: "A", acidentes: "Fá♯, Dó♯, Sol♯" },
+            { tonalidade: "Mi maior", codigo: "E", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯" },
+            { tonalidade: "Si maior", codigo: "B", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯" },
+            { tonalidade: "Fá♯ maior", codigo: "F#", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯, Mi♯" },
+            { tonalidade: "Dó♯ maior", codigo: "C#", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯, Mi♯, Si♯" },
+            { tonalidade: "Fá maior", codigo: "F", acidentes: "Si♭" },
+            { tonalidade: "Si♭ maior", codigo: "Bb", acidentes: "Si♭, Mi♭" },
+            { tonalidade: "Mi♭ maior", codigo: "Eb", acidentes: "Si♭, Mi♭, Lá♭" },
+            { tonalidade: "Lá♭ maior", codigo: "Ab", acidentes: "Si♭, Mi♭, Lá♭, Ré♭" },
+            { tonalidade: "Ré♭ maior", codigo: "Db", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭" },
+            { tonalidade: "Sol♭ maior", codigo: "Gb", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭, Dó♭" },
+            { tonalidade: "Dó♭ maior", codigo: "Cb", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭, Dó♭, Fá♭" },
+            { tonalidade: "Lá menor", codigo: "Am", acidentes: "Nenhum" },
+            { tonalidade: "Mi menor", codigo: "Em", acidentes: "Fá♯" },
+            { tonalidade: "Si menor", codigo: "Bm", acidentes: "Fá♯, Dó♯" },
+            { tonalidade: "Fá♯ menor", codigo: "F#m", acidentes: "Fá♯, Dó♯, Sol♯" },
+            { tonalidade: "Dó♯ menor", codigo: "C#m", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯" },
+            { tonalidade: "Sol♯ menor", codigo: "G#m", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯" },
+            { tonalidade: "Ré♯ menor", codigo: "D#m", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯, Mi♯" },
+            { tonalidade: "Lá♯ menor", codigo: "A#m", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯, Mi♯, Si♯" },
+            { tonalidade: "Ré menor", codigo: "Dm", acidentes: "Si♭" },
+            { tonalidade: "Sol menor", codigo: "Gm", acidentes: "Si♭, Mi♭" },
+            { tonalidade: "Dó menor", codigo: "Cm", acidentes: "Si♭, Mi♭, Lá♭" },
+            { tonalidade: "Fá menor", codigo: "Fm", acidentes: "Si♭, Mi♭, Lá♭, Ré♭" },
+            { tonalidade: "Si♭ menor", codigo: "Bbm", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭" },
+            { tonalidade: "Mi♭ menor", codigo: "Ebm", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭, Dó♭" },
+            { tonalidade: "Lá♭ menor", codigo: "Abm", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭, Dó♭, Fá♭" }
+        ];
+
+        let quizAtual = {
+            perguntas: [],
+            indiceAtual: 0,
+            pontuacao: 0,
+            respondido: false
+        };
+
+        // Gera perguntas aleatórias
+        function gerarPerguntas() {
+            const perguntas = [];
+            const selecionadas = [...armaduras];
+            
+            // Embaralha
+            for (let i = selecionadas.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [selecionadas[i], selecionadas[j]] = [selecionadas[j], selecionadas[i]];
+            }
+            
+            // Seleciona 15 perguntas
+            const perguntasSelecionadas = selecionadas.slice(0, 15);
+            
+            for (const arm of perguntasSelecionadas) {
+                // Gera opções (1 correta + 3 aleatórias)
+                const opcoes = [arm.tonalidade];
+                const outras = armaduras.filter(a => a.tonalidade !== arm.tonalidade);
+                
+                for (let i = outras.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [outras[i], outras[j]] = [outras[j], outras[i]];
+                }
+                
+                for (let i = 0; i < 3; i++) {
+                    opcoes.push(outras[i].tonalidade);
+                }
+                
+                // Embaralha as opções
+                for (let i = opcoes.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [opcoes[i], opcoes[j]] = [opcoes[j], opcoes[i]];
+                }
+                
+                perguntas.push({
+                    armadura: arm,
+                    opcoes: opcoes,
+                    respostaCorreta: arm.tonalidade
+                });
+            }
+            
+            return perguntas;
+        }
+
+        // Renderiza a pergunta atual
+        function renderizarPergunta() {
+            const quizContent = document.getElementById('quizContent');
+            const pergunta = quizAtual.perguntas[quizAtual.indiceAtual];
+            
+            if (!pergunta) return;
+            
+            document.getElementById('questaoNumero').textContent = `Questão ${quizAtual.indiceAtual + 1} de ${quizAtual.perguntas.length}`;
+            
+            quizContent.innerHTML = `
+                <div class="pergunta">
+                    <h2>🎼 Qual é a tonalidade desta armadura?</h2>
+                    <div class="armadura-container">
+                        <div id="partituraPergunta"></div>
+                    </div>
+                </div>
+                <div class="opcoes" id="opcoesContainer">
+                    ${pergunta.opcoes.map(opcao => `
+                        <button class="opcao-btn" data-opcao="${opcao.replace(/'/g, "\\'")}" onclick="responder('${opcao.replace(/'/g, "\\'")}')">
+                            ${opcao}
+                        </button>
+                    `).join('')}
+                </div>
+                <div id="feedback" class="feedback"></div>
+            `;
+            
+            // Renderiza a partitura da pergunta
+            const abc = `X:1\nM:4/4\nK:${pergunta.armadura.codigo}\nz1`;
+            ABCJS.renderAbc('partituraPergunta', abc, { responsive: 'resize', staffwidth: 300 });
+            
+            // Atualiza barra de progresso
+            const progresso = ((quizAtual.indiceAtual + 1) / quizAtual.perguntas.length) * 100;
+            document.getElementById('progressoBar').style.width = `${progresso}%`;
+            document.getElementById('pontuacao').textContent = `Pontuação: ${quizAtual.pontuacao} / ${quizAtual.perguntas.length}`;
+            
+            // Se já respondeu (caso de navegação), mostra o botão próximo
+            if (quizAtual.respondido) {
+                const feedbackDiv = document.getElementById('feedback');
+                const botoes = document.querySelectorAll('.opcao-btn');
+                botoes.forEach(btn => btn.disabled = true);
+                
+                const btnProximo = document.createElement('button');
+                btnProximo.className = 'proximo-btn';
+                btnProximo.innerHTML = 'Próxima Questão →';
+                btnProximo.onclick = () => proximaPergunta();
+                quizContent.appendChild(btnProximo);
+            }
+        }
+
+        // Função para responder
+        window.responder = function(resposta) {
+            if (quizAtual.respondido) return;
+            
+            const pergunta = quizAtual.perguntas[quizAtual.indiceAtual];
+            const correta = resposta === pergunta.respostaCorreta;
+            
+            if (correta) {
+                quizAtual.pontuacao++;
+                document.getElementById('feedback').innerHTML = '✅ Correta! Muito bem!';
+                document.getElementById('feedback').className = 'feedback correto';
+            } else {
+                document.getElementById('feedback').innerHTML = `❌ Incorreta! A resposta correta é: ${pergunta.respostaCorreta}`;
+                document.getElementById('feedback').className = 'feedback incorreto';
+            }
+            
+            // Marca as opções
+            const botoes = document.querySelectorAll('.opcao-btn');
+            botoes.forEach(btn => {
+                btn.disabled = true;
+                if (btn.dataset.opcao === pergunta.respostaCorreta) {
+                    btn.classList.add('correto');
+                }
+                if (btn.dataset.opcao === resposta && !correta) {
+                    btn.classList.add('incorreto');
+                }
+            });
+            
+            quizAtual.respondido = true;
+            
+            // Atualiza pontuação
+            document.getElementById('pontuacao').textContent = `Pontuação: ${quizAtual.pontuacao} / ${quizAtual.perguntas.length}`;
+            
+            // Adiciona botão próximo
+            const quizContent = document.getElementById('quizContent');
+            const btnProximo = document.createElement('button');
+            btnProximo.className = 'proximo-btn';
+            btnProximo.innerHTML = 'Próxima Questão →';
+            btnProximo.onclick = () => proximaPergunta();
+            quizContent.appendChild(btnProximo);
+        };
+
+        // Próxima pergunta
+        window.proximaPergunta = function() {
+            quizAtual.indiceAtual++;
+            quizAtual.respondido = false;
+            
+            if (quizAtual.indiceAtual < quizAtual.perguntas.length) {
+                renderizarPergunta();
+            } else {
+                finalizarQuiz();
+            }
+        };
+
+        // Finaliza o quiz
+        function finalizarQuiz() {
+            const porcentagem = (quizAtual.pontuacao / quizAtual.perguntas.length) * 100;
+            let mensagem = '';
+            
+            if (porcentagem === 100) {
+                mensagem = 'Perfeito! Você domina todas as armaduras! 🎉';
+            } else if (porcentagem >= 80) {
+                mensagem = 'Muito bom! Continue praticando! 🌟';
+            } else if (porcentagem >= 60) {
+                mensagem = 'Bom trabalho! Estude mais um pouco e tente novamente! 📚';
+            } else {
+                mensagem = 'Continue estudando as armaduras e tente de novo! 💪';
+            }
+            
+            const quizContent = document.getElementById('quizContent');
+            quizContent.innerHTML = `
+                <div class="resultado-final">
+                    <h2>🏆 Quiz Finalizado!</h2>
+                    <p style="font-size: 1.1em;">Sua pontuação:</p>
+                    <div class="nota">${quizAtual.pontuacao} / ${quizAtual.perguntas.length}</div>
+                    <p class="mensagem">${porcentagem.toFixed(0)}% de acerto</p>
+                    <p class="mensagem">${mensagem}</p>
+                    <button class="reiniciar-btn" onclick="reiniciarQuiz()">🔄 Recomeçar Quiz</button>
+                </div>
+            `;
+        }
+
+        // Reinicia o quiz
+        window.reiniciarQuiz = function() {
+            quizAtual.perguntas = gerarPerguntas();
+            quizAtual.indiceAtual = 0;
+            quizAtual.pontuacao = 0;
+            quizAtual.respondido = false;
+            renderizarPergunta();
+        };
+
+        // Inicializa
+        function init() {
+            quizAtual.perguntas = gerarPerguntas();
+            quizAtual.indiceAtual = 0;
+            quizAtual.pontuacao = 0;
+            quizAtual.respondido = false;
+            renderizarPergunta();
+        }
+        
+        init();
+    </script>
+</body>
+</html>
