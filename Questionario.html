@@ -404,7 +404,7 @@
             `;
             
             // Renderiza a partitura da pergunta
-            const abc = `X:1\nM:4/4\nK:${pergunta.armadura.codigo}\nz1`;
+            const abc = `X:1\nM:4/4\nK:${pergunta.armadura.codigo}\nx1`;
             ABCJS.renderAbc('partituraPergunta', abc, { responsive: 'resize', staffwidth: 300 });
             
             // Atualiza barra de progresso
