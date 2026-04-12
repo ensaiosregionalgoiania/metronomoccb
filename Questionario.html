@@ -2,531 +2,583 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz - Identifique a Armadura de Clave</title>
+    <title>Questionário - Todas as Escalas Maiores e Menores</title>
     <script src="https://abcjs.net/abcjs-basic-min.js"></script>
+    <link rel="stylesheet" href="https://abcjs.net/abcjs-audio.css">
     <style>
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            margin: 0;
             padding: 20px;
+            min-height: 100vh;
         }
-
         .container {
-            max-width: 800px;
-            width: 100%;
-        }
-
-        h1 {
-            text-align: center;
-            color: white;
-            margin-bottom: 10px;
-            font-size: 2em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .subtitulo {
-            text-align: center;
-            color: rgba(255,255,255,0.8);
-            margin-bottom: 30px;
-            font-size: 0.9em;
-        }
-
-        /* Card do Quiz */
-        .quiz-card {
+            max-width: 1200px;
+            margin: 0 auto;
             background: white;
-            border-radius: 30px;
-            padding: 40px 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            padding: 20px 30px 30px 30px;
         }
-
-        .quiz-header {
+        h1 {
+            color: #1e3c72;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+        .stats {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #e0e0e0;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-
-        .pontuacao {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .score {
+            font-size: 1.2rem;
+            background: #2a5298;
             color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .progresso {
-            background: #e0e0e0;
-            border-radius: 25px;
-            height: 10px;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .progresso-bar {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            height: 100%;
-            border-radius: 25px;
-            transition: width 0.3s ease;
-        }
-
-        .questao-numero {
-            text-align: center;
-            color: #888;
-            font-size: 0.9em;
-            margin-bottom: 10px;
-        }
-
-        .pergunta {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .pergunta h2 {
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 1.4em;
-        }
-
-        .armadura-container {
-            background: #f8f9fa;
-            border-radius: 20px;
-            padding: 30px;
+            padding: 8px 16px;
+            border-radius: 40px;
             display: inline-block;
-            width: 100%;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
-
-        #partituraPergunta {
-            min-height: 150px;
+        .filter-buttons {
             display: flex;
-            justify-content: center;
-            align-items: center;
+            gap: 10px;
         }
-
-        .opcoes {
+        .filter-btn {
+            background: #e0e0e0;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .filter-btn.active {
+            background: #2a5298;
+            color: white;
+        }
+        .info-box {
+            background: #e8f4f8;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .question-area {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid #2a5298;
+        }
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 15px;
+        }
+        .options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            margin: 30px 0 20px;
-        }
-
-        .opcao-btn {
-            background: #f0f0f0;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            padding: 12px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #333;
-        }
-
-        .opcao-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            background: #e8e8e8;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .opcao-btn.correto {
-            background: #4CAF50;
-            color: white;
-            border-color: #4CAF50;
-        }
-
-        .opcao-btn.incorreto {
-            background: #f44336;
-            color: white;
-            border-color: #f44336;
-        }
-
-        .opcao-btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.8;
-        }
-
-        .feedback {
-            text-align: center;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        .feedback.correto {
-            background: #c8e6c9;
-            color: #2e7d32;
-        }
-
-        .feedback.incorreto {
-            background: #ffcdd2;
-            color: #c62828;
-        }
-
-        .proximo-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 40px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: block;
-            margin: 20px auto 0;
-            width: fit-content;
-        }
-
-        .proximo-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .resultado-final {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .resultado-final h2 {
-            font-size: 2em;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .resultado-final .nota {
-            font-size: 3em;
-            font-weight: bold;
+            gap: 10px;
             margin: 20px 0;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-
-        .resultado-final .mensagem {
-            font-size: 1.1em;
-            margin-bottom: 25px;
-            color: #555;
+        .option-btn {
+            background: white;
+            border: 2px solid #2a5298;
+            padding: 10px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: #1e3c72;
         }
-
-        .reiniciar-btn {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+        .option-btn:hover:not(:disabled) {
+            background: #2a5298;
+            color: white;
+            transform: scale(1.02);
+        }
+        .option-btn.correct {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        .option-btn.wrong {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+        .feedback.wrong {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+        }
+        .next-btn, .restart-btn {
+            background: #2a5298;
             color: white;
             border: none;
-            padding: 12px 35px;
+            padding: 10px 20px;
             border-radius: 40px;
-            font-size: 1.1em;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 15px;
+            margin-right: 10px;
+            transition: 0.2s;
+        }
+        .play-btn {
+            background: #ffc107;
+            color: #1e3c72;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 15px;
         }
-
-        .reiniciar-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
+        .progress {
+            background: #e0e0e0;
+            border-radius: 20px;
+            height: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+            flex-grow: 1;
         }
-
-        footer {
-            text-align: center;
-            color: rgba(255,255,255,0.4);
-            margin-top: 25px;
-            font-size: 0.8em;
+        .progress-bar {
+            background: #28a745;
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
         }
-
-        @media (max-width: 550px) {
-            .quiz-card {
-                padding: 25px 20px;
-            }
-            
-            h1 {
-                font-size: 1.5em;
-            }
-            
-            .opcao-btn {
-                padding: 10px;
-                font-size: 0.9em;
-            }
-            
-            .pergunta h2 {
-                font-size: 1.1em;
-            }
+        #partitura {
+            background: #fefefe;
+            border-radius: 12px;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+            min-height: 150px;
+        }
+        .control-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 15px; }
+            .options { grid-template-columns: 1fr; }
+            .stats { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎵 Identifique a Armadura</h1>
-        <div class="subtitulo">Observe a armadura de clave e escolha a tonalidade correta</div>
-
-        <div class="quiz-card">
-            <div class="quiz-header">
-                <div class="pontuacao" id="pontuacao">Pontuação: 0 / 0</div>
-                <div class="progresso">
-                    <div class="progresso-bar" id="progressoBar" style="width: 0%"></div>
-                </div>
-            </div>
-            <div class="questao-numero" id="questaoNumero">Questão 1 de 15</div>
-            <div id="quizContent"></div>
+<div class="container">
+    <h1>🎵 Todas as Escalas Musicais</h1>
+    <div class="subtitle">15 escalas MAIORES + 15 escalas MENORES (total: 30 escalas)</div>
+    
+    <div class="stats">
+        <div class="score" id="scoreDisplay">✅ Acertos: 0 / <span id="totalQuestions">0</span></div>
+        <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="filter-buttons">
+            <button class="filter-btn active" id="filterAll">🎼 Todas</button>
+            <button class="filter-btn" id="filterMajor">🔵 Maiores</button>
+            <button class="filter-btn" id="filterMinor">🟢 Menores</button>
         </div>
-
-        <footer>
-            <p>🎼 Selecione a tonalidade correta para cada armadura de clave</p>
-        </footer>
     </div>
 
-    <script>
-        // Todas as armaduras
-        const armaduras = [
-            { tonalidade: "Dó maior", codigo: "C", acidentes: "Nenhum" },
-            { tonalidade: "Sol maior", codigo: "G", acidentes: "Fá♯" },
-            { tonalidade: "Ré maior", codigo: "D", acidentes: "Fá♯, Dó♯" },
-            { tonalidade: "Lá maior", codigo: "A", acidentes: "Fá♯, Dó♯, Sol♯" },
-            { tonalidade: "Mi maior", codigo: "E", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯" },
-            { tonalidade: "Si maior", codigo: "B", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯" },
-            { tonalidade: "Fá♯ maior", codigo: "F#", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯, Mi♯" },
-            { tonalidade: "Dó♯ maior", codigo: "C#", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯, Mi♯, Si♯" },
-            { tonalidade: "Fá maior", codigo: "F", acidentes: "Si♭" },
-            { tonalidade: "Si♭ maior", codigo: "Bb", acidentes: "Si♭, Mi♭" },
-            { tonalidade: "Mi♭ maior", codigo: "Eb", acidentes: "Si♭, Mi♭, Lá♭" },
-            { tonalidade: "Lá♭ maior", codigo: "Ab", acidentes: "Si♭, Mi♭, Lá♭, Ré♭" },
-            { tonalidade: "Ré♭ maior", codigo: "Db", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭" },
-            { tonalidade: "Sol♭ maior", codigo: "Gb", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭, Dó♭" },
-            { tonalidade: "Dó♭ maior", codigo: "Cb", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭, Dó♭, Fá♭" },
-            { tonalidade: "Lá menor", codigo: "Am", acidentes: "Nenhum" },
-            { tonalidade: "Mi menor", codigo: "Em", acidentes: "Fá♯" },
-            { tonalidade: "Si menor", codigo: "Bm", acidentes: "Fá♯, Dó♯" },
-            { tonalidade: "Fá♯ menor", codigo: "F#m", acidentes: "Fá♯, Dó♯, Sol♯" },
-            { tonalidade: "Dó♯ menor", codigo: "C#m", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯" },
-            { tonalidade: "Sol♯ menor", codigo: "G#m", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯" },
-            { tonalidade: "Ré♯ menor", codigo: "D#m", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯, Mi♯" },
-            { tonalidade: "Lá♯ menor", codigo: "A#m", acidentes: "Fá♯, Dó♯, Sol♯, Ré♯, Lá♯, Mi♯, Si♯" },
-            { tonalidade: "Ré menor", codigo: "Dm", acidentes: "Si♭" },
-            { tonalidade: "Sol menor", codigo: "Gm", acidentes: "Si♭, Mi♭" },
-            { tonalidade: "Dó menor", codigo: "Cm", acidentes: "Si♭, Mi♭, Lá♭" },
-            { tonalidade: "Fá menor", codigo: "Fm", acidentes: "Si♭, Mi♭, Lá♭, Ré♭" },
-            { tonalidade: "Si♭ menor", codigo: "Bbm", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭" },
-            { tonalidade: "Mi♭ menor", codigo: "Ebm", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭, Dó♭" },
-            { tonalidade: "Lá♭ menor", codigo: "Abm", acidentes: "Si♭, Mi♭, Lá♭, Ré♭, Sol♭, Dó♭, Fá♭" }
-        ];
+    <div class="info-box" id="infoBox">
+        📚 Questionário completo com 30 escalas. Ouça, veja a partitura e identifique!
+    </div>
 
-        let quizAtual = {
-            perguntas: [],
-            indiceAtual: 0,
-            pontuacao: 0,
-            respondido: false
-        };
+    <div class="question-area">
+        <div class="question-text" id="questionText">Carregando questão...</div>
+        <div class="control-bar">
+            <button class="play-btn" id="playMelodyBtn">🔊 Ouvir escala</button>
+            <button class="play-btn" id="stopSoundBtn">⏹ Parar</button>
+        </div>
+        <div id="partitura"></div>
+        <div class="options" id="optionsContainer"></div>
+        <div id="feedback" class="feedback"></div>
+        <div>
+            <button class="next-btn" id="nextBtn" style="display: none;">▶ Próxima questão</button>
+            <button class="restart-btn" id="restartBtn">🔄 Reiniciar</button>
+        </div>
+    </div>
+</div>
 
-        // Gera perguntas aleatórias
-        function gerarPerguntas() {
-            const perguntas = [];
-            const selecionadas = [...armaduras];
-            
-            // Embaralha
-            for (let i = selecionadas.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [selecionadas[i], selecionadas[j]] = [selecionadas[j], selecionadas[i]];
-            }
-            
-            // Seleciona 15 perguntas
-            const perguntasSelecionadas = selecionadas.slice(0, 15);
-            
-            for (const arm of perguntasSelecionadas) {
-                // Gera opções (1 correta + 3 aleatórias)
-                const opcoes = [arm.tonalidade];
-                const outras = armaduras.filter(a => a.tonalidade !== arm.tonalidade);
-                
-                for (let i = outras.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [outras[i], outras[j]] = [outras[j], outras[i]];
-                }
-                
-                for (let i = 0; i < 3; i++) {
-                    opcoes.push(outras[i].tonalidade);
-                }
-                
-                // Embaralha as opções
-                for (let i = opcoes.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [opcoes[i], opcoes[j]] = [opcoes[j], opcoes[i]];
-                }
-                
-                perguntas.push({
-                    armadura: arm,
-                    opcoes: opcoes,
-                    respostaCorreta: arm.tonalidade
-                });
-            }
-            
-            return perguntas;
-        }
+<script>
+    // Função auxiliar para gerar ABC de uma escala maior
+    function gerarEscalaMaior(tom, notas) {
+        // Formato simples de escala ascendente e descendente
+        let notasLista = notas.split(' - ');
+        let ascendente = notasLista.join(' ');
+        let descendente = [...notasLista].reverse().slice(1).join(' ');
+        return `${ascendente} ${descendente} |`;
+    }
 
-        // Renderiza a pergunta atual
-        function renderizarPergunta() {
-            const quizContent = document.getElementById('quizContent');
-            const pergunta = quizAtual.perguntas[quizAtual.indiceAtual];
-            
-            if (!pergunta) return;
-            
-            document.getElementById('questaoNumero').textContent = `Questão ${quizAtual.indiceAtual + 1} de ${quizAtual.perguntas.length}`;
-            
-            quizContent.innerHTML = `
-                <div class="pergunta">
-                    <h2>🎼 Qual é a tonalidade desta armadura?</h2>
-                    <div class="armadura-container">
-                        <div id="partituraPergunta"></div>
-                    </div>
-                </div>
-                <div class="opcoes" id="opcoesContainer">
-                    ${pergunta.opcoes.map(opcao => `
-                        <button class="opcao-btn" data-opcao="${opcao.replace(/'/g, "\\'")}" onclick="responder('${opcao.replace(/'/g, "\\'")}')">
-                            ${opcao}
-                        </button>
-                    `).join('')}
-                </div>
-                <div id="feedback" class="feedback"></div>
-            `;
-            
-            // Renderiza a partitura da pergunta
-            const abc = `X:1\nM:4/4\nK:${pergunta.armadura.codigo}\nx1`;
-            ABCJS.renderAbc('partituraPergunta', abc, { responsive: 'resize', staffwidth: 300 });
-            
-            // Atualiza barra de progresso
-            const progresso = ((quizAtual.indiceAtual + 1) / quizAtual.perguntas.length) * 100;
-            document.getElementById('progressoBar').style.width = `${progresso}%`;
-            document.getElementById('pontuacao').textContent = `Pontuação: ${quizAtual.pontuacao} / ${quizAtual.perguntas.length}`;
-            
-            // Se já respondeu (caso de navegação), mostra o botão próximo
-            if (quizAtual.respondido) {
-                const feedbackDiv = document.getElementById('feedback');
-                const botoes = document.querySelectorAll('.opcao-btn');
-                botoes.forEach(btn => btn.disabled = true);
-                
-                const btnProximo = document.createElement('button');
-                btnProximo.className = 'proximo-btn';
-                btnProximo.innerHTML = 'Próxima Questão →';
-                btnProximo.onclick = () => proximaPergunta();
-                quizContent.appendChild(btnProximo);
-            }
-        }
+    // ==================== TODAS AS 15 ESCALAS MAIORES ====================
+    const majorScales = [
+        { name: "Dó Bemol Maior (Cb)", mode: "maior", notas: "C - D - E - F - G - A - B - C", abc: "K:Cb\n E/2 F/2 | G1 G1 A1 G1 | c3 , E/2 F/2 | G1 A1 G1 E1 | D3 ! E/2 F/2 | G1 G1 c1 d1 | e3 , c/2 B/2 | A1 c1 B1 d1 | c3" },
+        { name: "Dó Maior (C)", mode: "maior", notas: "C - D - E - F - G - A - B - C", abc: "K:C\nE/2 F/2 | G1 G1 A1 G1 | c3 , E/2 F/2 | G1 A1 G1 E1 | D3 ! E/2 F/2 | G1 G1 c1 d1 | e3 , c/2 B/2 | A1 c1 B1 d1 | c3" },
+        { name: "Dó Sustenido Maior (C#)", mode: "maior", notas: "C# - D# - E# - F# - G# - A# - B# - C#", abc: "K:C#\nE/2 F/2 | G1 G1 A1 G1 | c3 , E/2 F/2 | G1 A1 G1 E1 | D3 ! E/2 F/2 | G1 G1 c1 d1 | e3 , c/2 B/2 | A1 c1 B1 d1 | c3" },
 
-        // Função para responder
-        window.responder = function(resposta) {
-            if (quizAtual.respondido) return;
-            
-            const pergunta = quizAtual.perguntas[quizAtual.indiceAtual];
-            const correta = resposta === pergunta.respostaCorreta;
-            
-            if (correta) {
-                quizAtual.pontuacao++;
-                document.getElementById('feedback').innerHTML = '✅ Correta! Muito bem!';
-                document.getElementById('feedback').className = 'feedback correto';
-            } else {
-                document.getElementById('feedback').innerHTML = `❌ Incorreta! A resposta correta é: ${pergunta.respostaCorreta}`;
-                document.getElementById('feedback').className = 'feedback incorreto';
-            }
-            
-            // Marca as opções
-            const botoes = document.querySelectorAll('.opcao-btn');
-            botoes.forEach(btn => {
-                btn.disabled = true;
-                if (btn.dataset.opcao === pergunta.respostaCorreta) {
-                    btn.classList.add('correto');
-                }
-                if (btn.dataset.opcao === resposta && !correta) {
-                    btn.classList.add('incorreto');
-                }
+        { name: "Ré Bemol Maior (Db)", mode: "maior", notas: "Db - Eb - F - Gb - Ab - Bb - C - Db", abc: "K:Db\nF/2 G/2 | A1 A1 B1 A1 | d3 , F/2 G/2 | A1 B1 A1 F1 | E3 ! F/2 G/2 | A1 A1 d1 e1 | f3 , d/2 c/2 | B1 d1 c1 e1 | d3"},
+        { name: "Ré Maior (D)", mode: "maior", notas: "D - E - F# - G - A - B - C# - D", abc: "K:D\nF/2 G/2 | A1 A1 B1 A1 | d3 , F/2 G/2 | A1 B1 A1 F1 | E3 ! F/2 G/2 | A1 A1 d1 e1 | f3 , d/2 c/2 | B1 d1 c1 e1 | d3" },
+
+        { name: "Mi Bemol Maior (Eb)", mode: "maior", notas: "Eb - F - G - Ab - Bb - C - D - Eb", abc: "K:Eb\nG/2 A/2 | B1 B1 c1 B1 | e3 , G/2 A/2 | B1 c1 B1 G1 | F3 ! G/2 A/2 | B1 B1 e1 f1 | g3 , e/2 d/2 | c1 e1 d1 f1 | e3" },
+        { name: "Mi Maior (E)", mode: "maior", notas: "E - F# - G# - A - B - C# - D# - E", abc: "K:E\nG/2 A/2 | B1 B1 c1 B1 | e3 , G/2 A/2 | B1 c1 B1 G1 | F3 ! G/2 A/2 | B1 B1 e1 f1 | g3 , e/2 d/2 | c1 e1 d1 f1 | e3" },
+
+        { name: "Fá Maior (F)", mode: "maior", notas: "F - G - A - Bb - C - D - E - F", abc: "K:F\nA/2 B/2 | c1 c1 d1 c1 | f3 , A/2 B/2 | c1 d1 c1 A1 | G3 ! A/2 B/2 | c1 c1 f1 g1 | a3 , f/2 e/2 | d1 f1 e1 g1 | f3" },
+        { name: "Fá Sustenido Maior (F#)", mode: "maior", notas: "F# - G# - A# - B - C# - D# - E# - F#", abc: "K:F#\nA/2 B/2 | c1 c1 d1 c1 | f3 , A/2 B/2 | c1 d1 c1 A1 | G3 ! A/2 B/2 | c1 c1 f1 g1 | a3 , f/2 e/2 | d1 f1 e1 g1 | f3" },
+
+        { name: "Sol Bemol Maior (Gb)", mode: "maior", notas: "Gb - Ab - Bb - Cb - Db - Eb - F - Gb", abc: "K:Gb\nb,/2 c/2 | d1 d1 e1 d1 | g3 , b,/2 c/2 | d1 e1 d1 b,1 | a,3 ! b,/2 c/2 | d1 d1 g1 a1 | b3 , g/2 f/2 | e1 g1 f1 a1 | g3" },
+        { name: "Sol Maior (G)", mode: "maior", notas: "G - A - B - C - D - E - F# - G", abc: "K:G\nb,/2 c/2 | d1 d1 e1 d1 | g3 , b,/2 c/2 | d1 e1 d1 b,1 | a,3 ! b,/2 c/2 | d1 d1 g1 a1 | b3 , g/2 f/2 | e1 g1 f1 a1 | g3" },
+
+        { name: "Lá Bemol Maior (Ab)", mode: "maior", notas: "Ab - Bb - C - Db - Eb - F - G - Ab", abc: "K:Ab\nc,/2 d,/2 | e,1 e,1 f,1 e,1 | a,3 , c,/2 d,/2 | e,1 f,1 e,1 c,1 | b,,3 ! c,/2 d,/2 | e,1 e,1 a,1 b,1 | c3 , a,/2 g,/2 | f,1 a,1 g,1 b,1 | a,3" },
+        { name: "Lá Maior (A)", mode: "maior", notas: "A - B - C# - D - E - F# - G# - A", abc: "K:A\nc,/2 d,/2 | e,1 e,1 f,1 e,1 | a,3 , c,/2 d,/2 | e,1 f,1 e,1 c,1 | b,,3 ! c,/2 d,/2 | e,1 e,1 a,1 b,1 | c3 , a,/2 g,/2 | f,1 a,1 g,1 b,1 | a,3" },
+
+        { name: "Si Bemol Maior (Bb)", mode: "maior", notas: "Bb - C - D - Eb - F - G - A - Bb", abc: "K:Bb\nd,/2 e,/2 | f,1 f,1 g,1 f,1 | b,3 , d,/2 e,/2 | f,1 g,1 f,1 d,1 | c,3 ! d,/2 e,/2 | f,1 f,1 b,1 c1 | d3 , b,/2 a,/2 | g,1 b,1 a,1 c1 | b,3" },
+        { name: "Si Maior (B)", mode: "maior", notas: "B - C# - D# - E - F# - G# - A# - B", abc: "K:B\nd,/2 e,/2 | f,1 f,1 g,1 f,1 | b,3 , d,/2 e,/2 | f,1 g,1 f,1 d,1 | c,3 ! d,/2 e,/2 | f,1 f,1 b,1 c1 | d3 , b,/2 a,/2 | g,1 b,1 a,1 c1 | b,3" }
+    ];
+
+    // ==================== TODAS AS 15 ESCALAS MENORES ====================
+    const minorScales = [
+        { name: "Dó Menor (Cm)", mode: "menor", notas: "C - D - Eb - F - G - Ab - Bb - C", abc: "K:Cm\nE/2 F/2 | G1 G1 A1 G1 | c3 , E/2 F/2 | G1 A1 G1 E1 | D3 ! E/2 F/2 | G1 G1 c1 d1 | e3 , c/2 =B/2 | A1 c1 =B1 d1 | c3" },
+        { name: "Dó Sustenido Menor (C#m)", mode: "menor", notas: "C# - D# - E - F# - G# - A - B - C#", abc: "K:C#m\nE/2 F/2 | G1 G1 A1 G1 | c3 , E/2 F/2 | G1 A1 G1 E1 | D3 ! E/2 F/2 | G1 G1 c1 d1 | e3 , c/2 ^B/2 | A1 c1 ^B1 d1 | c3" },
+        
+        { name: "Ré Menor (Dm)", mode: "menor", notas: "D - E - F - G - A - Bb - C - D", abc: "K:Dm\nF/2 G/2 | A1 A1 B1 A1 | d3 , F/2 G/2 | A1 B1 A1 F1 | E3 ! F/2 G/2 | A1 A1 d1 e1 | f3 , d/2 ^c/2 | B1 d1 ^c1 e1 | d3" },
+        { name: "Ré Sustenido Menor (D#m)", mode: "menor", notas: "D# - E# - F# - G# - A# - B - C# - D#", abc: "K:D#m\nF/2 G/2 | A1 A1 B1 A1 | d3 , F/2 G/2 | A1 B1 A1 F1 | E3 ! F/2 G/2 | A1 A1 d1 e1 | f3 , d/2 =c/2 | B1 d1 =c1 e1 | d3" },
+        
+        { name: "Mi Bemol Menor (Ebm)", mode: "menor", notas: "Eb - F - Gb - Ab - Bb - Cb - Db - Eb", abc: "K:Ebm\nG/2 A/2 | B1 B1 c1 B1 | e3 , G/2 A/2 | B1 c1 B1 G1 | F3 ! G/2 A/2 | B1 B1 e1 f1 | g3 , e/2 =d/2 | c1 e1 =d1 f1 | e3" },
+        { name: "Mi Menor (Em)", mode: "menor", notas: "E - F# - G - A - B - C - D - E", abc: "K:Em\nG/2 A/2 | B1 B1 c1 B1 | e3 , G/2 A/2 | B1 c1 B1 G1 | F3 ! G/2 A/2 | B1 B1 e1 f1 | g3 , e/2 ^d/2 | c1 e1 ^d1 f1 | e3" },
+        
+        { name: "Fá Menor (Fm)", mode: "menor", notas: "F - G - Ab - Bb - C - Db - Eb - F", abc: "K:Fm\nA/2 B/2 | c1 c1 d1 c1 | f3 , A/2 B/2 | c1 d1 c1 A1 | G3 ! A/2 B/2 | c1 c1 f1 g1 | a3 , f/2 =e/2 | d1 f1 =e1 g1 | f3" },
+        { name: "Fá Sustenido Menor (F#m)", mode: "menor", notas: "F# - G# - A - B - C# - D - E - F#", abc: "K:F#m\nA/2 B/2 | c1 c1 d1 c1 | f3 , A/2 B/2 | c1 d1 c1 A1 | G3 ! A/2 B/2 | c1 c1 f1 g1 | a3 , f/2 ^e/2 | d1 f1 ^e1 g1 | f3" },
+        
+        { name: "Sol Menor (Gm)", mode: "menor", notas: "G - A - Bb - C - D - Eb - F - G", abc: "K:Gm\nb,/2 c/2 | d1 d1 e1 d1 | g3 , b,/2 c/2 | d1 e1 d1 b,1 | a,3 ! b,/2 c/2 | d1 d1 g1 a1 | b3 , g/2 ^f/2 | e1 g1 ^f1 a1 | g3" },
+        { name: "Sol Sustenido Menor (G#m)", mode: "menor", notas: "G# - A# - B - C# - D# - E - F# - G#", abc: "K:G#m\nb,/2 c/2 | d1 d1 e1 d1 | g3 , b,/2 c/2 | d1 e1 d1 b,1 | a,3 ! b,/2 c/2 | d1 d1 g1 a1 | b3 , g/2 ^^f/2 | e1 g1 ^^f1 a1 | g3" },
+        
+        { name: "Lá Bemol Menor (Abm)", mode: "menor", notas: "Ab - Bb - Cb - Db - Eb - Fb - Gb - Ab", abc: "K:Abm\nc,/2 d,/2 | e,1 e,1 f,1 e,1 | a,3 , c,/2 d,/2 | e,1 f,1 e,1 c,1 | b,,3 ! c,/2 d,/2 | e,1 e,1 a,1 b,1 | c3 , a,/2 =g,/2 | f,1 a,1 =g,1 b,1 | a,3" },
+        { name: "Lá Menor (Am)", mode: "menor", notas: "A - B - C - D - E - F - G - A", abc: "K:Am\nc,/2 d,/2 | e,1 e,1 f,1 e,1 | a,3 , c,/2 d,/2 | e,1 f,1 e,1 c,1 | b,,3 ! c,/2 d,/2 | e,1 e,1 a,1 b,1 | c3 , a,/2 ^g,/2 | f,1 a,1 ^g,1 b,1 | a,3" },
+        { name: "Lá Sustenido Menor (A#m)", mode: "menor", notas: "A# - B# - C# - D# - E# - F# - G# - A#", abc: "K:A#m\nc,/2 d,/2 | e,1 e,1 f,1 e,1 | a,3 , c,/2 d,/2 | e,1 f,1 e,1 c,1 | b,,3 ! c,/2 d,/2 | e,1 e,1 a,1 b,1 | c3 , a,/2 ^^g,/2 | f,1 a,1 ^^g,1 b,1 | a,3" },
+
+        { name: "Si Bemol Menor (Bbm)", mode: "menor", notas: "Bb - C - Db - Eb - F - Gb - Ab - Bb", abc: "K:Bbm\nd,/2 e,/2 | f,1 f,1 g,1 f,1 | b,3 , d,/2 e,/2 | f,1 g,1 f,1 d,1 | c,3 ! d,/2 e,/2 | f,1 f,1 b,1 c1 | d3 , b,/2 =a,/2 | g,1 b,1 =a,1 c1 | b,3" },
+        { name: "Si Menor (Bm)", mode: "menor", notas: "B - C# - D - E - F# - G - A - B", abc: "K:Bm\nd,/2 e,/2 | f,1 f,1 g,1 f,1 | b,3 , d,/2 e,/2 | f,1 g,1 f,1 d,1 | c,3 ! d,/2 e,/2 | f,1 f,1 b,1 c1 | d3 , b,/2 ^a,/2 | g,1 b,1 ^a,1 c1 | b,3" }
+    ];
+
+    // Combinar todas as escalas
+    let allScales = [...majorScales, ...minorScales];
+    
+    // Configurações do quiz
+    let currentQuestionsList = [...allScales];
+    let currentIndex = 0;
+    let score = 0;
+    let answered = false;
+    let currentVisualObj = null;
+    let currentPlayer = null;
+    let currentTimingCallbacks = null;
+    let currentAudioContext = null;
+    let currentFilter = "all";
+
+    function updateTotalQuestions() {
+        document.getElementById('totalQuestions').innerText = currentQuestionsList.length;
+        const percent = (score / currentQuestionsList.length) * 100;
+        document.getElementById('progressBar').style.width = `${percent}%`;
+    }
+
+    function updateScoreDisplay() {
+        document.getElementById('scoreDisplay').innerHTML = `✅ Acertos: ${score} / ${currentQuestionsList.length}`;
+        const percent = (score / currentQuestionsList.length) * 100;
+        document.getElementById('progressBar').style.width = `${percent}%`;
+    }
+
+    // Renderizar partitura
+    function renderScore(abcString) {
+        const fullAbc = `X:1\nT:Hino 461 - Abrigado em Jesus\nM:4/4\nL:1/4\nQ:1/4=84\n${abcString}`;
+        const partituraDiv = document.getElementById('partitura');
+        try {
+            partituraDiv.innerHTML = '';
+            const renderObjs = ABCJS.renderAbc(partituraDiv, fullAbc, {
+                responsive: "resize",
+                staffwidth: 700
             });
-            
-            quizAtual.respondido = true;
-            
-            // Atualiza pontuação
-            document.getElementById('pontuacao').textContent = `Pontuação: ${quizAtual.pontuacao} / ${quizAtual.perguntas.length}`;
-            
-            // Adiciona botão próximo
-            const quizContent = document.getElementById('quizContent');
-            const btnProximo = document.createElement('button');
-            btnProximo.className = 'proximo-btn';
-            btnProximo.innerHTML = 'Próxima Questão →';
-            btnProximo.onclick = () => proximaPergunta();
-            quizContent.appendChild(btnProximo);
-        };
-
-        // Próxima pergunta
-        window.proximaPergunta = function() {
-            quizAtual.indiceAtual++;
-            quizAtual.respondido = false;
-            
-            if (quizAtual.indiceAtual < quizAtual.perguntas.length) {
-                renderizarPergunta();
-            } else {
-                finalizarQuiz();
-            }
-        };
-
-        // Finaliza o quiz
-        function finalizarQuiz() {
-            const porcentagem = (quizAtual.pontuacao / quizAtual.perguntas.length) * 100;
-            let mensagem = '';
-            
-            if (porcentagem === 100) {
-                mensagem = 'Perfeito! Você domina todas as armaduras! 🎉';
-            } else if (porcentagem >= 80) {
-                mensagem = 'Muito bom! Continue praticando! 🌟';
-            } else if (porcentagem >= 60) {
-                mensagem = 'Bom trabalho! Estude mais um pouco e tente novamente! 📚';
-            } else {
-                mensagem = 'Continue estudando as armaduras e tente de novo! 💪';
-            }
-            
-            const quizContent = document.getElementById('quizContent');
-            quizContent.innerHTML = `
-                <div class="resultado-final">
-                    <h2>🏆 Quiz Finalizado!</h2>
-                    <p style="font-size: 1.1em;">Sua pontuação:</p>
-                    <div class="nota">${quizAtual.pontuacao} / ${quizAtual.perguntas.length}</div>
-                    <p class="mensagem">${porcentagem.toFixed(0)}% de acerto</p>
-                    <p class="mensagem">${mensagem}</p>
-                    <button class="reiniciar-btn" onclick="reiniciarQuiz()">🔄 Recomeçar Quiz</button>
-                </div>
-            `;
+            currentVisualObj = renderObjs[0];
+            return true;
+        } catch(e) {
+            console.error("Erro ao renderizar:", e);
+            partituraDiv.innerHTML = "<p style='color:red'>Erro na renderização da partitura</p>";
+            return false;
         }
+    }
 
-        // Reinicia o quiz
-        window.reiniciarQuiz = function() {
-            quizAtual.perguntas = gerarPerguntas();
-            quizAtual.indiceAtual = 0;
-            quizAtual.pontuacao = 0;
-            quizAtual.respondido = false;
-            renderizarPergunta();
-        };
+    async function initAudio() {
+        if (!currentAudioContext) {
+            currentAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (currentAudioContext.state === 'suspended') {
+            await currentAudioContext.resume();
+        }
+        return currentAudioContext;
+    }
 
-        // Inicializa
-        function init() {
-            quizAtual.perguntas = gerarPerguntas();
-            quizAtual.indiceAtual = 0;
-            quizAtual.pontuacao = 0;
-            quizAtual.respondido = false;
-            renderizarPergunta();
+    async function stopPlayback() {
+        if (currentPlayer) {
+            try { 
+                await currentPlayer.stop(); 
+            } catch(e) {}
+            currentPlayer = null;
+        }
+        if (currentTimingCallbacks) {
+            try { 
+                currentTimingCallbacks.stop(); 
+            } catch(e) {}
+            currentTimingCallbacks = null;
+        }
+    }
+
+    async function playCurrentMelody() {
+        if (!currentVisualObj) {
+            const abcToRender = currentQuestionsList[currentIndex].abc;
+            renderScore(abcToRender);
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        if (!currentVisualObj) {
+            alert("Erro: não foi possível carregar a partitura.");
+            return;
+        }
+        try {
+            await stopPlayback();
+            const audioCtx = await initAudio();
+            
+            const synth = new ABCJS.synth.CreateSynth();
+            await synth.init({
+                visualObj: currentVisualObj,
+                audioContext: audioCtx,
+                options: { soundFontUrl: "https://paulrosen.github.io/midi-js-soundfonts/FluidR3_GM/" }
+            });
+            await synth.prime();
+            
+            const timing = new ABCJS.TimingCallbacks(currentVisualObj, {});
+            currentPlayer = synth;
+            currentTimingCallbacks = timing;
+            timing.start();
+            synth.start();
+        } catch(err) {
+            console.error("Playback error:", err);
+            alert("Erro ao reproduzir: " + err.message);
+        }
+    }
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function loadQuestion() {
+        answered = false;
+        if (currentQuestionsList.length === 0) {
+            document.getElementById('questionText').innerHTML = "Nenhuma escala disponível neste filtro!";
+            return;
         }
         
-        init();
-    </script>
+        const q = currentQuestionsList[currentIndex];
+        const modeIcon = q.mode === "maior" ? "🔵" : "🟢";
+        document.getElementById('questionText').innerHTML = `${modeIcon} Questão ${currentIndex+1} de ${currentQuestionsList.length}<br>Qual é o nome desta escala?`;
+        
+        renderScore(q.abc);
+        stopPlayback();
+        
+        // Gerar opções (4 opções aleatórias + correta)
+        const allNames = currentQuestionsList.map(item => item.name);
+        const correctAnswer = q.name;
+        let otherOptions = allNames.filter(name => name !== correctAnswer);
+        otherOptions = shuffleArray([...otherOptions]);
+        const optionsList = [correctAnswer, ...otherOptions.slice(0, 3)];
+        const shuffledOptions = shuffleArray(optionsList);
+        
+        const optionsContainer = document.getElementById('optionsContainer');
+        optionsContainer.innerHTML = '';
+        shuffledOptions.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(opt, btn);
+            optionsContainer.appendChild(btn);
+        });
+        
+        document.getElementById('feedback').innerHTML = '';
+        document.getElementById('feedback').className = 'feedback';
+        document.getElementById('nextBtn').style.display = 'none';
+        
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('correct', 'wrong');
+        });
+    }
+    
+    function checkAnswer(selected, btnElement) {
+        if (answered) return;
+        answered = true;
+        const currentQ = currentQuestionsList[currentIndex];
+        const isCorrect = (selected === currentQ.name);
+        
+        if (isCorrect) {
+            score++;
+            updateScoreDisplay();
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = `✅ Correto! <br>📝 Notas: ${currentQ.notas}`;
+            feedbackDiv.className = 'feedback correct';
+            btnElement.classList.add('correct');
+        } else {
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.innerHTML = `❌ Incorreto! A resposta correta era: ${currentQ.name}.<br>📝 Notas: ${currentQ.notas}`;
+            feedbackDiv.className = 'feedback wrong';
+            btnElement.classList.add('wrong');
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                if (btn.innerText === currentQ.name) {
+                    btn.classList.add('correct');
+                }
+            });
+        }
+        
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.disabled = true;
+        });
+        
+        if (currentIndex + 1 < currentQuestionsList.length) {
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        } else {
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.style.display = 'inline-block';
+            nextBtn.innerText = '🏆 Ver Resultado Final';
+        }
+    }
+    
+    function nextQuestion() {
+        if (!answered && currentIndex + 1 === currentQuestionsList.length) {
+            alert("Responda a questão atual antes de continuar!");
+            return;
+        }
+        if (!answered && currentIndex < currentQuestionsList.length) {
+            alert("Por favor, responda a pergunta atual primeiro.");
+            return;
+        }
+        
+        if (currentIndex + 1 < currentQuestionsList.length) {
+            currentIndex++;
+            loadQuestion();
+        } else {
+            const feedbackDiv = document.getElementById('feedback');
+            let finalMessage = `📊 QUIZ FINALIZADO! Você acertou ${score} de ${currentQuestionsList.length}`;
+            if (score === currentQuestionsList.length) {
+                finalMessage = "🎉 PARABÉNS! Você acertou TODAS as escalas! 🎉";
+            } else if (score >= currentQuestionsList.length * 0.7) {
+                finalMessage += " - Muito bom! Continue praticando!";
+            } else {
+                finalMessage += " - Estude mais as escalas e tente novamente!";
+            }
+            feedbackDiv.innerHTML = finalMessage + "<br>🔄 Clique em 'Reiniciar' para jogar novamente.";
+            feedbackDiv.className = 'feedback correct';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+        }
+    }
+    
+    function restartQuiz() {
+        applyFilter(currentFilter);
+        score = 0;
+        currentIndex = 0;
+        answered = false;
+        shuffleArray(currentQuestionsList);
+        updateScoreDisplay();
+        stopPlayback();
+        loadQuestion();
+        document.getElementById('nextBtn').style.display = 'none';
+        const nextBtn = document.getElementById('nextBtn');
+        nextBtn.innerText = '▶ Próxima questão';
+    }
+    
+    function applyFilter(filter) {
+        currentFilter = filter;
+        if (filter === "major") {
+            currentQuestionsList = [...majorScales];
+            document.getElementById('infoBox').innerHTML = "🔵 Modo: apenas escalas MAIORES (17 escalas)";
+        } else if (filter === "minor") {
+            currentQuestionsList = [...minorScales];
+            document.getElementById('infoBox').innerHTML = "🟢 Modo: apenas escalas MENORES (15 escalas)";
+        } else {
+            currentQuestionsList = [...allScales];
+            document.getElementById('infoBox').innerHTML = "🎼 Modo completo: escalas MAIORES + MENORES = 32 escalas";
+        }
+        
+        shuffleArray(currentQuestionsList);
+        score = 0;
+        currentIndex = 0;
+        answered = false;
+        updateTotalQuestions();
+        updateScoreDisplay();
+        stopPlayback();
+        loadQuestion();
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        if (filter === "all") document.getElementById('filterAll').classList.add('active');
+        if (filter === "major") document.getElementById('filterMajor').classList.add('active');
+        if (filter === "minor") document.getElementById('filterMinor').classList.add('active');
+    }
+    
+    // Event listeners
+    document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+    document.getElementById('restartBtn').addEventListener('click', restartQuiz);
+    document.getElementById('playMelodyBtn').addEventListener('click', playCurrentMelody);
+    document.getElementById('stopSoundBtn').addEventListener('click', async () => { await stopPlayback(); });
+    document.getElementById('filterAll').addEventListener('click', () => applyFilter('all'));
+    document.getElementById('filterMajor').addEventListener('click', () => applyFilter('major'));
+    document.getElementById('filterMinor').addEventListener('click', () => applyFilter('minor'));
+    
+    // Inicializar
+    shuffleArray(currentQuestionsList);
+    updateTotalQuestions();
+    loadQuestion();
+    
+    window.addEventListener('click', async () => {
+        if (currentAudioContext && currentAudioContext.state === 'suspended') {
+            await currentAudioContext.resume();
+        }
+    }, { once: true });
+</script>
 </body>
 </html>
