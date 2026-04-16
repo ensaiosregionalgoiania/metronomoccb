@@ -1100,7 +1100,7 @@
                     figureDiv.appendChild(symbolSpan);
                     figureDiv.appendChild(movementsDiv);
                     container.appendChild(figureDiv);
-                    console.log(figureDiv)
+                    //console.log(figureDiv)
                 }
                 isCompoundMode = true;
             } else {
@@ -1401,25 +1401,44 @@
             }
         }
 
-        // Obter velocidades atuais baseado no modo Meia Hora
+        // Obter velocidades atuais baseado no modo Meia Hora e possível triplicação
         function getCurrentSpeeds() {
             if (!currentHymn) return { min: 60, med: 70, max: 80 };
             
+            let speeds;
             if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
-                return {
+                speeds = {
                     min: currentHymn.velMinMeiaHora,
                     med: currentHymn.velMedMeiaHora,
                     max: currentHymn.velMaxMeiaHora
                 };
             } else {
-                return {
+                speeds = {
                     min: currentHymn.velMin,
                     med: currentHymn.velMed,
                     max: currentHymn.velMax
                 };
             }
+            
+            // Verifica se o hino atual deve ter velocidade triplicada
+            const hymnKey = document.getElementById('hymnInput').value.trim().toLowerCase();
+            let hymnNumber = null;
+            
+            if (!hymnKey.startsWith('coro')) {
+                hymnNumber = parseInt(hymnKey);
+            }
+            
+            if (hymnNumber && hinosVelocidadeTriplicada.includes(hymnNumber)) {
+                return {
+                    min: speeds.min * 3,
+                    med: speeds.med * 3,
+                    max: speeds.max * 3
+                };
+            }
+            
+            return speeds;
         }
-
+        
         // Atualizar velocidades no slider
         function updateSpeedRange() {
             const speeds = getCurrentSpeeds();
@@ -1567,7 +1586,7 @@
 
         // Lista de hinos que devem ter velocidade triplicada
         const hinosVelocidadeTriplicada = [42, 63, 65, 97, 105, 107, 162, 177, 205, 215, 219, 272, 316];
-        
+        console.log("bb")
         function updateHymnInfo() {
             if (!processHymnInput()) { 
                 stopMetronome(); 
@@ -2047,16 +2066,17 @@
         });
 
         // Registrar Service Worker para instalação
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker registrado!', reg))
-                    .catch(err => console.log('Erro:', err));
-            });
-        }
+        //if ('serviceWorker' in navigator) {
+        //    window.addEventListener('load', () => {
+        //        navigator.serviceWorker.register('sw.js')
+        //            .then(reg => console.log('Service Worker registrado!', reg))
+        //            .catch(err => console.log('Erro:', err));
+        //    });
+        //}
 
         // Função para verificar se o hino deve ter velocidade triplicada
         function deveTriplicarVelocidade(hymnKey) {
+            console.log("aa")
             // Converte para número se for hino (não coro)
             if (!hymnKey.toString().startsWith('C')) {
                 const num = parseInt(hymnKey);
@@ -2067,6 +2087,7 @@
 
         // Função para obter velocidades com possível triplicação
         function getCurrentSpeedsWithTriple() {
+            
             if (!currentHymn) return { min: 60, med: 70, max: 80 };
             
             let speeds;
@@ -2083,7 +2104,7 @@
                     max: currentHymn.velMax
                 };
             }
-            
+            console.log("aa")
             // Verifica se o hino atual deve ter velocidade triplicada
             const hymnKey = document.getElementById('hymnInput').value.trim().toLowerCase();
             let hymnNumber = null;
