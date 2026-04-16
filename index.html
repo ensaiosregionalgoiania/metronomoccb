@@ -1438,7 +1438,7 @@
             
             return speeds;
         }
-        
+
         // Atualizar velocidades no slider
         function updateSpeedRange() {
             const speeds = getCurrentSpeeds();
@@ -2066,13 +2066,13 @@
         });
 
         // Registrar Service Worker para instalação
-        //if ('serviceWorker' in navigator) {
-        //    window.addEventListener('load', () => {
-        //        navigator.serviceWorker.register('sw.js')
-        //            .then(reg => console.log('Service Worker registrado!', reg))
-        //            .catch(err => console.log('Erro:', err));
-        //    });
-        //}
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registrado!', reg))
+                    .catch(err => console.log('Erro:', err));
+            });
+        }
 
         // Função para verificar se o hino deve ter velocidade triplicada
         function deveTriplicarVelocidade(hymnKey) {
