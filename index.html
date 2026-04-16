@@ -284,7 +284,7 @@
             margin-bottom: 12px;
         }
 
-        .counter-number {
+        /*.counter-number {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             width: 70px;
@@ -296,12 +296,12 @@
             justify-content: center;
             box-shadow: 0 4px 12px rgba(102,126,234,0.3);
             flex-shrink: 0;
-        }
-        .counter-number span {
+        }*/
+        /*.counter-number span {
             font-size: 2.2rem;
             font-weight: 800;
             line-height: 1;
-        }
+        }*/
         .counter-label {
             font-size: 0.55rem;
             text-transform: uppercase;
@@ -420,12 +420,12 @@
             line-height: 1;
         }
 
-        .figure-number {
+        /*.figure-number {
             font-size: 0.65rem;
             font-weight: 600;
             color: #475569;
             margin-top: 2px;
-        }
+        }*/
 
         .figure-movement-number {
             font-size: 0.6rem;
@@ -870,9 +870,9 @@
                     
                     <div class="metronome-visual">
                         <div class="beat-info">
-                            <div class="counter-number">
-                                <span id="currentBeatCounter">1</span>
-                            </div>
+                            <!--<div class="counter-number">
+                                <span id="currentBeatCounter">aa</span>
+                            </div>-->
                             <div id="beatFiguresRow" class="beat-figures-row">
                                 <!-- Figuras dinâmicas -->
                             </div>
@@ -1069,18 +1069,18 @@
                         movementsDiv.appendChild(dot);
                     }
                     
-                    const numberSpan = document.createElement('div');
-                    numberSpan.className = 'figure-number';
-                    numberSpan.textContent = `${g + 1}º tempo`;
+                    //const numberSpan = document.createElement('div');
+                    //numberSpan.className = 'figure-number';
+                    //numberSpan.textContent = `${g + 1}º tempo`;
                     
-                    const movementNumbers = document.createElement('div');
-                    movementNumbers.className = 'figure-movement-number';
-                    movementNumbers.innerHTML = '<span>1º</span><span>2º</span><span>3º</span>';
-                    
+                    //const movementNumbers = document.createElement('div');
+                    //movementNumbers.className = 'figure-movement-number';
+                    //movementNumbers.innerHTML = '<span>1º</span><span>2º</span><span>3º</span>';
+                    //console.log(container.innerHTML)       
                     figureDiv.appendChild(symbolSpan);
                     figureDiv.appendChild(movementsDiv);
                     figureDiv.appendChild(numberSpan);
-                    figureDiv.appendChild(movementNumbers);
+                    //figureDiv.appendChild(movementNumbers);
                     container.appendChild(figureDiv);
                 }
                 isCompoundMode = true;
@@ -1122,18 +1122,18 @@
                     dot2.dataset.beat = i;
                     movementsDiv.appendChild(dot2);
                     
-                    const numberSpan = document.createElement('div');
-                    numberSpan.className = 'figure-number';
-                    numberSpan.textContent = `${beatNumber}º tempo`;
+                    //const numberSpan = document.createElement('div');
+                    //numberSpan.className = 'figure-number';
+                    //numberSpan.textContent = `${beatNumber}º tempo`;
                     
-                    const movementNumbers = document.createElement('div');
-                    movementNumbers.className = 'figure-movement-number';
-                    movementNumbers.innerHTML = '<span>1º</span><span>2º</span>';
-                    
+                    //const movementNumbers = document.createElement('div');
+                    //movementNumbers.className = 'figure-movement-number';
+                    //movementNumbers.innerHTML = '<span>1º</span><span>2º</span>';
+                    //console.log(container.innerHTML)
                     figureDiv.appendChild(symbolSpan);
                     figureDiv.appendChild(movementsDiv);
-                    figureDiv.appendChild(numberSpan);
-                    figureDiv.appendChild(movementNumbers);
+                    //figureDiv.appendChild(numberSpan);
+                    //figureDiv.appendChild(movementNumbers);
                     container.appendChild(figureDiv);
                 }
             }
@@ -1262,9 +1262,9 @@
             highlightCurrentMovement(currentMovementIndex);
             updateBeatCounter(movementNumber);
             
-            if (isInicio) {
-                highlightBeatCounterForStart();
-            }
+            //if (isInicio) {
+            //    highlightBeatCounterForStart();
+            //}
             
             currentMovementIndex++;
             if (currentMovementIndex >= totalMovements) {
@@ -1455,14 +1455,14 @@
             const isCompound = isCompoundTime(currentHymn?.compasso || '4/4');
             
             if (isCompound) {
-                document.getElementById('currentBeatCounter').textContent = `${movementNumber}`;
+                //document.getElementById('currentBeatCounter').textContent = `${movementNumber}`;
             } else {
                 if (movementNumber) {
                     const beat = Math.ceil(movementNumber / 2);
                     const sub = movementNumber % 2 === 0 ? '2ª' : '1ª';
-                    document.getElementById('currentBeatCounter').innerHTML = `${beat}<span style="font-size:0.6rem;">${sub}</span>`;
+                    //document.getElementById('currentBeatCounter').innerHTML = `${beat}<span style="font-size:0.6rem;">${sub}</span>`;
                 } else {
-                    document.getElementById('currentBeatCounter').textContent = `${currentMovementIndex + 1}`;
+                    //document.getElementById('currentBeatCounter').textContent = `${currentMovementIndex + 1}`;
                 }
             }
         }
@@ -1490,24 +1490,24 @@
             }
         }
         
-        function highlightBeatCounterForStart() {
-            const counterElement = document.getElementById('currentBeatCounter');
-            if (!counterElement) return;
+        //function highlightBeatCounterForStart() {
+            //const counterElement = document.getElementById('currentBeatCounter');
+            //if (!counterElement) return;
             
-            counterElement.style.transition = 'all 0.2s ease';
-            counterElement.style.backgroundColor = '#ff6b6b';
-            counterElement.style.color = 'white';
-            counterElement.style.transform = 'scale(1.2)';
-            counterElement.style.boxShadow = '0 0 10px #ff6b6b';
+            //counterElement.style.transition = 'all 0.2s ease';
+            //counterElement.style.backgroundColor = '#ff6b6b';
+            //counterElement.style.color = 'white';
+            //counterElement.style.transform = 'scale(1.2)';
+            //counterElement.style.boxShadow = '0 0 10px #ff6b6b';
             
-            setTimeout(() => {
-                counterElement.style.backgroundColor = '';
-                counterElement.style.color = '';
-                counterElement.style.transform = '';
-                counterElement.style.boxShadow = '';
-                counterElement.style.transition = '';
-            }, 400);
-        }
+            //setTimeout(() => {
+            //    counterElement.style.backgroundColor = '';
+            //    counterElement.style.color = '';
+            //    counterElement.style.transform = '';
+            //    counterElement.style.boxShadow = '';
+            //    counterElement.style.transition = '';
+            //}, 400);
+        //}
         
         function updateHymnInfo() {
             if (!processHymnInput()) { 
@@ -1820,6 +1820,9 @@
 
         // ========== FUNÇÃO DE BPM TAP - ATUALIZA A PRÓPRIA DIV BPM ==========
 
+        // Adicionar uma variável global para armazenar o BPM personalizado
+        let customTapBpm = null;
+
         // Adicionar a figura musical ao lado do BPM atual
         const currentSpeedDiv = document.querySelector('.current-speed');
         const bpmValueSpan = document.getElementById('currentSpeed');
@@ -1843,25 +1846,20 @@
         currentSpeedDiv.appendChild(tapBpmIcon);
 
         // Variáveis para cálculo de BPM
-        let tapTimes = [];           // Armazena os tempos dos cliques em segundos
-        let lastTapTime = 0;         // Último clique para detectar pausa longa
+        let tapTimes = [];
+        let lastTapTime = 0;
 
         // Função para calcular BPM a partir dos intervalos
         function calculateBPMFromTaps() {
-            console.log ("bb")
+            console.log("aa")
             if (tapTimes.length < 2) return null;
             
-            // Calcular média dos intervalos entre cliques consecutivos
             let totalInterval = 0;
             for (let i = 1; i < tapTimes.length; i++) {
                 totalInterval += (tapTimes[i] - tapTimes[i-1]);
             }
             const avgInterval = totalInterval / (tapTimes.length - 1);
-            
-            // Converter para BPM (60 segundos / intervalo médio em segundos)
             let bpm = Math.round(60 / avgInterval);
-            
-            // Limitar entre 30 e 300 BPM (valores realistas)
             bpm = Math.min(300, Math.max(30, bpm));
             
             return bpm;
@@ -1869,83 +1867,78 @@
 
         // Função para atualizar a DIV de BPM com o novo valor
         function updateBpmDiv(newBpm) {
-            const slider = document.getElementById('speedSlider');
-            const currentMin = parseInt(slider.min);
-            const currentMax = parseInt(slider.max);
+            console.log("bb")
+
+            // Armazenar o BPM personalizado
+            customTapBpm = newBpm;
             
-            // DIV mostra o valor SEM limites
+            // Atualizar o span do BPM
             bpmValueSpan.textContent = newBpm;
             
-            // Slider fica limitado (opcional - pode remover também)
-            let sliderValue = newBpm;
-            if (sliderValue < currentMin) sliderValue = currentMin;
-            if (sliderValue > currentMax) sliderValue = currentMax;
-            slider.value = sliderValue;
+            // NÃO atualiza o slider - mantém o slider no valor original
+            // slider.value NÃO é alterado
             
-            // Se o metrônomo estiver tocando, usar o valor SEM limites
-            if (metronomeInterval) {
-                // Reiniciar com o valor original (sem limites)
-                startMetronomeWithCustomBpm(newBpm);
-            }
+            // Feedback visual
+            currentSpeedDiv.style.backgroundColor = '#fef3c7';
+            setTimeout(() => {
+                currentSpeedDiv.style.backgroundColor = '#eef2ff';
+            }, 300);
         }
 
         // Função para registrar um clique/tap
         function registerTap() {
-                        console.log ("aa")
-
-            const now = Date.now() / 1000; // Tempo atual em segundos
+            console.log("cc")
+            const now = Date.now() / 1000;
             
-            // Se passou mais de 2 segundos desde o último clique, reiniciar contagem
             if (lastTapTime > 0 && (now - lastTapTime) > 2) {
                 tapTimes = [];
+                customTapBpm = null; // Resetar BPM personalizado
             }
             
             lastTapTime = now;
             tapTimes.push(now);
             
-            // Manter apenas os últimos 8 cliques para cálculo
             if (tapTimes.length > 8) {
                 tapTimes.shift();
             }
             
-            // Animação de feedback no ícone
             tapBpmIcon.style.transform = 'scale(1.2)';
             setTimeout(() => {
                 tapBpmIcon.style.transform = 'scale(1)';
             }, 100);
             
-            // Calcular e atualizar o BPM
             const calculatedBpm = calculateBPMFromTaps();
             
             if (calculatedBpm !== null && tapTimes.length >= 2) {
-                // ATUALIZA A PRÓPRIA DIV BPM
                 updateBpmDiv(calculatedBpm);
                 
-                // Feedback visual temporário na div (muda a cor para indicar que foi atualizado)
-                currentSpeedDiv.style.backgroundColor = '#fef3c7';
-                setTimeout(() => {
-                    currentSpeedDiv.style.backgroundColor = '#eef2ff';
-                }, 300);
+                // Se o metrônomo estiver tocando, reiniciar com o BPM calculado
+                if (metronomeInterval) {
+                    startMetronomeWithCustomBpm();
+                }
             }
         }
 
-        // Adicionar evento de clique na figura musical
-        tapBpmIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            registerTap();
-        });
-
-        // Função para iniciar com BPM personalizado (sem limites)
-        function startMetronomeWithCustomBpm(customBpm) {
+        // NOVA FUNÇÃO: iniciar metrônomo com BPM personalizado (do tap)
+        function startMetronomeWithCustomBpm() {
+            console.log("dd")
             if (!currentHymn) return;
             
             stopMetronome();
             
+            // Usar o BPM do tap se existir, senão usar o slider
+            let bpm;
+            if (customTapBpm !== null) {
+                bpm = customTapBpm;
+            } else {
+                bpm = parseInt(document.getElementById('speedSlider').value);
+            }
+            
             let intervalMs;
             if (isDoubleSpeedMode) {
-                intervalMs = (60 / (customBpm * 2)) * 1000;
+                intervalMs = (60 / (bpm * 2)) * 1000;
             } else {
-                intervalMs = (60 / customBpm) * 1000;
+                intervalMs = (60 / bpm) * 1000;
             }
             
             currentMovementIndex = 0;
@@ -1955,6 +1948,51 @@
                 executeBeat();
             }, intervalMs);
         }
+
+        // MODIFICAR a função startMetronome original
+        const originalStartMetronome = startMetronome;
+        window.startMetronome = function() {
+            startMetronomeWithCustomBpm();
+        };
+
+        // Sobrescrever a função startMetronome
+        startMetronome = startMetronomeWithCustomBpm;
+
+        // Clique duplo para reiniciar
+        tapBpmIcon.addEventListener('dblclick', () => {
+            console.log("ee")
+            tapTimes = [];
+            lastTapTime = 0;
+            customTapBpm = null; // Resetar BPM personalizado
+            
+            // Restaurar o valor do slider na DIV
+            const sliderValue = document.getElementById('speedSlider').value;
+            bpmValueSpan.textContent = sliderValue;
+            
+            currentSpeedDiv.style.backgroundColor = '#fee2e2';
+            setTimeout(() => {
+                currentSpeedDiv.style.backgroundColor = '#eef2ff';
+            }, 500);
+            
+            // Se estiver tocando, reiniciar com o valor do slider
+            if (metronomeInterval) {
+                startMetronome();
+            }
+        });
+
+        // Garantir que o botão Play use a nova função
+        document.getElementById('playBtn').removeEventListener('click', originalStartMetronome);
+        document.getElementById('playBtn').addEventListener('click', () => {
+            startMetronomeWithCustomBpm();
+        });
+
+        console.log('🎵 BPM Tap ativado! O metrônomo agora toca no BPM calculado pelos cliques.');
+
+        // Adicionar evento de clique na figura musical
+        tapBpmIcon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            registerTap();
+        });
 
 
 </script>
