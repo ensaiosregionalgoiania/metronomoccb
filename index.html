@@ -366,12 +366,12 @@
         }
         
         .movement-dot.inicio-movement {
-            background: #ff6b6b !important;
+            background: inherit !important;  /* mantém a cor original do dot */
             transform: scale(1.5);
-            box-shadow: 0 0 8px #ff6b6b;
+            box-shadow: 0 0 8px #374151;
             animation: pulse-inicio 0.3s ease-in-out;
         }
-        
+                
         @keyframes pulse-inicio {
             0% { transform: scale(1); background: #ff6b6b; }
             50% { transform: scale(1.8); background: #ff9999; }
@@ -379,14 +379,14 @@
         }
 
         .figure-unit.active-beat {
-            background: #667eea;
+            background: #ebebed;
             transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
-            border-color: #667eea;
+            box-shadow: 0 4px 12px  #ebebed;
+            border-color:  #ebebed;
         }
 
         .figure-unit.active-beat .figure-symbol {
-            color: white;
+            color: rgb(151, 127, 127);
         }
 
         .figure-unit.active-beat .figure-number {
@@ -408,10 +408,10 @@
             border-left: 3px solid #16a34a;
         }
         .figure-unit.active-beat.strong-primary {
-            background: #dc2626;
+            background: #ebebed;
         }
         .figure-unit.active-beat.strong-secondary {
-            background: #16a34a;
+            background: #ebebed;
         }
 
         .figure-symbol {
@@ -516,10 +516,10 @@
         }
 
         .figure-unit.inicio-beat {
-            background: #ff6b6b;
+            background: #ebebed;
             transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
-            border-color: #ff6b6b;
+            box-shadow: 0 4px 12px #ebebed;
+            border-color: #ebebed;
         }
 
         .figure-unit.inicio-beat .figure-symbol {
@@ -819,7 +819,7 @@
         </div>
         
         <div class="content">
-            <div class="selection-area">
+            <div class="inicio">
                 <div class="hymn-nav">
                     <button class="nav-btn" id="prevBtn">◀</button>
                     <div class="hymn-input-group">
@@ -880,14 +880,14 @@
                         <div id="timeSignatureInfo" class="time-signature-info" style="margin-top: 8px;"></div>
                         <div id="accentDescription" class="accent-desc" style="margin-top: 6px;"></div>
                         <div id="soundInfo" class="sound-info" style="margin-top: 6px;"></div>
-                        <div class="legend">
+                        <!--<div class="legend">
                             <div class="legend-item"><div class="legend-color" style="background: #e2e8f0;"></div><span>normal</span></div>
                             <div class="legend-item"><div class="legend-color" style="background: #dc2626;"></div><span>1º tempo</span></div>
                             <div class="legend-item"><div class="legend-color" style="background: #16a34a;"></div><span>4º,7º,10º</span></div>
                             <div class="legend-item"><div class="legend-color" style="background: #667eea;"></div><span>atual</span></div>
                             <div class="legend-item"><div class="legend-color" style="background: #ff6b6b;"></div><span>início</span></div>
                             <div class="legend-item"><div class="legend-color" style="background: #cbd5e1; width: 6px; height: 6px;"></div><span>subdivisões</span></div>
-                        </div>                    
+                        </div>-->                    
                     </div>
                 </div>
                 
@@ -1061,27 +1061,37 @@
                     movementsDiv.dataset.group = g;
                     
                     for (let m = 0; m < 3; m++) {
+                        const dotWrapper = document.createElement('div');
+                        dotWrapper.style.display = 'flex';
+                        dotWrapper.style.flexDirection = 'column';
+                        dotWrapper.style.alignItems = 'center';
+                        dotWrapper.style.gap = '2px';
+                        
                         const dot = document.createElement('div');
                         dot.className = 'movement-dot';
                         dot.dataset.movement = m;
                         dot.dataset.globalMovement = g * 3 + m;
                         dot.dataset.group = g;
-                        movementsDiv.appendChild(dot);
+                        dotWrapper.appendChild(dot);
+                        
+                        const arrowDown = document.createElement('div');
+                        arrowDown.className = 'movement-arrow-down';
+                        arrowDown.innerHTML = '🢁';
+                        arrowDown.style.fontSize = '0.8rem';
+                        arrowDown.style.color = '#ef4444';
+                        arrowDown.style.lineHeight = '1';
+                        arrowDown.style.fontWeight = 'bold';
+                        arrowDown.style.visibility = 'hidden';
+                        arrowDown.style.transition = 'visibility 0s linear 0.3s';
+                        dotWrapper.appendChild(arrowDown);
+                        
+                        movementsDiv.appendChild(dotWrapper);
                     }
                     
-                    //const numberSpan = document.createElement('div');
-                    //numberSpan.className = 'figure-number';
-                    //numberSpan.textContent = `${g + 1}º tempo`;
-                    
-                    //const movementNumbers = document.createElement('div');
-                    //movementNumbers.className = 'figure-movement-number';
-                    //movementNumbers.innerHTML = '<span>1º</span><span>2º</span><span>3º</span>';
-                    //console.log(container.innerHTML)       
                     figureDiv.appendChild(symbolSpan);
                     figureDiv.appendChild(movementsDiv);
-                    figureDiv.appendChild(numberSpan);
-                    //figureDiv.appendChild(movementNumbers);
                     container.appendChild(figureDiv);
+                    console.log(figureDiv)
                 }
                 isCompoundMode = true;
             } else {
@@ -1107,33 +1117,36 @@
                     movementsDiv.className = 'figure-movements';
                     movementsDiv.dataset.beat = i;
                     
-                    // Para compassos simples: SEMPRE 2 movimentos por tempo (subdivisão)
-                    const dot1 = document.createElement('div');
-                    dot1.className = 'movement-dot';
-                    dot1.dataset.movement = 0;
-                    dot1.dataset.globalMovement = i * 2;
-                    dot1.dataset.beat = i;
-                    movementsDiv.appendChild(dot1);
+                    for (let s = 0; s < 2; s++) {
+                        const dotWrapper = document.createElement('div');
+                        dotWrapper.style.display = 'flex';
+                        dotWrapper.style.flexDirection = 'column';
+                        dotWrapper.style.alignItems = 'center';
+                        dotWrapper.style.gap = '2px';
+                        
+                        const dot = document.createElement('div');
+                        dot.className = 'movement-dot';
+                        dot.dataset.movement = s;
+                        dot.dataset.globalMovement = i * 2 + s;
+                        dot.dataset.beat = i;
+                        dotWrapper.appendChild(dot);
+                        
+                        const arrowDown = document.createElement('div');
+                        arrowDown.className = 'movement-arrow-down';
+                        arrowDown.innerHTML = '🢁';
+                        arrowDown.style.fontSize = '0.8rem';
+                        arrowDown.style.color = '#ef4444';
+                        arrowDown.style.lineHeight = '1';
+                        arrowDown.style.fontWeight = 'bold';
+                        arrowDown.style.visibility = 'hidden';
+                        arrowDown.style.transition = 'visibility 0s linear 0.3s';
+                        dotWrapper.appendChild(arrowDown);
+                        
+                        movementsDiv.appendChild(dotWrapper);
+                    }
                     
-                    const dot2 = document.createElement('div');
-                    dot2.className = 'movement-dot';
-                    dot2.dataset.movement = 1;
-                    dot2.dataset.globalMovement = i * 2 + 1;
-                    dot2.dataset.beat = i;
-                    movementsDiv.appendChild(dot2);
-                    
-                    //const numberSpan = document.createElement('div');
-                    //numberSpan.className = 'figure-number';
-                    //numberSpan.textContent = `${beatNumber}º tempo`;
-                    
-                    //const movementNumbers = document.createElement('div');
-                    //movementNumbers.className = 'figure-movement-number';
-                    //movementNumbers.innerHTML = '<span>1º</span><span>2º</span>';
-                    //console.log(container.innerHTML)
                     figureDiv.appendChild(symbolSpan);
                     figureDiv.appendChild(movementsDiv);
-                    //figureDiv.appendChild(numberSpan);
-                    //figureDiv.appendChild(movementNumbers);
                     container.appendChild(figureDiv);
                 }
             }
@@ -1166,16 +1179,33 @@
                         dots[movementInGroup].classList.add('active-movement');
                         
                         if (isInicio) {
-                            dots[movementInGroup].classList.add('inicio-movement');
-                            figures[groupIndex].classList.add('inicio-beat');
-                            setTimeout(() => {
-                                if (dots[movementInGroup]) dots[movementInGroup].classList.remove('inicio-movement');
-                                if (figures[groupIndex]) figures[groupIndex].classList.remove('inicio-beat');
-                            }, 400);
+                            //dots[movementInGroup].classList.add('inicio-movement');
+                            //figures[groupIndex].classList.add('inicio-beat');
+                            
+                            const dotWrapper = dots[movementInGroup].parentElement;
+                            const arrow = dotWrapper.querySelector('.movement-arrow-down');
+                            if (arrow) {
+                                arrow.style.visibility = 'visible';
+                                arrow.style.transition = 'visibility 0s';
+                            }
                         }
                     }
                     
-                    setTimeout(() => figures[groupIndex]?.classList.remove('pulse-beat'), 120);
+                    setTimeout(() => {
+                        if (isInicio) {
+                            const dots = figures[groupIndex].querySelectorAll('.movement-dot');
+                            if (dots[movementInGroup]) {
+                                const dotWrapper = dots[movementInGroup].parentElement;
+                                const arrow = dotWrapper.querySelector('.movement-arrow-down');
+                                if (arrow) {
+                                    arrow.style.visibility = 'hidden';
+                                }
+                                dots[movementInGroup].classList.remove('inicio-movement');
+                            }
+                            figures[groupIndex].classList.remove('inicio-beat');
+                        }
+                        figures[groupIndex]?.classList.remove('pulse-beat');
+                    }, 400);
                 }
             } else {
                 const beatIndex = Math.floor(movementIndex / 2);
@@ -1198,16 +1228,33 @@
                         dots[subMovement].classList.add('active-movement');
                         
                         if (isInicio) {
-                            dots[subMovement].classList.add('inicio-movement');
-                            figures[beatIndex].classList.add('inicio-beat');
-                            setTimeout(() => {
-                                if (dots[subMovement]) dots[subMovement].classList.remove('inicio-movement');
-                                if (figures[beatIndex]) figures[beatIndex].classList.remove('inicio-beat');
-                            }, 400);
+                            //dots[subMovement].classList.add('inicio-movement');
+                            //figures[beatIndex].classList.add('inicio-beat');
+                            
+                            const dotWrapper = dots[subMovement].parentElement;
+                            const arrow = dotWrapper.querySelector('.movement-arrow-down');
+                            if (arrow) {
+                                arrow.style.visibility = 'visible';
+                                arrow.style.transition = 'visibility 0s';
+                            }
                         }
                     }
                     
-                    setTimeout(() => figures[beatIndex]?.classList.remove('pulse-beat'), 120);
+                    setTimeout(() => {
+                        if (isInicio) {
+                            const dots = figures[beatIndex].querySelectorAll('.movement-dot');
+                            if (dots[subMovement]) {
+                                const dotWrapper = dots[subMovement].parentElement;
+                                const arrow = dotWrapper.querySelector('.movement-arrow-down');
+                                if (arrow) {
+                                    arrow.style.visibility = 'hidden';
+                                }
+                                dots[subMovement].classList.remove('inicio-movement');
+                            }
+                            figures[beatIndex].classList.remove('inicio-beat');
+                        }
+                        figures[beatIndex]?.classList.remove('pulse-beat');
+                    }, 400);
                 }
             }
         }
@@ -1528,20 +1575,20 @@
             let realMed = speeds.med;
             let realMax = speeds.max;
             
-            let speedLabel = '';
-            let subdivisionBadge = '';
-            let soundInfoText = '';
+            //let speedLabel = '';
+            //let subdivisionBadge = '';
+            //let soundInfoText = '';
             
-            if (isDoubleSpeedMode) {
-                subdivisionBadge = '<span class="subdivision-badge">2 marcações por tempo (som só na 1ª)</span>';
-                speedLabel = subdivisionBadge;
-                soundInfoText = `🔊 SOM apenas na 1ª marcação de cada tempo (${realMin}-${realMax} BPM real)`;
-            } else {
-                speedLabel = '';
-                soundInfoText = `🔊 SOM em todas as batidas`;
-            }
+            //if (isDoubleSpeedMode) {
+                //subdivisionBadge = '<span class="subdivision-badge">2 marcações por tempo (som só na 1ª)</span>';
+                //speedLabel = subdivisionBadge;
+                //soundInfoText = `🔊 SOM apenas na 1ª marcação de cada tempo (${realMin}-${realMax} BPM real)`;
+            //} else {
+                //speedLabel = '';
+                //soundInfoText = `🔊 SOM em todas as batidas`;
+            //}
             
-            document.getElementById('speedModeLabel').innerHTML = speedLabel;
+            //document.getElementById('speedModeLabel').innerHTML = speedLabel;
             document.getElementById('minSpeed').textContent = realMin;
             document.getElementById('avgSpeed').textContent = realMed;
             document.getElementById('maxSpeed').textContent = realMax;
@@ -1567,29 +1614,29 @@
             const figureName = getFigureName(currentHymn.compasso);
             const figureSymbol = getFigureSymbol(currentHymn.compasso);
             
-            let timeSigDescription = '';
+            //let timeSigDescription = '';
             
             if (isCompound) {
                 const groups = beatsPerMeasure / 3;
-                timeSigDescription = `🎼 ${currentHymn.compasso} • ${beatsPerMeasure} movimentos • ${groups} x ${figureName} (${figureSymbol}) = 3 batidas por tempo`;
+                //timeSigDescription = `🎼 ${currentHymn.compasso} • ${beatsPerMeasure} movimentos • ${groups} x ${figureName} (${figureSymbol}) = 3 batidas por tempo`;
             } else {
-                timeSigDescription = `🎼 ${currentHymn.compasso} • ${beatsPerMeasure} tempos • ${figureName} (${figureSymbol}) • <strong>COM SUBDIVISÃO</strong> • 2 marcações por tempo (semicolcheias)<br>🎵 SOM apenas na 1ª marcação de cada tempo (${realMin}-${realMax} )`;
+                //timeSigDescription = `🎼 ${currentHymn.compasso} • ${beatsPerMeasure} tempos • ${figureName} (${figureSymbol}) • <strong>COM SUBDIVISÃO</strong> • 2 marcações por tempo (semicolcheias)<br>🎵 SOM apenas na 1ª marcação de cada tempo (${realMin}-${realMax} )`;
                 if (currentHymn.inicio && currentHymn.inicio % 1 !== 0) {
                     const startBeat = Math.floor(currentHymn.inicio);
                     const targetMovement = (startBeat - 1) * 2 + 2;
-                    timeSigDescription += `<br>🎯 Início em ${currentHymn.inicio} → corresponde à ${targetMovement}ª batida (${startBeat}º tempo, 2ª marcação)`;
+                    //timeSigDescription += `<br>🎯 Início em ${currentHymn.inicio} → corresponde à ${targetMovement}ª batida (${startBeat}º tempo, 2ª marcação)`;
                 } else if (currentHymn.inicio && currentHymn.inicio !== 1) {
                     const targetMovement = (currentHymn.inicio - 1) * 2 + 1;
-                    timeSigDescription += `<br>🎯 Início no ${currentHymn.inicio}º tempo → ${targetMovement}ª batida (1ª marcação)`;
+                    //timeSigDescription += `<br>🎯 Início no ${currentHymn.inicio}º tempo → ${targetMovement}ª batida (1ª marcação)`;
                 }
             }
             
             if (isMeiaHoraMode) {
-                timeSigDescription += `<br>⏱️ <strong>MODO MEIA HORA ATIVO</strong> - Velocidades reduzidas (mais lento)`;
+                //timeSigDescription += `<br>⏱️ <strong>MODO MEIA HORA ATIVO</strong> - Velocidades reduzidas (mais lento)`;
             }
             
-            document.getElementById('timeSignatureInfo').innerHTML = timeSigDescription;
-            document.getElementById('soundInfo').innerHTML = soundInfoText;
+            //document.getElementById('timeSignatureInfo').innerHTML = timeSigDescription;
+            //document.getElementById('soundInfo').innerHTML = soundInfoText;
             
             createBeatFiguresUI();
             
@@ -1609,59 +1656,59 @@
                             return `${tempo}º tempo (${sub}ª marcação)`;
                         }
                     });
-                    document.getElementById('accentDescription').innerHTML = `🎯 Destaque ativo: batidas fortes → ${strongNumbers.join(', ')}`;
+                    //document.getElementById('accentDescription').innerHTML = `🎯 Destaque ativo: batidas fortes → ${strongNumbers.join(', ')}`;
                 } else {
                     document.getElementById('accentDescription').innerHTML = `🎯 Destaque ativo: apenas 1ª batida forte (1º tempo, 1ª marcação)`;
                 }
             } else {
-                document.getElementById('accentDescription').innerHTML = `⚪ Destaque desativado: todas as batidas iguais`;
+                //document.getElementById('accentDescription').innerHTML = `⚪ Destaque desativado: todas as batidas iguais`;
             }
             
             if (currentHymn.inicio !== undefined && currentHymn.inicio !== null) {
                 inicioValue = currentHymn.inicio;
-                let inicioText = '';
+                //let inicioText = '';
                 
                 if (isCompound) {
                     if (inicioValue % 1 !== 0) {
                         const beat = Math.floor(inicioValue);
                         const fraction = Math.round((inicioValue % 1) * 3);
-                        inicioText = `Início na ${fraction}ª batida do ${beat}º tempo`;
+                        //inicioText = `Início na ${fraction}ª batida do ${beat}º tempo`;
                     } else {
-                        inicioText = `Início no ${inicioValue}º tempo, 1ª batida`;
+                        //inicioText = `Início no ${inicioValue}º tempo, 1ª batida`;
                     }
                 } else {
                     if (inicioValue % 1 !== 0) {
                         const beat = Math.floor(inicioValue);
-                        inicioText = `Início no ${beat}º tempo, 2ª marcação (subdivisão) - será destacado em VERMELHO`;
-                    } else {
-                        inicioText = `Início no ${inicioValue}º tempo, 1ª marcação - será destacado em VERMELHO`;
-                    }
+                        //inicioText = `Início no ${beat}º tempo, 2ª marcação (subdivisão) - será destacado em VERMELHO`;
+                    } //else {
+                        //inicioText = `Início no ${inicioValue}º tempo, 1ª marcação - será destacado em VERMELHO`;
+                    //}
                 }
                 
-                let inicioInfo = document.getElementById('inicioInfo');
-                if (!inicioInfo) {
-                    inicioInfo = document.createElement('div');
-                    inicioInfo.id = 'inicioInfo';
-                    inicioInfo.className = 'inicio-info';
-                    const visualDiv = document.querySelector('.metronome-visual');
-                    if (visualDiv) {
-                        visualDiv.appendChild(inicioInfo);
-                    }
-                }
-                inicioInfo.innerHTML = `🎬 ${inicioText}`;
-                inicioInfo.style.fontSize = '0.65rem';
-                inicioInfo.style.marginTop = '6px';
-                inicioInfo.style.color = '#ff6b6b';
-                inicioInfo.style.fontWeight = '500';
-                inicioInfo.style.backgroundColor = '#fff5f5';
-                inicioInfo.style.padding = '4px 8px';
-                inicioInfo.style.borderRadius = '20px';
-                inicioInfo.style.border = '1px solid #ff6b6b';
-                inicioInfo.style.display = 'inline-block';
-                inicioInfo.style.margin = '0 auto';
+                //let inicioInfo = document.getElementById('inicioInfo');
+                //if (!inicioInfo) {
+                //    inicioInfo = document.createElement('div');
+                //    inicioInfo.id = 'inicioInfo';
+                //    inicioInfo.className = 'inicio-info';
+                //    const visualDiv = document.querySelector('.metronome-visual');
+                //    if (visualDiv) {
+                //        visualDiv.appendChild(inicioInfo);
+                //    }
+                //}
+                //inicioInfo.innerHTML = `🎬 ${inicioText}`;
+                //inicioInfo.style.fontSize = '0.65rem';
+                //inicioInfo.style.marginTop = '6px';
+                //inicioInfo.style.color = '#ff6b6b';
+                //inicioInfo.style.fontWeight = '500';
+                //inicioInfo.style.backgroundColor = '#fff5f5';
+                //inicioInfo.style.padding = '4px 8px';
+                //inicioInfo.style.borderRadius = '20px';
+                //inicioInfo.style.border = '1px solid #ff6b6b';
+                //inicioInfo.style.display = 'inline-block';
+                //inicioInfo.style.margin = '0 auto';
             } else {
-                const inicioInfo = document.getElementById('inicioInfo');
-                if (inicioInfo) inicioInfo.remove();
+                //const inicioInfo = document.getElementById('inicioInfo');
+                //if (inicioInfo) inicioInfo.remove();
             }
             
             stopMetronome();
@@ -1851,7 +1898,6 @@
 
         // Função para calcular BPM a partir dos intervalos
         function calculateBPMFromTaps() {
-            console.log("aa")
             if (tapTimes.length < 2) return null;
             
             let totalInterval = 0;
@@ -1867,7 +1913,6 @@
 
         // Função para atualizar a DIV de BPM com o novo valor
         function updateBpmDiv(newBpm) {
-            console.log("bb")
 
             // Armazenar o BPM personalizado
             customTapBpm = newBpm;
@@ -1887,7 +1932,6 @@
 
         // Função para registrar um clique/tap
         function registerTap() {
-            console.log("cc")
             const now = Date.now() / 1000;
             
             if (lastTapTime > 0 && (now - lastTapTime) > 2) {
@@ -1921,7 +1965,6 @@
 
         // NOVA FUNÇÃO: iniciar metrônomo com BPM personalizado (do tap)
         function startMetronomeWithCustomBpm() {
-            console.log("dd")
             if (!currentHymn) return;
             
             stopMetronome();
@@ -1960,7 +2003,6 @@
 
         // Clique duplo para reiniciar
         tapBpmIcon.addEventListener('dblclick', () => {
-            console.log("ee")
             tapTimes = [];
             lastTapTime = 0;
             customTapBpm = null; // Resetar BPM personalizado
@@ -1986,14 +2028,11 @@
             startMetronomeWithCustomBpm();
         });
 
-        console.log('🎵 BPM Tap ativado! O metrônomo agora toca no BPM calculado pelos cliques.');
-
         // Adicionar evento de clique na figura musical
         tapBpmIcon.addEventListener('click', (e) => {
             e.stopPropagation();
             registerTap();
         });
-
 
 </script>
 </body>
