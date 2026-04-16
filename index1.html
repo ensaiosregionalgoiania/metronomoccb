@@ -1282,7 +1282,7 @@
             const gain = audioContext.createGain();
             osc.connect(gain);
             gain.connect(audioContext.destination);
-            osc.type = 'sine';
+            osc.type = 'triangle';
             let freq = 520;
             let vol = 0.25;
             
