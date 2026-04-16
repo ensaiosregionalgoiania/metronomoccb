@@ -1564,6 +1564,9 @@
             //    counterElement.style.transition = '';
             //}, 400);
         //}
+
+        // Lista de hinos que devem ter velocidade triplicada
+        const hinosVelocidadeTriplicada = [42, 63, 65, 97, 105, 107, 162, 177, 205, 215, 219, 272, 316];
         
         function updateHymnInfo() {
             if (!processHymnInput()) { 
@@ -2050,6 +2053,54 @@
                     .then(reg => console.log('Service Worker registrado!', reg))
                     .catch(err => console.log('Erro:', err));
             });
+        }
+
+        // Função para verificar se o hino deve ter velocidade triplicada
+        function deveTriplicarVelocidade(hymnKey) {
+            // Converte para número se for hino (não coro)
+            if (!hymnKey.toString().startsWith('C')) {
+                const num = parseInt(hymnKey);
+                return hinosVelocidadeTriplicada.includes(num);
+            }
+            return false;
+        }
+
+        // Função para obter velocidades com possível triplicação
+        function getCurrentSpeedsWithTriple() {
+            if (!currentHymn) return { min: 60, med: 70, max: 80 };
+            
+            let speeds;
+            if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
+                speeds = {
+                    min: currentHymn.velMinMeiaHora,
+                    med: currentHymn.velMedMeiaHora,
+                    max: currentHymn.velMaxMeiaHora
+                };
+            } else {
+                speeds = {
+                    min: currentHymn.velMin,
+                    med: currentHymn.velMed,
+                    max: currentHymn.velMax
+                };
+            }
+            
+            // Verifica se o hino atual deve ter velocidade triplicada
+            const hymnKey = document.getElementById('hymnInput').value.trim().toLowerCase();
+            let hymnNumber = null;
+            
+            if (!hymnKey.startsWith('coro')) {
+                hymnNumber = parseInt(hymnKey);
+            }
+            
+            if (hymnNumber && hinosVelocidadeTriplicada.includes(hymnNumber)) {
+                return {
+                    min: speeds.min * 3,
+                    med: speeds.med * 3,
+                    max: speeds.max * 3
+                };
+            }
+            
+            return speeds;
         }
 
 </script>
