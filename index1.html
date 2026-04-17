@@ -925,15 +925,17 @@
         </div>
     </div>
     
-    <script src="hinos.js"></script>
+    <!--<script src="hinos.js"></script>-->
 
     <script>
         // Dados dos hinos
-        //const hymnsData = {
-        //    "1": { nome: "Cristo meu Mestre", compasso: "4/4", velMin: 56, velMed: 61, velMax: 66, inicio: 1, velMinMeiaHora: 35, velMedMeiaHora: 37, velMaxMeiaHora: 40 },
-        //    "2": { nome: "De Deus tu és eleita", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4, velMinMeiaHora: 42, velMedMeiaHora: 44, velMaxMeiaHora: 46 },
-        //    "3": { nome: "Faz-nos ouvir Tua voz", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1, velMinMeiaHora: 37, velMedMeiaHora: 38, velMaxMeiaHora: 40 }
-        //};
+        const hymnsData = {
+            "1": { nome: "Cristo meu Mestre", compasso: "4/4", velMin: 56, velMed: 61, velMax: 66, inicio: 1, velMinMeiaHora: 35, velMedMeiaHora: 37, velMaxMeiaHora: 40 },
+            "2": { nome: "De Deus tu és eleita", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4, velMinMeiaHora: 42, velMedMeiaHora: 44, velMaxMeiaHora: 46 },
+            "3": { nome: "Faz-nos ouvir Tua voz", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1, velMinMeiaHora: 37, velMedMeiaHora: 38, velMaxMeiaHora: 40 },
+            "387": { nome: "Ó Salvador, que recebeste poder", compasso: "4/4", velMin: 104, velMed: 115, velMax: 180, inicio: 1, velMinMeiaHora: 65, velMedMeiaHora: 67, velMaxMeiaHora: 70 }
+
+        };
         
         // Adicionar dados padrão para os demais hinos
         for (let i = 1; i <= 480; i++) {
@@ -1285,24 +1287,28 @@
             osc.type = 'triangle';
             let freq = 520;
             let vol = 0.25;
+            let duration = 0.1;  // Duração padrão
             
             if (accentType === 'primary') { 
                 freq = 880; 
-                vol = 0.45; 
+                vol = 0.45;
+                duration = 0.12;  // Um pouco mais longo para o 1º tempo
             } else if (accentType === 'secondary') { 
                 freq = 660; 
-                vol = 0.38; 
+                vol = 0.38;
+                duration = 0.1;
             } else if (isSubdivision) {
                 // Som suave para meios tempos (2ª marcação)
                 freq = 440;
-                vol = 0.6;  // Volume bem baixo
+                vol = 0.08;  // Volume mais baixo (recomendo 0.06 a 0.10)
+                duration = 0.06;  // Mais curto para não atrapalhar
             }
             
             osc.frequency.setValueAtTime(freq, now);
             gain.gain.setValueAtTime(vol, now);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1); // Mais curto
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
             osc.start();
-            osc.stop(now + 0.1);
+            osc.stop(now + duration);
         }
 
         function executeBeat() {
