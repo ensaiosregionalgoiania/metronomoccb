@@ -1287,21 +1287,21 @@
             osc.type = 'triangle';
             let freq = 520;
             let vol = 0.25;
-            let duration = 0.1;  // Duração padrão
+            let duration = 0.01;  // Duração padrão
             
             if (accentType === 'primary') { 
                 freq = 880; 
                 vol = 0.45;
-                duration = 0.12;  // Um pouco mais longo para o 1º tempo
+                duration = 0.01;  // Um pouco mais longo para o 1º tempo
             } else if (accentType === 'secondary') { 
                 freq = 660; 
                 vol = 0.38;
-                duration = 0.1;
+                duration = 0.05;
             } else if (isSubdivision) {
                 // Som suave para meios tempos (2ª marcação)
                 freq = 440;
                 vol = 0.08;  // Volume mais baixo (recomendo 0.06 a 0.10)
-                duration = 0.06;  // Mais curto para não atrapalhar
+                duration = 0.01;  // Mais curto para não atrapalhar
             }
             
             osc.frequency.setValueAtTime(freq, now);
