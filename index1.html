@@ -293,24 +293,6 @@
             margin-bottom: 12px;
         }
 
-        /*.counter-number {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(102,126,234,0.3);
-            flex-shrink: 0;
-        }*/
-        /*.counter-number span {
-            font-size: 2.2rem;
-            font-weight: 800;
-            line-height: 1;
-        }*/
         .counter-label {
             font-size: 0.55rem;
             text-transform: uppercase;
@@ -818,12 +800,62 @@
             }
         }
 
+        .current-speed {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 12px 0 8px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2c3e66;
+            background: #eef2ff;
+            border-radius: 50px;
+            padding: 6px;
+        }
+
+        .tap-bpm-icon {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(44, 62, 102, 0.1);
+        }
+
+        .tap-bpm-icon:active {
+            transform: scale(0.9);
+        }
+        
+        .tap-bpm-icon img {
+            width: 28px;
+            height: 28px;
+            pointer-events: none;
+        }
+
+        .tap-bpm-icon:hover {
+            background: rgba(44, 62, 102, 0.2);
+        }
+
+        .tap-feedback {
+            animation: tapPulse 0.3s ease;
+        }
+
+        @keyframes tapPulse {
+            0% { transform: scale(1); background: rgba(44, 62, 102, 0.1); }
+            50% { transform: scale(1.1); background: rgba(44, 62, 102, 0.4); }
+            100% { transform: scale(1); background: rgba(44, 62, 102, 0.1); }
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB (Teste 1 - Jackson)</h1>
+            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB</h1>
             <p>Hinos 1-480 | Coro 1-6</p>
         </div>
         
@@ -857,9 +889,11 @@
                         </div>
                         <div class="current-speed">
                             <span id="currentSpeed">120</span> BPM
+                            <div class="tap-bpm-icon" id="tapBpmIcon" title="Clique no ritmo para calcular BPM">
+                                <img src="tambor.png" alt="Tap BPM" style="width: 32px; height: 32px; vertical-align: middle;">
+                            </div>
                         </div>
                     </div>
-                    
                     <div class="checkbox-group">
                         <label class="checkbox-item">
                             <input type="checkbox" id="accentCheckbox" checked> 🎯 Fortes
@@ -917,16 +951,8 @@
     <script src="hinos.js"></script>
 
     <script>
-        // Dados dos hinos
-        //const hymnsData = {
-        //    "1": { nome: "Cristo meu Mestre", compasso: "4/4", velMin: 56, velMed: 61, velMax: 66, inicio: 1, velMinMeiaHora: 35, velMedMeiaHora: 37, velMaxMeiaHora: 40 },
-        //    "2": { nome: "De Deus tu és eleita", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4, velMinMeiaHora: 42, velMedMeiaHora: 44, velMaxMeiaHora: 46 },
-        //    "3": { nome: "Faz-nos ouvir Tua voz", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1, velMinMeiaHora: 37, velMedMeiaHora: 38, velMaxMeiaHora: 40 },
-        //    "387": { nome: "Ó Salvador, que recebeste poder", compasso: "4/4", velMin: 104, velMed: 115, velMax: 180, inicio: 1, velMinMeiaHora: 65, velMedMeiaHora: 67, velMaxMeiaHora: 70 }
-        //};
-        
         // Adicionar dados padrão para os demais hinos
-        for (let i = 1; i <= 480; i++) {
+        for (let i = 1; i <= 486; i++) {
             if (!hymnsData[i.toString()]) {
                 hymnsData[i.toString()] = { 
                     nome: `Hino ${i}`, 
@@ -942,14 +968,6 @@
             }
         }
         
-        // Coros
-        hymnsData["C1"] = { nome: "Aleluia! Aleluia!", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4, velMinMeiaHora: 38, velMedMeiaHora: 40, velMaxMeiaHora: 42 };
-        hymnsData["C2"] = { nome: "Toda a glória a Jesus", compasso: "2/4", velMin: 54, velMed: 60, velMax: 66, inicio: 1, velMinMeiaHora: 32, velMedMeiaHora: 34, velMaxMeiaHora: 36 };
-        hymnsData["C3"] = { nome: "Ação de graças darei", compasso: "4/4", velMin: 58, velMed: 67, velMax: 76, inicio: 4, velMinMeiaHora: 35, velMedMeiaHora: 37, velMaxMeiaHora: 39 };
-        hymnsData["C4"] = { nome: "Glória, glórias nas alturas!", compasso: "4/4", velMin: 60, velMed: 72, velMax: 84, inicio: 1, velMinMeiaHora: 38, velMedMeiaHora: 40, velMaxMeiaHora: 42 };
-        hymnsData["C5"] = { nome: "Majestoso é Cristo Jesus!", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 4, velMinMeiaHora: 36, velMedMeiaHora: 38, velMaxMeiaHora: 40 };
-        hymnsData["C6"] = { nome: "A Jesus eu cantarei louvor", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1, velMinMeiaHora: 36, velMedMeiaHora: 38, velMaxMeiaHora: 40 };
-
         let currentHymn = null;
         let metronomeInterval = null;
         let currentMovementIndex = 0;
@@ -961,6 +979,25 @@
         let isDoubleSpeedMode = false;
         let totalMovements = 0;
         let isMeiaHoraMode = false;
+
+        // Carregar arquivos MP3 (colocar no início do script, após as declarações de variáveis)
+        const audioBeepForte = new Audio('beep_2000Hz.mp3');
+        const audioBeepMedio = new Audio('beep_1060Hz.mp3');
+        const audioBeepFraco = new Audio('beep_530Hz.mp3');
+        const audioBeepGrave = new Audio('beep_260Hz.mp3');
+
+        // Pré-carregar os áudios
+        audioBeepForte.preload = 'auto';
+        audioBeepMedio.preload = 'auto';
+        audioBeepFraco.preload = 'auto';
+        audioBeepGrave.preload = 'auto';
+
+        // Configurar volume
+        audioBeepForte.volume = 1.0;
+        audioBeepMedio.volume = 0.1;
+        audioBeepFraco.volume = 0.1;
+        audioBeepGrave.volume = 0.01;
+
 
         // Verificar se é compasso simples (2/4, 3/4, 4/4, 2/2, 3/2, 4/2)
         function isSimpleTime(timeSignature) {
@@ -1091,7 +1128,6 @@
                     figureDiv.appendChild(symbolSpan);
                     figureDiv.appendChild(movementsDiv);
                     container.appendChild(figureDiv);
-                    //console.log(figureDiv)
                 }
                 isCompoundMode = true;
             } else {
@@ -1257,63 +1293,60 @@
             }
         }
 
-        // Substitua a função playSound por esta versão melhorada:
-
-        function playSound(accentType, isSubdivision = false) {
+        // Substitua a função playSound por esta:
+        function playSound(accentType, isSubdivision = false, useGrave = false) {
             if (isMuted) return;
             
-            // Garantir que o AudioContext existe e está ativo
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            let audioToPlay = null;
+            let volume = 1.0; // volume padrão
+            
+            // Verificar se deve usar som grave (quando inicio NÃO é inteiro)
+            if (useGrave) {
+                audioToPlay = audioBeepGrave;
+                volume = 1.0;
+            }
+            // Verificar se é subdivisão (2ª marcação em compassos simples)
+            else if (isSubdivision) {
+                audioToPlay = audioBeepFraco;
+                volume = 0.05; // volume mais baixo para subdivisão
+            }
+            // Acentos primários (forte) e secundários (médio)
+            else {
+                if (accentType === 'primary') {
+                    audioToPlay = audioBeepForte;
+                    volume = 1.0; // volume mais alto para batida forte
+                } else if (accentType === 'secondary') {
+                    audioToPlay = audioBeepMedio;
+                    volume = 0.5; // volume médio para batida secundária
+                } else {
+                    // Sem acento (som padrão fraco)
+                    audioToPlay = audioBeepMedio;
+                    volume = 0.5;
+                }
             }
             
-            // IMPORTANTE: Para iPhone, precisamos garantir que o contexto está rodando
-            // O resume() será chamado no clique do usuário
-            
-            const now = audioContext.currentTime;
-            
-            // Usar um gain node com envelope mais suave para iPhone
-            const gainNode = audioContext.createGain();
-            gainNode.connect(audioContext.destination);
-            
-            // Usar oscillator simples
-            const osc = audioContext.createOscillator();
-            osc.connect(gainNode);
-            
-            osc.type = 'sine';  // sine é mais compatível que triangle em alguns iPhones
-            
-            let freq = 520;
-            let vol = 0.25;
-            
-            if (accentType === 'primary') { 
-                freq = 880; 
-                vol = 0.45;
-            } else if (accentType === 'secondary') { 
-                freq = 660; 
-                vol = 0.38;
-            } else if (isSubdivision) {
-                freq = 440;
-                vol = 0.12;  // Volume um pouco mais alto para ser perceptível
+            // Tocar o áudio (clona para permitir sobreposição)
+            if (audioToPlay) {
+                const audioClone = audioToPlay.cloneNode();
+                audioClone.volume = volume; // Aplicar volume no clone
+                audioClone.play().catch(err => console.log('Erro ao tocar:', err));
             }
-            
-            osc.frequency.value = freq;
-            
-            // Envelope de volume para evitar pops/clicks
-            const nowTime = audioContext.currentTime;
-            gainNode.gain.setValueAtTime(0, nowTime);
-            gainNode.gain.linearRampToValueAtTime(vol, nowTime + 0.001);
-            gainNode.gain.exponentialRampToValueAtTime(0.0001, nowTime + 0.05);
-            
-            osc.start();
-            osc.stop(nowTime + 0.05);
         }
-
+        
+        // Substitua a função executeBeat por esta:
         function executeBeat() {
             const accentEnabled = document.getElementById('accentCheckbox').checked;
             const timeSig = currentHymn.compasso;
             
             let movementNumber = currentMovementIndex + 1;
             const isInicio = isInicioMovement(movementNumber);
+            
+            // Verificar se o início do hino é número NÃO inteiro (ex: 2.5, 3.5, 4.5)
+            let useGraveSound = false;
+            if (currentHymn && currentHymn.inicio) {
+                // Verifica se inicio NÃO é um número inteiro
+                useGraveSound = (currentHymn.inicio % 1 !== 0);
+            }
             
             let accentType = null;
             let isSubdivision = false;
@@ -1323,12 +1356,13 @@
                 isSubdivision = true;
             }
             
-            // Toca som normal/forte para 1ª marcação ou som suave para 2ª marcação
+            // Toca som
             if (shouldPlaySoundOnMovement(currentMovementIndex)) {
                 if (!isSubdivision) {
                     accentType = getAccentType(currentMovementIndex, accentEnabled, timeSig);
                 }
-                playSound(accentType, isSubdivision);
+                // Passar useGraveSound como parâmetro
+                playSound(accentType, isSubdivision, useGraveSound);
             }
             
             highlightCurrentMovement(currentMovementIndex);
@@ -1339,6 +1373,7 @@
                 currentMovementIndex = 0;
             }
         }
+
         function startMetronome() {
             if (!currentHymn) {
                 if (!processHymnInput()) { alert('Digite um hino válido!'); return; }
@@ -1382,7 +1417,7 @@
         }
 
         function processHymnInput() {
-            const input = document.getElementById('hymnInput').value.trim().toLowerCase();
+            const input = document.getElementById('hymnInput').value.trim().toLowerCase().replace('coro ', '48');
             const errorDiv = document.getElementById('errorMessage');
             errorDiv.style.display = 'none';
             let hymnKey = null;
@@ -1397,9 +1432,11 @@
                     errorDiv.style.display = 'block';
                     return false;
                 }
-            } else if (/^\d+$/.test(input)) {
+            } else 
+            
+            if (/^\d+$/.test(input)) {
                 let num = parseInt(input);
-                if (num >= 1 && num <= 480) {
+                if (num >= 1 && num <= 486) {
                     hymnKey = num.toString();
                 } else {
                     errorDiv.textContent = 'Número inválido (1-480)';
@@ -1432,7 +1469,7 @@
 
         // Obter velocidades atuais baseado no modo Meia Hora e possível triplicação
         function getCurrentSpeeds() {
-            if (!currentHymn) return { min: 60, med: 70, max: 80 };
+            if (!currentHymn) return { min: 60, med: 70, max: 80, originalMin: 60, originalMed: 70, originalMax: 80 };
             
             let speeds;
             if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
@@ -1449,6 +1486,9 @@
                 };
             }
             
+            // Guardar velocidades originais
+            const originalSpeeds = { ...speeds };
+            
             // Verifica se o hino atual deve ter velocidade triplicada
             const hymnKey = document.getElementById('hymnInput').value.trim().toLowerCase();
             let hymnNumber = null;
@@ -1461,13 +1501,23 @@
                 return {
                     min: speeds.min * 3,
                     med: speeds.med * 3,
-                    max: speeds.max * 3
+                    max: speeds.max * 3,
+                    originalMin: originalSpeeds.min,
+                    originalMed: originalSpeeds.med,
+                    originalMax: originalSpeeds.max,
+                    isTripled: true
                 };
             }
             
-            return speeds;
+            return {
+                ...speeds,
+                originalMin: speeds.min,
+                originalMed: speeds.med,
+                originalMax: speeds.max,
+                isTripled: false
+            };
         }
-
+        
         // Atualizar velocidades no slider
         function updateSpeedRange() {
             const speeds = getCurrentSpeeds();
@@ -1483,85 +1533,24 @@
             slider.min = realMin;
             slider.max = realMax;
             
-            console.log (slider.max)
             let currentVal = parseInt(slider.max);
             slider.value = currentVal;
             //aqui
-            document.getElementById('currentSpeed').innerHTML = `${currentVal}`;
+            if (currentHymn.velX3 == "N") {
+                document.getElementById('currentSpeed').innerHTML = `${realMax}`;
+            } else {
+                document.getElementById('currentSpeed').innerHTML = `${realMax} (${realMax/3}𝅘𝅥.)`;
+            }
         }
 
-        // Variável para controlar se está em modo coro
-        let isCoroMode = false;
-        let currentCoroNumber = 1;
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            Navegar(1)
+        });
 
         document.getElementById('prevBtn').addEventListener('click', () => {
-            let val = document.getElementById('hymnInput').value.trim().toLowerCase();
-            const isCoroChecked = document.getElementById('coroCheckbox').checked;
-            
-            if (isCoroChecked || val.startsWith('coro')) {
-                // Navegação entre coros
-                let num;
-                if (val.startsWith('coro')) {
-                    num = parseInt(val.replace('coro', '')) || 1;
-                } else {
-                    num = parseInt(val) || 1;
-                }
-                
-                if (num > 1) {
-                    document.getElementById('hymnInput').value = `coro ${num - 1}`;
-                } else {
-                    // Se for coro 1, vai para o hino 480
-                    document.getElementById('coroCheckbox').checked = false;
-                    document.getElementById('hymnInput').value = '480';
-                }
-            } else {
-                // Navegação entre hinos
-                let n = parseInt(val) || 1;
-                if (n > 1) {
-                    document.getElementById('hymnInput').value = n - 1;
-                } else {
-                    // Se for hino 1, vai para o coro 6
-                    document.getElementById('coroCheckbox').checked = true;
-                    document.getElementById('hymnInput').value = 'coro 6';
-                }
-            }
-            updateHymnInfo();
+            Navegar(-1)
         });
 
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            let val = document.getElementById('hymnInput').value.trim().toLowerCase();
-            
-            // Verifica se está em modo coro
-            if (val.startsWith('coro')) {
-                let num = parseInt(val.replace('coro', '')) || 1;
-                if (num < 6) {
-                    // Vai para o próximo coro
-                    document.getElementById('hymnInput').value = `coro ${num + 1}`;
-                } else {
-                    // Se for coro 6, vai para o hino 1
-                    document.getElementById('hymnInput').value = '1';
-                }
-            } else {
-                let n = parseInt(val) || 1;
-                if (n < 480) {
-                    // Vai para o próximo hino
-                    document.getElementById('hymnInput').value = n + 1;
-                } else {
-                    // Se for hino 480, vai para o coro 1
-                    document.getElementById('hymnInput').value = 'coro 1';
-                }
-            }
-            updateHymnInfo();
-        });
-
-        document.getElementById('hymnInput').addEventListener('keypress', e => { if(e.key === 'Enter') updateHymnInfo(); });
-        
-        document.getElementById('speedSlider').addEventListener('input', (e) => {
-            let sliderValue = parseInt(e.target.value);
-            document.getElementById('currentSpeed').innerHTML = `${sliderValue}`;
-            if (metronomeInterval) startMetronome();
-        });
-        
         document.getElementById('accentCheckbox').addEventListener('change', refreshAfterToggle);
         document.getElementById('muteCheckbox').addEventListener('change', (e) => { isMuted = e.target.checked; });
         
@@ -1578,36 +1567,10 @@
             if (metronomeInterval) startMetronome();
         });
         
-        // Modifique o event listener do botão Play
-        const playBtn = document.getElementById('playBtn');
-        playBtn.removeEventListener('click', startMetronome);
-        playBtn.addEventListener('click', () => {
-            // Inicializar áudio no clique
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    startMetronomeWithCustomBpm();
-                }).catch(e => console.log('Error:', e));
-            } else {
-                startMetronomeWithCustomBpm();
-            }
-        });
-
-        // Também adicione ao botão Stop (para garantir)
-        const stopBtn = document.getElementById('stopBtn');
-        stopBtn.addEventListener('click', () => {
-            if (audioContext && audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-            stopMetronome();
-        });
-
-        // Adicionar listener para qualquer clique no corpo para ativar áudio
-        document.body.addEventListener('touchstart', initAudioOnFirstTouch, { once: true });
-        document.body.addEventListener('click', initAudioOnFirstTouch, { once: true });
-
+        document.getElementById('playBtn').addEventListener('click', startMetronome);
+        document.getElementById('stopBtn').addEventListener('click', stopMetronome);
+        document.body.addEventListener('click', () => { if (audioContext && audioContext.state === 'suspended') audioContext.resume(); });
+        
         function getFigureName(timeSignature) {
             if (timeSignature === '2/2' || timeSignature === '3/2' || timeSignature === '4/2') return 'Mínima';
             if (timeSignature === '6/4' || timeSignature === '9/4' || timeSignature === '12/4') return 'Mínima pontuada';
@@ -1651,13 +1614,11 @@
 
         // Lista de hinos que devem ter velocidade triplicada
         const hinosVelocidadeTriplicada = [42, 63, 65, 97, 105, 107, 162, 177, 205, 215, 219, 272, 316];
-        console.log("bb")
         function updateHymnInfo() {
             if (!processHymnInput()) { 
                 stopMetronome(); 
                 return; 
             }
-            
             isDoubleSpeedMode = shouldUseDoubleSpeedMode(currentHymn);
             
             const displayVal = document.getElementById('hymnInput').value.trim();
@@ -1665,7 +1626,7 @@
             const nomeDisplay = isCoro ? `🎵 ${currentHymn.nome}` : currentHymn.nome;
             
             document.getElementById('hymnName').textContent = nomeDisplay;
-            
+
             const speeds = getCurrentSpeeds();
             let realMin = speeds.min;
             let realMed = speeds.med;
@@ -1680,7 +1641,13 @@
             slider.max = realMax;
             slider.value = realMax;
             
-            document.getElementById('currentSpeed').innerHTML = `${realMax}`;
+            //aqui
+            if (currentHymn.velX3 == "N") {
+                document.getElementById('currentSpeed').innerHTML = `${realMax}`;
+            } else {
+                document.getElementById('currentSpeed').innerHTML = `${realMax} (${realMax/3}𝅘𝅥.)`;
+            }
+
             document.getElementById('timeSignature').textContent = currentHymn.compasso;
             
             beatsPerMeasure = parseInt(currentHymn.compasso.split('/')[0]);
@@ -1898,38 +1865,18 @@
             }
         });
 
-        // ========== FUNÇÃO DE BPM TAP - ATUALIZA A PRÓPRIA DIV BPM ==========
+        // ========== FUNÇÃO DE BPM TAP ==========
 
-        // Adicionar uma variável global para armazenar o BPM personalizado
         let customTapBpm = null;
-
-        // Adicionar a figura musical ao lado do BPM atual
-        const currentSpeedDiv = document.querySelector('.current-speed');
-        const bpmValueSpan = document.getElementById('currentSpeed');
-
-        // Criar elemento da figura musical clicável
-        const tapBpmIcon = document.createElement('span');
-        //tapBpmIcon.innerHTML = '🎵';
-        tapBpmIcon.innerHTML = '<img src="tambor.png" style="width: 40px; height: 40px; vertical-align: middle;">';
-        tapBpmIcon.style.cursor = 'pointer';
-        tapBpmIcon.style.display = 'inline-block';
-        tapBpmIcon.style.marginLeft = '8px';
-        tapBpmIcon.style.verticalAlign = 'middle';
-        tapBpmIcon.style.transition = 'transform 0.1s';
-        tapBpmIcon.title = 'Clique no ritmo para calcular BPM';
-
-        // Inserir ao lado do valor BPM
-        currentSpeedDiv.style.display = 'flex';
-        currentSpeedDiv.style.alignItems = 'center';
-        currentSpeedDiv.style.justifyContent = 'center';
-        currentSpeedDiv.style.gap = '8px';
-        currentSpeedDiv.appendChild(tapBpmIcon);
-
-        // Variáveis para cálculo de BPM
         let tapTimes = [];
         let lastTapTime = 0;
 
-        // Função para calcular BPM a partir dos intervalos
+        // Referências DOM
+        const currentSpeedDiv = document.querySelector('.current-speed');
+        const bpmValueSpan = document.getElementById('currentSpeed');
+        const tapBpmIcon = document.getElementById('tapBpmIcon');
+
+        // Função para calcular BPM a partir dos taps
         function calculateBPMFromTaps() {
             if (tapTimes.length < 2) return null;
             
@@ -1942,6 +1889,18 @@
             bpm = Math.min(300, Math.max(30, bpm));
             
             return bpm;
+        }
+
+        // Função para atualizar o display do BPM
+        function updateBpmDisplay(newBpm) {
+            customTapBpm = newBpm;
+            bpmValueSpan.textContent = newBpm;
+            
+            // Feedback visual
+            currentSpeedDiv.style.backgroundColor = '#fef3c7';
+            setTimeout(() => {
+                currentSpeedDiv.style.backgroundColor = '#eef2ff';
+            }, 300);
         }
 
         // Função para atualizar a DIV de BPM com o novo valor
@@ -1963,46 +1922,48 @@
             }, 300);
         }
 
-        // Função para registrar um clique/tap
+        // Função para registrar um tap
         function registerTap() {
             const now = Date.now() / 1000;
             
+            // Reset se passou mais de 2 segundos
             if (lastTapTime > 0 && (now - lastTapTime) > 2) {
                 tapTimes = [];
-                customTapBpm = null; // Resetar BPM personalizado
+                customTapBpm = null;
             }
             
             lastTapTime = now;
             tapTimes.push(now);
             
+            // Manter apenas os últimos 8 taps
             if (tapTimes.length > 8) {
                 tapTimes.shift();
             }
             
-            tapBpmIcon.style.transform = 'scale(1.2)';
+            // Animação do ícone
+            tapBpmIcon.classList.add('tap-feedback');
             setTimeout(() => {
-                tapBpmIcon.style.transform = 'scale(1)';
-            }, 100);
+                tapBpmIcon.classList.remove('tap-feedback');
+            }, 300);
             
             const calculatedBpm = calculateBPMFromTaps();
             
             if (calculatedBpm !== null && tapTimes.length >= 2) {
-                updateBpmDiv(calculatedBpm);
+                updateBpmDisplay(calculatedBpm);
                 
-                // Se o metrônomo estiver tocando, reiniciar com o BPM calculado
+                // Se o metrônomo estiver tocando, reiniciar com o novo BPM
                 if (metronomeInterval) {
                     startMetronomeWithCustomBpm();
                 }
             }
         }
 
-        // NOVA FUNÇÃO: iniciar metrônomo com BPM personalizado (do tap)
+        // Função para iniciar metrônomo com BPM personalizado
         function startMetronomeWithCustomBpm() {
             if (!currentHymn) return;
             
             stopMetronome();
             
-            // Usar o BPM do tap se existir, senão usar o slider
             let bpm;
             if (customTapBpm !== null) {
                 bpm = customTapBpm;
@@ -2026,13 +1987,33 @@
         }
 
         // MODIFICAR a função startMetronome original
-        const originalStartMetronome = startMetronome;
         window.startMetronome = function() {
             startMetronomeWithCustomBpm();
         };
 
-        // Sobrescrever a função startMetronome
+        // Sobrescrever função startMetronome
+        const originalStartMetronome = startMetronome;
         startMetronome = startMetronomeWithCustomBpm;
+
+        // Resetar BPM (clique duplo ou duplo toque)
+        function resetTapBpm() {
+            tapTimes = [];
+            lastTapTime = 0;
+            customTapBpm = null;
+            
+            // Restaurar valor do slider
+            const sliderValue = document.getElementById('speedSlider').value;
+            bpmValueSpan.textContent = sliderValue;
+            
+            currentSpeedDiv.style.backgroundColor = '#fee2e2';
+            setTimeout(() => {
+                currentSpeedDiv.style.backgroundColor = '#eef2ff';
+            }, 500);
+            
+            if (metronomeInterval) {
+                startMetronome();
+            }
+        }
 
         // Clique duplo para reiniciar
         tapBpmIcon.addEventListener('dblclick', () => {
@@ -2061,13 +2042,7 @@
             startMetronomeWithCustomBpm();
         });
 
-        // Adicionar evento de clique na figura musical
-        tapBpmIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            registerTap();
-        });
-
-        // Registrar Service Worker para instalação
+         //Registrar Service Worker para instalação
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
@@ -2076,71 +2051,65 @@
             });
         }
 
-        // Função para verificar se o hino deve ter velocidade triplicada
-        function deveTriplicarVelocidade(hymnKey) {
-            // Converte para número se for hino (não coro)
-            if (!hymnKey.toString().startsWith('C')) {
-                const num = parseInt(hymnKey);
-                return hinosVelocidadeTriplicada.includes(num);
+        function Navegar(AntProx) {
+            const isMeiaHoraActive = document.getElementById('meiaHoraCheckbox').checked;
+            const chaves = Object.keys(hymnsData);
+            let inputVal = document.getElementById('hymnInput').value.trim().toLowerCase();
+            const NumeroHino = document.getElementById('hymnInput').value.replace('coro ', '48')
+            //console.log (chaves.indexOf(NumeroHino))
+            let indice = chaves.indexOf(NumeroHino)
+            if (AntProx==1) {
+                indice = indice + AntProx + AntProx
             }
-            return false;
-        }
 
-        // Função para obter velocidades com possível triplicação
-        function getCurrentSpeedsWithTriple() {
-            
-            if (!currentHymn) return { min: 60, med: 70, max: 80 };
-            
-            let speeds;
-            if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
-                speeds = {
-                    min: currentHymn.velMinMeiaHora,
-                    med: currentHymn.velMedMeiaHora,
-                    max: currentHymn.velMaxMeiaHora
-                };
+            if (indice > chaves.length) {
+                indice = 1
+            } else if (indice <= 0) {
+                indice = chaves.length
+            }
+            if (isMeiaHoraActive) {
+                while (hymnsData[indice].MeiaHora != "S") {
+                    indice = indice + AntProx;
+                    if (indice > chaves.length) {
+                        indice = 1
+                    } else if (indice <= 0) {
+                        indice = chaves.length
+                    }
+                }
+            }
+            if (indice > 480) {
+                document.getElementById('hymnInput').value = chaves[indice-1].replace('48', 'coro ') 
             } else {
-                speeds = {
-                    min: currentHymn.velMin,
-                    med: currentHymn.velMed,
-                    max: currentHymn.velMax
-                };
+                document.getElementById('hymnInput').value = chaves[indice-1]     
             }
-
-            // Verifica se o hino atual deve ter velocidade triplicada
-            const hymnKey = document.getElementById('hymnInput').value.trim().toLowerCase();
-            let hymnNumber = null;
-            
-            if (!hymnKey.startsWith('coro')) {
-                hymnNumber = parseInt(hymnKey);
-            }
-            
-            if (hymnNumber && hinosVelocidadeTriplicada.includes(hymnNumber)) {
-                return {
-                    min: speeds.min * 3,
-                    med: speeds.med * 3,
-                    max: speeds.max * 3
-                };
-            }
-            return speeds;
+            updateHymnInfo();
         }
 
-        // Adicione esta função para inicializar o áudio no primeiro toque em qualquer lugar
-        function initAudioOnFirstTouch() {
-            if (audioContext && audioContext.state === 'suspended') {
-                audioContext.resume().then(() => {
-                    console.log('AudioContext resumed successfully');
-                    // Tocar um som de teste silencioso para "ativar" o sistema
-                    const testOsc = audioContext.createOscillator();
-                    const testGain = audioContext.createGain();
-                    testOsc.connect(testGain);
-                    testGain.connect(audioContext.destination);
-                    testGain.gain.value = 0;  // Silencioso
-                    testOsc.start();
-                    testOsc.stop(audioContext.currentTime + 0.01);
-                }).catch(e => console.log('Resume failed:', e));
-            }
+        // Event Listeners
+        if (tapBpmIcon) {
+            // Clique simples para tap
+            tapBpmIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                registerTap();
+            });
+            
+            // Clique duplo para reset
+            //tapBpmIcon.addEventListener('dblclick', (e) => {
+            //    e.stopPropagation();
+            //    resetTapBpm();
+            //getCurrentSpeeds});
         }
 
+        // Atualizar referência do botão Play
+        const playBtn = document.getElementById('playBtn');
+        if (playBtn) {
+            const newPlayBtn = playBtn.cloneNode(true);
+            playBtn.parentNode.replaceChild(newPlayBtn, playBtn);
+            
+            newPlayBtn.addEventListener('click', () => {
+                startMetronomeWithCustomBpm();
+            });
+        }
 
 </script>
 </body>
