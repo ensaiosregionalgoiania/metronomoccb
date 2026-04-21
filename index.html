@@ -201,7 +201,10 @@
         }
 
         .current-speed {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
             margin: 12px 0 8px;
             font-size: 2rem;
             font-weight: 800;
@@ -293,32 +296,6 @@
             margin-bottom: 12px;
         }
 
-        /*.counter-number {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(102,126,234,0.3);
-            flex-shrink: 0;
-        }*/
-        /*.counter-number span {
-            font-size: 2.2rem;
-            font-weight: 800;
-            line-height: 1;
-        }*/
-        .counter-label {
-            font-size: 0.55rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-            margin-top: 2px;
-        }
-
         .beat-figures-row {
             display: flex;
             justify-content: center;
@@ -333,8 +310,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-width: 70px;
-            padding: 8px 6px;
+            min-width: 10px;
+            padding: 2px 1px;
             background: white;
             border-radius: 16px;
             transition: all 0.1s ease;
@@ -345,19 +322,27 @@
 
         .figure-movements {
             display: flex;
-            gap: 8px;
+            flex-direction: column;
+            gap: 1px;
             justify-content: center;
             align-items: center;
             margin: 6px 0 4px;
         }
         
         .movement-dot {
-            width: 10px;
-            height: 10px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background: #cbd5e1;
             transition: all 0.2s ease;
             cursor: pointer;
+        }
+        
+        .movement-row {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            align-items: center;
         }
         
         .movement-dot.active-movement {
@@ -375,10 +360,34 @@
         }
         
         .movement-dot.inicio-movement {
-            background: inherit !important;  /* mantém a cor original do dot */
+            background: inherit !important;
             transform: scale(1.5);
             box-shadow: 0 0 8px #374151;
             animation: pulse-inicio 0.3s ease-in-out;
+        }
+        
+        .movement-dot.full-beat {
+            width: 10px;
+            height: 10px;
+            background: #3b4b7a;
+        }
+
+        .movement-dot.half-beat {
+            width: 6px;
+            height: 6px;
+            background: #94a3b8;
+        }
+
+        .movement-dot.active-movement.full-beat {
+            background: #667eea;
+            transform: scale(1.4);
+            box-shadow: 0 0 6px #667eea;
+        }
+
+        .movement-dot.active-movement.half-beat {
+            background: #667eea;
+            transform: scale(1.3);
+            box-shadow: 0 0 4px #667eea;
         }
                 
         @keyframes pulse-inicio {
@@ -390,66 +399,14 @@
         .figure-unit.active-beat {
             background: #ebebed;
             transform: scale(1.02);
-            box-shadow: 0 4px 12px  #ebebed;
-            border-color:  #ebebed;
-        }
-
-        .figure-unit.active-beat .figure-symbol {
-            color: rgb(151, 127, 127);
-        }
-
-        .figure-unit.active-beat .figure-number {
-            color: white;
-        }
-        
-        .figure-unit.active-beat .movement-dot.active-movement {
-            background: white;
-        }
-        
-        .figure-unit.active-beat .movement-dot.inicio-movement {
-            background: #ff6b6b !important;
-        }
-
-        .figure-unit.strong-primary {
-            border-left: 3px solid #dc2626;
-        }
-        .figure-unit.strong-secondary {
-            border-left: 3px solid #16a34a;
-        }
-        .figure-unit.active-beat.strong-primary {
-            background: #ebebed;
-        }
-        .figure-unit.active-beat.strong-secondary {
-            background: #ebebed;
+            box-shadow: 0 4px 12px #ebebed;
+            border-color: #ebebed;
         }
 
         .figure-symbol {
-            font-size: 1.3rem;
+            font-size: 1.0rem;
             font-family: 'Segoe UI', monospace;
             line-height: 1;
-        }
-
-        /*.figure-number {
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: #475569;
-            margin-top: 2px;
-        }*/
-
-        .figure-movement-number {
-            font-size: 0.6rem;
-            font-weight: 500;
-            color: #64748b;
-            margin-top: 4px;
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-        
-        .figure-movement-number span {
-            display: inline-block;
-            width: 20px;
-            text-align: center;
         }
 
         .legend {
@@ -499,28 +456,29 @@
                 padding: 12px;
             }
             .figure-unit {
-                min-width: 60px;
+                min-width: 45px;
                 padding: 6px 4px;
             }
             .figure-symbol {
-                font-size: 1.1rem;
-            }
-            .counter-number {
-                width: 60px;
-                height: 60px;
-            }
-            .counter-number span {
-                font-size: 1.8rem;
+                font-size: 1rem;
             }
             .current-speed {
                 font-size: 1.6rem;
             }
-            .figure-movements {
-                gap: 5px;
-            }
             .movement-dot {
-                width: 8px;
-                height: 8px;
+                width: 7px;
+                height: 7px;
+            }
+            .movement-dot.full-beat {
+                width: 11px;
+                height: 11px;
+            }
+            .movement-dot.half-beat {
+                width: 6px;
+                height: 6px;
+            }
+            .figure-movements {
+                gap: 3px;
             }
         }
 
@@ -531,31 +489,6 @@
             border-color: #ebebed;
         }
 
-        .figure-unit.inicio-beat .figure-symbol {
-            color: white;
-        }
-
-        .figure-unit.inicio-beat .figure-number {
-            color: white;
-        }
-        
-        .figure-unit.inicio-beat .movement-dot {
-            background: #ffb3b3;
-        }
-        
-        .figure-unit.inicio-beat .movement-dot.active-movement {
-            background: white;
-        }
-
-        .inicio-info {
-            background: #fff5f5;
-            padding: 4px 8px;
-            border-radius: 20px;
-            display: inline-block;
-            margin: 0 auto;
-            border: 1px solid #ff6b6b;
-        }
-        
         .time-signature-info {
             font-size: 0.7rem;
             margin-top: 8px;
@@ -570,16 +503,6 @@
             font-size: 0.65rem;
             margin-top: 6px;
             color: #475569;
-        }
-        
-        .double-speed-badge {
-            background: #f59e0b;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.6rem;
-            font-weight: bold;
-            margin-left: 8px;
         }
         
         .sound-info {
@@ -601,17 +524,7 @@
             font-weight: bold;
             margin-left: 8px;
         }
-        
-        .subdivision-badge {
-            background: #10b981;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.6rem;
-            font-weight: bold;
-            margin-left: 8px;
-        }
-        /* Estilos adicionais para o menu flutuante de busca */
+
         .search-fab {
             position: fixed;
             bottom: 24px;
@@ -818,6 +731,41 @@
             }
         }
 
+        .tap-bpm-icon {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(44, 62, 102, 0.1);
+        }
+
+        .tap-bpm-icon:active {
+            transform: scale(0.9);
+        }
+        
+        .tap-bpm-icon img {
+            width: 28px;
+            height: 28px;
+            pointer-events: none;
+        }
+
+        .tap-bpm-icon:hover {
+            background: rgba(44, 62, 102, 0.2);
+        }
+
+        .tap-feedback {
+            animation: tapPulse 0.3s ease;
+        }
+
+        @keyframes tapPulse {
+            0% { transform: scale(1); background: rgba(44, 62, 102, 0.1); }
+            50% { transform: scale(1.1); background: rgba(44, 62, 102, 0.4); }
+            100% { transform: scale(1); background: rgba(44, 62, 102, 0.1); }
+        }
     </style>
 </head>
 <body>
@@ -857,9 +805,11 @@
                         </div>
                         <div class="current-speed">
                             <span id="currentSpeed">120</span> BPM
+                            <div class="tap-bpm-icon" id="tapBpmIcon" title="Clique no ritmo para calcular BPM">
+                                <img src="tambor.png" alt="Tap BPM" style="width: 32px; height: 32px; vertical-align: middle;">
+                            </div>
                         </div>
                     </div>
-                    
                     <div class="checkbox-group">
                         <label class="checkbox-item">
                             <input type="checkbox" id="accentCheckbox" checked> 🎯 Fortes
@@ -868,7 +818,7 @@
                             <input type="checkbox" id="muteCheckbox"> 🔇 Silenciar
                         </label>
                         <label class="checkbox-item">
-                            <input type="checkbox" id="meiaHoraCheckbox"> ⏱️ Meia Hora
+                            <input type="checkbox" id="meiaHoraCheckbox" checked> ⏱️ Meia Hora
                         </label>
                     </div>
                     
@@ -893,10 +843,9 @@
             </div>
         </div>
     </div>
-    <!-- Botão flutuante de busca -->
+    
     <button class="search-fab" id="searchFabBtn">🔍</button>
     
-    <!-- Modal de busca -->
     <div class="search-modal" id="searchModal">
         <div class="search-window">
             <div class="search-header">
@@ -913,20 +862,17 @@
             </div>
         </div>
     </div>
-    
     <script src="hinos.js"></script>
 
     <script>
-        // Dados dos hinos
+        // Dados dos hinos - exemplo com compasso 12/4
         //const hymnsData = {
-        //    "1": { nome: "Cristo meu Mestre", compasso: "4/4", velMin: 56, velMed: 61, velMax: 66, inicio: 1, velMinMeiaHora: 35, velMedMeiaHora: 37, velMaxMeiaHora: 40 },
-        //    "2": { nome: "De Deus tu és eleita", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4, velMinMeiaHora: 42, velMedMeiaHora: 44, velMaxMeiaHora: 46 },
-        //    "3": { nome: "Faz-nos ouvir Tua voz", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1, velMinMeiaHora: 37, velMedMeiaHora: 38, velMaxMeiaHora: 40 },
-        //    "387": { nome: "Ó Salvador, que recebeste poder", compasso: "4/4", velMin: 104, velMed: 115, velMax: 180, inicio: 1, velMinMeiaHora: 65, velMedMeiaHora: 67, velMaxMeiaHora: 70 }
+        //    "1": { nome: "Cristo meu Mestre", compasso: "12/4", velMin: 56, velMed: 61, velMax: 66, inicio: 1, velMinMeiaHora: 35, velMedMeiaHora: 37, velMaxMeiaHora: 40, MeiaHora: "S", velX3: "N" },
+        //    "2": { nome: "Hino 2", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 1, velMinMeiaHora: 35, velMedMeiaHora: 37, velMaxMeiaHora: 40, MeiaHora: "N", velX3: "N" }
         //};
         
         // Adicionar dados padrão para os demais hinos
-        for (let i = 1; i <= 480; i++) {
+        for (let i = 3; i <= 486; i++) {
             if (!hymnsData[i.toString()]) {
                 hymnsData[i.toString()] = { 
                     nome: `Hino ${i}`, 
@@ -937,57 +883,60 @@
                     inicio: 1, 
                     velMinMeiaHora: 35, 
                     velMedMeiaHora: 37, 
-                    velMaxMeiaHora: 40  
+                    velMaxMeiaHora: 40,
+                    MeiaHora: "N",
+                    velX3: "N"
                 };
             }
         }
         
-        // Coros
-        hymnsData["C1"] = { nome: "Aleluia! Aleluia!", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 4, velMinMeiaHora: 38, velMedMeiaHora: 40, velMaxMeiaHora: 42 };
-        hymnsData["C2"] = { nome: "Toda a glória a Jesus", compasso: "2/4", velMin: 54, velMed: 60, velMax: 66, inicio: 1, velMinMeiaHora: 32, velMedMeiaHora: 34, velMaxMeiaHora: 36 };
-        hymnsData["C3"] = { nome: "Ação de graças darei", compasso: "4/4", velMin: 58, velMed: 67, velMax: 76, inicio: 4, velMinMeiaHora: 35, velMedMeiaHora: 37, velMaxMeiaHora: 39 };
-        hymnsData["C4"] = { nome: "Glória, glórias nas alturas!", compasso: "4/4", velMin: 60, velMed: 72, velMax: 84, inicio: 1, velMinMeiaHora: 38, velMedMeiaHora: 40, velMaxMeiaHora: 42 };
-        hymnsData["C5"] = { nome: "Majestoso é Cristo Jesus!", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 4, velMinMeiaHora: 36, velMedMeiaHora: 38, velMaxMeiaHora: 40 };
-        hymnsData["C6"] = { nome: "A Jesus eu cantarei louvor", compasso: "4/4", velMin: 60, velMed: 68, velMax: 76, inicio: 1, velMinMeiaHora: 36, velMedMeiaHora: 38, velMaxMeiaHora: 40 };
-
         let currentHymn = null;
         let metronomeInterval = null;
         let currentMovementIndex = 0;
         let beatsPerMeasure = 4;
-        let audioContext = null;
         let isMuted = false;
         let inicioValue = 0;
-        let isCompoundMode = false;
         let isDoubleSpeedMode = false;
         let totalMovements = 0;
-        let isMeiaHoraMode = false;
+        let isMeiaHoraMode = true;
 
-        // Verificar se é compasso simples (2/4, 3/4, 4/4, 2/2, 3/2, 4/2)
+        // Carregar arquivos MP3
+        const audioBeepForte = new Audio('beep_2000Hz.mp3');
+        const audioBeepMedio = new Audio('beep_1060Hz.mp3');
+        const audioBeepFraco = new Audio('beep_530Hz.mp3');
+        const audioBeepGrave = new Audio('beep_260Hz.mp3');
+
+        audioBeepForte.preload = 'auto';
+        audioBeepMedio.preload = 'auto';
+        audioBeepFraco.preload = 'auto';
+        audioBeepGrave.preload = 'auto';
+
+        audioBeepForte.volume = 1.0;
+        audioBeepMedio.volume = 0.5;
+        audioBeepFraco.volume = 0.15;
+        audioBeepGrave.volume = 0.8;
+
         function isSimpleTime(timeSignature) {
             const simplePatterns = ['2/4', '3/4', '4/4', '2/2', '3/2', '4/2'];
             return simplePatterns.includes(timeSignature);
         }
 
-        // Verificar se é compasso composto
         function isCompoundTime(timeSignature) {
             const compoundPatterns = ['6/8', '9/8', '12/8', '6/4', '9/4', '12/4'];
             return compoundPatterns.includes(timeSignature);
         }
 
-        // Função que determina se deve usar modo velocidade dobrada (subdivisão)
-        // Agora: SEMPRE TRUE para compassos simples
         function shouldUseDoubleSpeedMode(hymn) {
             if (!hymn) return false;
-            return isSimpleTime(hymn.compasso);
+            if (isSimpleTime(hymn.compasso)) return true;
+            if (isCompoundTime(hymn.compasso)) {
+                return isMeiaHoraMode;
+            }
+            return false;
         }
 
-        // VERIFICA SE DEVE TOCAR SOM neste movimento
-        // Em compassos simples: 
-        // - Movimentos pares (0,2,4,6...) = 1ª marcação = som normal/forte
-        // - Movimentos ímpares (1,3,5,7...) = 2ª marcação = som suave
         function shouldPlaySoundOnMovement(movementIndex) {
             if (!isDoubleSpeedMode) return true;
-            // Agora sempre toca som, mas com volumes diferentes
             return true;
         }
 
@@ -1006,20 +955,24 @@
 
         function getStrongMovements(timeSignature, totalMovements) {
             const isCompound = isCompoundTime(timeSignature);
+            
             if (!isCompound) {
-                // Para compassos simples: batidas fortes são no início de cada tempo (movimentos pares: 0, 2, 4, 6...)
                 const strong = [];
                 for (let i = 0; i < totalMovements; i += 2) {
                     strong.push(i);
                 }
                 return strong;
             }
-            // Compostos: forte a cada 3 movimentos
-            const strong = [];
-            for (let i = 0; i < totalMovements; i += 3) {
-                strong.push(i);
+            
+            if (isDoubleSpeedMode && isMeiaHoraMode) {
+                const strong = [];
+                for (let i = 0; i < totalMovements; i += 2) {
+                    strong.push(i);
+                }
+                return strong;
             }
-            return strong;
+            
+            return [0];
         }
 
         function getAccentType(movementIndex, accentEnabled, timeSignature) {
@@ -1038,19 +991,15 @@
             const timeSig = currentHymn.compasso;
             const isCompound = isCompoundTime(timeSig);
             
-            if (isCompound) {
-                const groups = beatsPerMeasure / 3;
-                for (let g = 0; g < groups; g++) {
-                    const firstMovementOfGroup = g * 3;
-                    const isStrong = getStrongMovements(timeSig, totalMovements).includes(firstMovementOfGroup);
-                    let accentClass = '';
-                    if (isStrong) {
-                        accentClass = firstMovementOfGroup === 0 ? 'strong-primary' : 'strong-secondary';
-                    }
-                    
+            if (isCompound && isDoubleSpeedMode) {
+                // Modo Meia Hora para compassos compostos: cada tempo tem 2 subdivisões
+                // Layout: dot grande em cima, dot pequeno embaixo
+                const beatsPerBar = beatsPerMeasure;
+                
+                for (let i = 0; i < beatsPerBar; i++) {
                     const figureDiv = document.createElement('div');
-                    figureDiv.className = `figure-unit ${accentClass}`;
-                    figureDiv.dataset.groupIndex = g;
+                    figureDiv.className = `figure-unit`;
+                    figureDiv.dataset.beatIndex = i;
                     
                     const symbolSpan = document.createElement('div');
                     symbolSpan.className = 'figure-symbol';
@@ -1058,45 +1007,70 @@
                     
                     const movementsDiv = document.createElement('div');
                     movementsDiv.className = 'figure-movements';
-                    movementsDiv.dataset.group = g;
+                    movementsDiv.dataset.beat = i;
                     
-                    for (let m = 0; m < 3; m++) {
-                        const dotWrapper = document.createElement('div');
-                        dotWrapper.style.display = 'flex';
-                        dotWrapper.style.flexDirection = 'column';
-                        dotWrapper.style.alignItems = 'center';
-                        dotWrapper.style.gap = '2px';
-                        
-                        const dot = document.createElement('div');
-                        dot.className = 'movement-dot';
-                        dot.dataset.movement = m;
-                        dot.dataset.globalMovement = g * 3 + m;
-                        dot.dataset.group = g;
-                        dotWrapper.appendChild(dot);
-                        
-                        const arrowDown = document.createElement('div');
-                        arrowDown.className = 'movement-arrow-down';
-                        arrowDown.innerHTML = '🢁';
-                        arrowDown.style.fontSize = '0.8rem';
-                        arrowDown.style.color = '#ef4444';
-                        arrowDown.style.lineHeight = '1';
-                        arrowDown.style.fontWeight = 'bold';
-                        arrowDown.style.visibility = 'hidden';
-                        arrowDown.style.transition = 'visibility 0s linear 0.3s';
-                        dotWrapper.appendChild(arrowDown);
-                        
-                        movementsDiv.appendChild(dotWrapper);
-                    }
+                    // Dot grande (1ª marcação) - linha de cima
+                    const topRow = document.createElement('div');
+                    topRow.className = 'movement-row';
+                    const dotGrande = document.createElement('div');
+                    dotGrande.className = 'movement-dot full-beat';
+                    dotGrande.dataset.movement = 0;
+                    dotGrande.dataset.globalMovement = i * 2;
+                    dotGrande.dataset.beat = i;
+                    topRow.appendChild(dotGrande);
+                    
+                    // Dot pequeno (2ª marcação) - linha de baixo
+                    const bottomRow = document.createElement('div');
+                    bottomRow.className = 'movement-row';
+                    const dotPequeno = document.createElement('div');
+                    dotPequeno.className = 'movement-dot half-beat';
+                    dotPequeno.dataset.movement = 1;
+                    dotPequeno.dataset.globalMovement = i * 2 + 1;
+                    dotPequeno.dataset.beat = i;
+                    bottomRow.appendChild(dotPequeno);
+                    
+                    movementsDiv.appendChild(topRow);
+                    movementsDiv.appendChild(bottomRow);
                     
                     figureDiv.appendChild(symbolSpan);
                     figureDiv.appendChild(movementsDiv);
                     container.appendChild(figureDiv);
-                    //console.log(figureDiv)
                 }
-                isCompoundMode = true;
-            } else {
-                isCompoundMode = false;
+            } 
+            else if (isCompound && !isDoubleSpeedMode) {
+                // Modo normal para compassos compostos: uma figura por batida, sem subdivisão
+                const beatsPerBar = beatsPerMeasure;
                 
+                for (let i = 0; i < beatsPerBar; i++) {
+                    const figureDiv = document.createElement('div');
+                    figureDiv.className = `figure-unit`;
+                    figureDiv.dataset.beatIndex = i;
+                    
+                    const symbolSpan = document.createElement('div');
+                    symbolSpan.className = 'figure-symbol';
+                    symbolSpan.textContent = getFigureSymbol(timeSig);
+                    
+                    const movementsDiv = document.createElement('div');
+                    movementsDiv.className = 'figure-movements';
+                    movementsDiv.dataset.beat = i;
+                    
+                    const row = document.createElement('div');
+                    row.className = 'movement-row';
+                    const dot = document.createElement('div');
+                    dot.className = 'movement-dot full-beat';
+                    dot.dataset.movement = 0;
+                    dot.dataset.globalMovement = i;
+                    dot.dataset.beat = i;
+                    row.appendChild(dot);
+                    movementsDiv.appendChild(row);
+                    
+                    figureDiv.appendChild(symbolSpan);
+                    figureDiv.appendChild(movementsDiv);
+                    container.appendChild(figureDiv);
+                }
+            }
+            else {
+                // Compassos simples: cada tempo tem 2 subdivisões lado a lado
                 for (let i = 0; i < beatsPerMeasure; i++) {
                     const beatNumber = i + 1;
                     const isStrong = beatNumber === 1;
@@ -1115,34 +1089,21 @@
                     
                     const movementsDiv = document.createElement('div');
                     movementsDiv.className = 'figure-movements';
+                    movementsDiv.style.flexDirection = 'row';
                     movementsDiv.dataset.beat = i;
                     
                     for (let s = 0; s < 2; s++) {
-                        const dotWrapper = document.createElement('div');
-                        dotWrapper.style.display = 'flex';
-                        dotWrapper.style.flexDirection = 'column';
-                        dotWrapper.style.alignItems = 'center';
-                        dotWrapper.style.gap = '2px';
-                        
                         const dot = document.createElement('div');
                         dot.className = 'movement-dot';
+                        if (s === 0) {
+                            dot.classList.add('full-beat');
+                        } else {
+                            dot.classList.add('half-beat');
+                        }
                         dot.dataset.movement = s;
                         dot.dataset.globalMovement = i * 2 + s;
                         dot.dataset.beat = i;
-                        dotWrapper.appendChild(dot);
-                        
-                        const arrowDown = document.createElement('div');
-                        arrowDown.className = 'movement-arrow-down';
-                        arrowDown.innerHTML = '🢁';
-                        arrowDown.style.fontSize = '0.8rem';
-                        arrowDown.style.color = '#ef4444';
-                        arrowDown.style.lineHeight = '1';
-                        arrowDown.style.fontWeight = 'bold';
-                        arrowDown.style.visibility = 'hidden';
-                        arrowDown.style.transition = 'visibility 0s linear 0.3s';
-                        dotWrapper.appendChild(arrowDown);
-                        
-                        movementsDiv.appendChild(dotWrapper);
+                        movementsDiv.appendChild(dot);
                     }
                     
                     figureDiv.appendChild(symbolSpan);
@@ -1151,16 +1112,17 @@
                 }
             }
         }
-
+        
         function highlightCurrentMovement(movementIndex) {
             const timeSig = currentHymn.compasso;
             const isCompound = isCompoundTime(timeSig);
             const movementNumber = movementIndex + 1;
             const isInicio = isInicioMovement(movementNumber);
             
-            if (isCompound) {
-                const groupIndex = Math.floor(movementIndex / 3);
-                const movementInGroup = movementIndex % 3;
+            // Para compassos compostos com modo double speed
+            if (isCompound && isDoubleSpeedMode) {
+                const beatIndex = Math.floor(movementIndex / 2);
+                const subMovement = movementIndex % 2;
                 const figures = document.querySelectorAll('.figure-unit');
                 
                 figures.forEach(fig => {
@@ -1171,43 +1133,31 @@
                     });
                 });
                 
-                if (figures[groupIndex]) {
-                    figures[groupIndex].classList.add('active-beat', 'pulse-beat');
+                if (figures[beatIndex]) {
+                    figures[beatIndex].classList.add('active-beat', 'pulse-beat');
                     
-                    const dots = figures[groupIndex].querySelectorAll('.movement-dot');
-                    if (dots[movementInGroup]) {
-                        dots[movementInGroup].classList.add('active-movement');
+                    const dots = figures[beatIndex].querySelectorAll('.movement-dot');
+                    // subMovement: 0 = dot grande (cima), 1 = dot pequeno (baixo)
+                    if (dots[subMovement]) {
+                        dots[subMovement].classList.add('active-movement');
                         
                         if (isInicio) {
-                            //dots[movementInGroup].classList.add('inicio-movement');
-                            //figures[groupIndex].classList.add('inicio-beat');
-                            
-                            const dotWrapper = dots[movementInGroup].parentElement;
-                            const arrow = dotWrapper.querySelector('.movement-arrow-down');
-                            if (arrow) {
-                                arrow.style.visibility = 'visible';
-                                arrow.style.transition = 'visibility 0s';
-                            }
+                            dots[subMovement].classList.add('inicio-movement');
+                            setTimeout(() => {
+                                dots[subMovement]?.classList.remove('inicio-movement');
+                            }, 400);
                         }
                     }
                     
                     setTimeout(() => {
-                        if (isInicio) {
-                            const dots = figures[groupIndex].querySelectorAll('.movement-dot');
-                            if (dots[movementInGroup]) {
-                                const dotWrapper = dots[movementInGroup].parentElement;
-                                const arrow = dotWrapper.querySelector('.movement-arrow-down');
-                                if (arrow) {
-                                    arrow.style.visibility = 'hidden';
-                                }
-                                dots[movementInGroup].classList.remove('inicio-movement');
-                            }
-                            figures[groupIndex].classList.remove('inicio-beat');
-                        }
-                        figures[groupIndex]?.classList.remove('pulse-beat');
-                    }, 400);
+                        figures[beatIndex]?.classList.remove('pulse-beat');
+                    }, 200);
                 }
-            } else {
+                return;
+            }
+            
+            // Para compassos simples
+            if (!isCompound) {
                 const beatIndex = Math.floor(movementIndex / 2);
                 const subMovement = movementIndex % 2;
                 const figures = document.querySelectorAll('.figure-unit');
@@ -1228,121 +1178,128 @@
                         dots[subMovement].classList.add('active-movement');
                         
                         if (isInicio) {
-                            
-                            const dotWrapper = dots[subMovement].parentElement;
-                            const arrow = dotWrapper.querySelector('.movement-arrow-down');
-                            if (arrow) {
-                                arrow.style.visibility = 'visible';
-                                arrow.style.transition = 'visibility 0s';
-                            }
+                            dots[subMovement].classList.add('inicio-movement');
+                            setTimeout(() => {
+                                dots[subMovement]?.classList.remove('inicio-movement');
+                            }, 400);
                         }
                     }
                     
                     setTimeout(() => {
-                        if (isInicio) {
-                            const dots = figures[beatIndex].querySelectorAll('.movement-dot');
-                            if (dots[subMovement]) {
-                                const dotWrapper = dots[subMovement].parentElement;
-                                const arrow = dotWrapper.querySelector('.movement-arrow-down');
-                                if (arrow) {
-                                    arrow.style.visibility = 'hidden';
-                                }
-                                dots[subMovement].classList.remove('inicio-movement');
-                            }
-                            figures[beatIndex].classList.remove('inicio-beat');
-                        }
                         figures[beatIndex]?.classList.remove('pulse-beat');
-                    }, 400);
+                    }, 200);
+                }
+                return;
+            }
+            
+            // Para compassos compostos sem double speed
+            const figures = document.querySelectorAll('.figure-unit');
+            figures.forEach(fig => {
+                fig.classList.remove('active-beat', 'pulse-beat', 'inicio-beat');
+                const dots = fig.querySelectorAll('.movement-dot');
+                dots.forEach(dot => dot.classList.remove('active-movement', 'inicio-movement'));
+            });
+            
+            if (figures[movementIndex]) {
+                figures[movementIndex].classList.add('active-beat', 'pulse-beat');
+                const dots = figures[movementIndex].querySelectorAll('.movement-dot');
+                if (dots[0]) {
+                    dots[0].classList.add('active-movement');
+                    if (isInicio) {
+                        dots[0].classList.add('inicio-movement');
+                        setTimeout(() => {
+                            dots[0]?.classList.remove('inicio-movement');
+                        }, 400);
+                    }
+                }
+                setTimeout(() => {
+                    figures[movementIndex]?.classList.remove('pulse-beat');
+                }, 200);
+            }
+        }
+
+        function playSound(accentType, isSubdivision = false, useGrave = false) {
+            if (isMuted) return;
+            
+            let audioToPlay = null;
+            let volume = 1.0;
+            
+            if (useGrave) {
+                audioToPlay = audioBeepGrave;
+                volume = 0.8;
+            }
+            else if (isSubdivision) {
+                audioToPlay = audioBeepFraco;
+                volume = 0.15;
+            }
+            else {
+                if (accentType === 'primary') {
+                    audioToPlay = audioBeepForte;
+                    volume = 1.0;
+                } else if (accentType === 'secondary') {
+                    audioToPlay = audioBeepMedio;
+                    volume = 0.5;
+                } else {
+                    audioToPlay = audioBeepMedio;
+                    volume = 0.5;
                 }
             }
-        }
-
-        function playSound(accentType, isSubdivision = false) {
-            if (isMuted) return;
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioContext.state === 'suspended') {
-                audioContext.resume();
-            }
-            const now = audioContext.currentTime;
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.connect(gain);
-            gain.connect(audioContext.destination);
-            osc.type = 'triangle';
-            let freq = 520;
-            let vol = 0.25;
-            let duration = 0.01;  // Duração padrão
             
-            if (accentType === 'primary') { 
-                freq = 880; 
-                vol = 0.45;
-                duration = 0.01;  // Um pouco mais longo para o 1º tempo
-            } else if (accentType === 'secondary') { 
-                freq = 660; 
-                vol = 0.38;
-                duration = 0.01;
-            } else if (isSubdivision) {
-                // Som suave para meios tempos (2ª marcação)
-                freq = 440;
-                vol = 0.08;  // Volume mais baixo (recomendo 0.06 a 0.10)
-                duration = 0.01;  // Mais curto para não atrapalhar
+            if (audioToPlay) {
+                const audioClone = audioToPlay.cloneNode();
+                audioClone.volume = volume;
+                audioClone.play().catch(err => console.log('Erro ao tocar:', err));
             }
-            
-            osc.frequency.setValueAtTime(freq, now);
-            gain.gain.setValueAtTime(vol, now);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-            osc.start();
-            osc.stop(now + duration);
         }
-
+        
         function executeBeat() {
             const accentEnabled = document.getElementById('accentCheckbox').checked;
             const timeSig = currentHymn.compasso;
+            const isCompound = isCompoundTime(timeSig);
             
             let movementNumber = currentMovementIndex + 1;
             const isInicio = isInicioMovement(movementNumber);
             
+            let useGraveSound = false;
+            if (currentHymn && currentHymn.inicio) {
+                useGraveSound = (currentHymn.inicio % 1 !== 0);
+            }
+            
             let accentType = null;
             let isSubdivision = false;
             
-            // Verifica se é um meio tempo (movimento ímpar) em compassos simples
-            if (isDoubleSpeedMode && currentMovementIndex % 2 === 1) {
-                isSubdivision = true;
+            if (isDoubleSpeedMode) {
+                if (currentMovementIndex % 2 === 1) {
+                    isSubdivision = true;
+                }
             }
             
-            // Toca som normal/forte para 1ª marcação ou som suave para 2ª marcação
             if (shouldPlaySoundOnMovement(currentMovementIndex)) {
                 if (!isSubdivision) {
                     accentType = getAccentType(currentMovementIndex, accentEnabled, timeSig);
                 }
-                playSound(accentType, isSubdivision);
+                playSound(accentType, isSubdivision, useGraveSound);
             }
             
             highlightCurrentMovement(currentMovementIndex);
-            updateBeatCounter(movementNumber);
             
             currentMovementIndex++;
             if (currentMovementIndex >= totalMovements) {
                 currentMovementIndex = 0;
             }
         }
+
         function startMetronome() {
             if (!currentHymn) {
-                if (!processHymnInput()) { alert('Digite um hino válido!'); return; }
+                if (!processHymnInput()) { return; }
                 updateHymnInfo();
             }
             stopMetronome();
             
             let bpm = parseInt(document.getElementById('speedSlider').value);
             
-            // Para compassos simples: toca no DOBRO da velocidade
-            // O intervalo deve ser metade do tempo normal
             let intervalMs;
             if (isDoubleSpeedMode) {
-                // Toca a cada semicolcheia (metade do tempo da semínima)
-                // Ex: BPM=70 → toca a cada (60/(70*2)) = 428ms (equivale a 140 BPM)
                 intervalMs = (60 / (bpm * 2)) * 1000;
             } else {
                 intervalMs = (60 / bpm) * 1000;
@@ -1367,11 +1324,10 @@
                 dots.forEach(dot => dot.classList.remove('active-movement', 'inicio-movement'));
             });
             currentMovementIndex = 0;
-            updateBeatCounter();
         }
 
         function processHymnInput() {
-            const input = document.getElementById('hymnInput').value.trim().toLowerCase();
+            const input = document.getElementById('hymnInput').value.trim().toLowerCase().replace('coro ', '48');
             const errorDiv = document.getElementById('errorMessage');
             errorDiv.style.display = 'none';
             let hymnKey = null;
@@ -1388,7 +1344,7 @@
                 }
             } else if (/^\d+$/.test(input)) {
                 let num = parseInt(input);
-                if (num >= 1 && num <= 480) {
+                if (num >= 1 && num <= 486) {
                     hymnKey = num.toString();
                 } else {
                     errorDiv.textContent = 'Número inválido (1-480)';
@@ -1419,194 +1375,58 @@
             }
         }
 
-        // Obter velocidades atuais baseado no modo Meia Hora e possível triplicação
         function getCurrentSpeeds() {
             if (!currentHymn) return { min: 60, med: 70, max: 80 };
             
-            let speeds;
             if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
-                speeds = {
+                return {
                     min: currentHymn.velMinMeiaHora,
                     med: currentHymn.velMedMeiaHora,
                     max: currentHymn.velMaxMeiaHora
                 };
             } else {
-                speeds = {
+                return {
                     min: currentHymn.velMin,
                     med: currentHymn.velMed,
                     max: currentHymn.velMax
                 };
             }
-            
-            // Verifica se o hino atual deve ter velocidade triplicada
-            const hymnKey = document.getElementById('hymnInput').value.trim().toLowerCase();
-            let hymnNumber = null;
-            
-            if (!hymnKey.startsWith('coro')) {
-                hymnNumber = parseInt(hymnKey);
-            }
-            
-            if (hymnNumber && hinosVelocidadeTriplicada.includes(hymnNumber)) {
-                return {
-                    min: speeds.min * 3,
-                    med: speeds.med * 3,
-                    max: speeds.max * 3
-                };
-            }
-            
-            return speeds;
         }
-
-        // Atualizar velocidades no slider
+        
         function updateSpeedRange() {
             const speeds = getCurrentSpeeds();
-            let realMin = speeds.min;
-            let realMed = speeds.med;
-            let realMax = speeds.max;
-            
-            document.getElementById('minSpeed').textContent = realMin;
-            document.getElementById('avgSpeed').textContent = realMed;
-            document.getElementById('maxSpeed').textContent = realMax;
+            document.getElementById('minSpeed').textContent = speeds.min;
+            document.getElementById('avgSpeed').textContent = speeds.med;
+            document.getElementById('maxSpeed').textContent = speeds.max;
             
             const slider = document.getElementById('speedSlider');
-            slider.min = realMin;
-            slider.max = realMax;
-            
-            console.log (slider.max)
-            let currentVal = parseInt(slider.max);
-            slider.value = currentVal;
-            //aqui
-            document.getElementById('currentSpeed').innerHTML = `${currentVal}`;
-        }
-
-        // Variável para controlar se está em modo coro
-        let isCoroMode = false;
-        let currentCoroNumber = 1;
-
-        document.getElementById('prevBtn').addEventListener('click', () => {
-            let val = document.getElementById('hymnInput').value.trim().toLowerCase();
-            
-            // Verifica se está em modo coro
-            if (val.startsWith('coro')) {
-                let num = parseInt(val.replace('coro', '')) || 1;
-                if (num > 1) {
-                    // Vai para o coro anterior
-                    document.getElementById('hymnInput').value = `coro ${num - 1}`;
-                } else {
-                    // Se for coro 1, vai para o hino 480
-                    document.getElementById('hymnInput').value = '480';
-                }
-            } else {
-                let n = parseInt(val) || 1;
-                if (n > 1) {
-                    // Vai para o hino anterior
-                    document.getElementById('hymnInput').value = n - 1;
-                } else {
-                    // Se for hino 1, vai para o coro 6
-                    document.getElementById('hymnInput').value = 'coro 6';
-                }
-            }
-            updateHymnInfo();
-        });
-
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            let val = document.getElementById('hymnInput').value.trim().toLowerCase();
-            
-            // Verifica se está em modo coro
-            if (val.startsWith('coro')) {
-                let num = parseInt(val.replace('coro', '')) || 1;
-                if (num < 6) {
-                    // Vai para o próximo coro
-                    document.getElementById('hymnInput').value = `coro ${num + 1}`;
-                } else {
-                    // Se for coro 6, vai para o hino 1
-                    document.getElementById('hymnInput').value = '1';
-                }
-            } else {
-                let n = parseInt(val) || 1;
-                if (n < 480) {
-                    // Vai para o próximo hino
-                    document.getElementById('hymnInput').value = n + 1;
-                } else {
-                    // Se for hino 480, vai para o coro 1
-                    document.getElementById('hymnInput').value = 'coro 1';
-                }
-            }
-            updateHymnInfo();
-        });
-
-        document.getElementById('hymnInput').addEventListener('keypress', e => { if(e.key === 'Enter') updateHymnInfo(); });
-        
-        document.getElementById('speedSlider').addEventListener('input', (e) => {
-            let sliderValue = parseInt(e.target.value);
-            document.getElementById('currentSpeed').innerHTML = `${sliderValue}`;
-            if (metronomeInterval) startMetronome();
-        });
-        
-        document.getElementById('accentCheckbox').addEventListener('change', refreshAfterToggle);
-        document.getElementById('muteCheckbox').addEventListener('change', (e) => { isMuted = e.target.checked; });
-        
-        // Evento do checkbox Meia Hora
-        document.getElementById('meiaHoraCheckbox').addEventListener('change', (e) => {
-            isMeiaHoraMode = e.target.checked;
-            const meiaHoraLabel = document.getElementById('meiaHoraLabel');
-            if (isMeiaHoraMode) {
-                meiaHoraLabel.style.display = 'inline-block';
-            } else {
-                meiaHoraLabel.style.display = 'none';
-            }
-            updateSpeedRange();
-            if (metronomeInterval) startMetronome();
-        });
-        
-        document.getElementById('playBtn').addEventListener('click', startMetronome);
-        document.getElementById('stopBtn').addEventListener('click', stopMetronome);
-        document.body.addEventListener('click', () => { if (audioContext && audioContext.state === 'suspended') audioContext.resume(); });
-        
-        function getFigureName(timeSignature) {
-            if (timeSignature === '2/2' || timeSignature === '3/2' || timeSignature === '4/2') return 'Mínima';
-            if (timeSignature === '6/4' || timeSignature === '9/4' || timeSignature === '12/4') return 'Mínima pontuada';
-            if (timeSignature === '6/8' || timeSignature === '9/8' || timeSignature === '12/8') return 'Semínima pontuada';
-            return 'Semínima';
-        }
-        
-        function updateBeatCounter(movementNumber) {
-            const isCompound = isCompoundTime(currentHymn?.compasso || '4/4');
-            
-            if (!isCompound) {
-                if (movementNumber) {
-                    const beat = Math.ceil(movementNumber / 2);
-                    const sub = movementNumber % 2 === 0 ? '2ª' : '1ª';
-                } 
-            }
+            slider.min = speeds.min;
+            slider.max = speeds.max;
+            slider.value = speeds.max;
+            document.getElementById('currentSpeed').innerHTML = `${speeds.max}`;
         }
 
         function isInicioMovement(movementNumber) {
             if (!currentHymn || !currentHymn.inicio) return false;
             const inicio = currentHymn.inicio;
+            const isCompound = isCompoundTime(currentHymn.compasso);
             
-            if (isDoubleSpeedMode && !isCompoundTime(currentHymn.compasso)) {
-                // Para compassos simples: o início pode ser um número inteiro (início do tempo) ou fracionado (meio do tempo)
+            if (isDoubleSpeedMode) {
                 if (inicio % 1 === 0) {
-                    // Início no começo do tempo: movimento = (inicio - 1) * 2 + 1
                     const targetMovement = (inicio - 1) * 2 + 1;
                     return movementNumber === targetMovement;
                 } else {
-                    // Início na segunda metade do tempo: ex: 1.5 = primeiro tempo, segunda subdivisão
                     const beat = Math.floor(inicio);
                     const targetMovement = (beat - 1) * 2 + 2;
                     return movementNumber === targetMovement;
                 }
-            } else if (isCompoundTime(currentHymn.compasso)) {
+            } else if (isCompound) {
                 return movementNumber === inicio;
             } else {
                 return movementNumber === inicio;
             }
         }
 
-        // Lista de hinos que devem ter velocidade triplicada
-        const hinosVelocidadeTriplicada = [42, 63, 65, 97, 105, 107, 162, 177, 205, 215, 219, 272, 316];
-        console.log("bb")
         function updateHymnInfo() {
             if (!processHymnInput()) { 
                 stopMetronome(); 
@@ -1620,46 +1440,27 @@
             const nomeDisplay = isCoro ? `🎵 ${currentHymn.nome}` : currentHymn.nome;
             
             document.getElementById('hymnName').textContent = nomeDisplay;
-            
-            const speeds = getCurrentSpeeds();
-            let realMin = speeds.min;
-            let realMed = speeds.med;
-            let realMax = speeds.max;
 
-            document.getElementById('minSpeed').textContent = realMin;
-            document.getElementById('avgSpeed').textContent = realMed;
-            document.getElementById('maxSpeed').textContent = realMax;
+            const speeds = getCurrentSpeeds();
+            document.getElementById('minSpeed').textContent = speeds.min;
+            document.getElementById('avgSpeed').textContent = speeds.med;
+            document.getElementById('maxSpeed').textContent = speeds.max;
             
             const slider = document.getElementById('speedSlider');
-            slider.min = realMin;
-            slider.max = realMax;
-            slider.value = realMax;
-            
-            document.getElementById('currentSpeed').innerHTML = `${realMax}`;
+            slider.min = speeds.min;
+            slider.max = speeds.max;
+            slider.value = speeds.max;
+            document.getElementById('currentSpeed').innerHTML = `${speeds.max}`;
+
             document.getElementById('timeSignature').textContent = currentHymn.compasso;
             
             beatsPerMeasure = parseInt(currentHymn.compasso.split('/')[0]);
             const isCompound = isCompoundTime(currentHymn.compasso);
             
-            if (isCompound) {
-                totalMovements = beatsPerMeasure;
-            } else {
-                // Para compassos simples: 2 movimentos por tempo
+            if (isDoubleSpeedMode) {
                 totalMovements = beatsPerMeasure * 2;
-            }
-            
-            const figureName = getFigureName(currentHymn.compasso);
-            const figureSymbol = getFigureSymbol(currentHymn.compasso);
-            
-            if (isCompound) {
-                const groups = beatsPerMeasure / 3;
             } else {
-                if (currentHymn.inicio && currentHymn.inicio % 1 !== 0) {
-                    const startBeat = Math.floor(currentHymn.inicio);
-                    const targetMovement = (startBeat - 1) * 2 + 2;
-                } else if (currentHymn.inicio && currentHymn.inicio !== 1) {
-                    const targetMovement = (currentHymn.inicio - 1) * 2 + 1;
-                }
+                totalMovements = beatsPerMeasure;
             }
             
             createBeatFiguresUI();
@@ -1667,60 +1468,66 @@
             const accentEnabled = document.getElementById('accentCheckbox').checked;
             const strongMovements = getStrongMovements(currentHymn.compasso, totalMovements);
             
-            if (accentEnabled) {
-                if (strongMovements.length > 1) {
-                    const strongNumbers = strongMovements.map(m => {
-                        if (isCompound) {
-                            const tempo = Math.floor(m / 3) + 1;
-                            const mov = (m % 3) + 1;
-                            return `${tempo}º tempo (${mov}ª batida)`;
-                        } else {
-                            const tempo = Math.floor(m / 2) + 1;
-                            const sub = (m % 2) + 1;
-                            return `${tempo}º tempo (${sub}ª marcação)`;
-                        }
-                    });
-                } else {
-                    document.getElementById('accentDescription').innerHTML = `🎯 Destaque ativo: apenas 1ª batida forte (1º tempo, 1ª marcação)`;
-                }
+            if (accentEnabled && strongMovements.length > 1) {
+                document.getElementById('accentDescription').innerHTML = `🎯 Destaque ativo: múltiplas batidas fortes (${strongMovements.length} ao todo)`;
+            } else if (accentEnabled) {
+                document.getElementById('accentDescription').innerHTML = `🎯 Destaque ativo: apenas 1ª batida forte`;
+            } else {
+                document.getElementById('accentDescription').innerHTML = `🔘 Destaque desativado (todas as batidas com mesmo volume)`;
             }
+            
+            if (isDoubleSpeedMode) {
+                document.getElementById('soundInfo').innerHTML = `🔊 1ª marcação (●): som forte/médio | 2ª marcação (○): som fraco`;
+            } else {
+                document.getElementById('soundInfo').innerHTML = `🔊 Modo normal: um som por tempo`;
+            }
+            
             if (currentHymn.inicio !== undefined && currentHymn.inicio !== null) {
                 inicioValue = currentHymn.inicio;
-                
-                if (isCompound) {
-                    if (inicioValue % 1 !== 0) {
-                        const beat = Math.floor(inicioValue);
-                        const fraction = Math.round((inicioValue % 1) * 3);
-                    }
-                } else {
-                    if (inicioValue % 1 !== 0) {
-                        const beat = Math.floor(inicioValue);
-                    }
-                }
             }
             
             stopMetronome();
             currentMovementIndex = 0;
-            updateBeatCounter();
         }
-        
-        updateHymnInfo();
 
-        // ========== FUNCIONALIDADE DE BUSCA ==========
+        // Event Listeners
+        document.getElementById('nextBtn').addEventListener('click', () => navegar(1));
+        document.getElementById('prevBtn').addEventListener('click', () => navegar(-1));
+        document.getElementById('accentCheckbox').addEventListener('change', refreshAfterToggle);
+        document.getElementById('muteCheckbox').addEventListener('change', (e) => { isMuted = e.target.checked; });
         
+        document.getElementById('meiaHoraCheckbox').addEventListener('change', (e) => {
+            isMeiaHoraMode = e.target.checked;
+            const meiaHoraLabel = document.getElementById('meiaHoraLabel');
+            if (isMeiaHoraMode) {
+                meiaHoraLabel.style.display = 'inline-block';
+            } else {
+                meiaHoraLabel.style.display = 'none';
+            }
+            
+            if (currentHymn) {
+                isDoubleSpeedMode = shouldUseDoubleSpeedMode(currentHymn);
+                updateSpeedRange();
+                createBeatFiguresUI();
+                if (metronomeInterval) startMetronome();
+            }
+        });
+
+        document.getElementById('playBtn').addEventListener('click', startMetronome);
+        document.getElementById('stopBtn').addEventListener('click', stopMetronome);
+
+        // Busca
         const searchFabBtn = document.getElementById('searchFabBtn');
         const searchModal = document.getElementById('searchModal');
         const searchCloseBtn = document.getElementById('searchCloseBtn');
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
         
-        // Abrir modal
         searchFabBtn.addEventListener('click', () => {
             searchModal.classList.add('active');
             searchInput.focus();
         });
         
-        // Fechar modal
         function closeSearchModal() {
             searchModal.classList.remove('active');
             searchInput.value = '';
@@ -1728,15 +1535,10 @@
         }
         
         searchCloseBtn.addEventListener('click', closeSearchModal);
-        
-        // Fechar ao clicar fora da janela
         searchModal.addEventListener('click', (e) => {
-            if (e.target === searchModal) {
-                closeSearchModal();
-            }
+            if (e.target === searchModal) closeSearchModal();
         });
         
-        // Função de busca (case insensitive, busca por qualquer palavra)
         function searchHymns(searchTerm) {
             if (!searchTerm.trim()) {
                 searchResults.innerHTML = '<div class="search-loading">Digite para buscar...</div>';
@@ -1746,25 +1548,18 @@
             const terms = searchTerm.toLowerCase().trim().split(/\s+/);
             const results = [];
             
-            // Percorrer todos os hinos (1-480 e coros C1-C6)
             for (let i = 1; i <= 480; i++) {
                 const key = i.toString();
                 const hymn = hymnsData[key];
                 if (hymn && hymn.nome) {
                     const nomeLower = hymn.nome.toLowerCase();
-                    // Verificar se todas as palavras da busca estão presentes no título
                     const matches = terms.every(term => nomeLower.includes(term));
                     if (matches) {
-                        results.push({
-                            number: key,
-                            nome: hymn.nome,
-                            compasso: hymn.compasso
-                        });
+                        results.push({ number: key, nome: hymn.nome, compasso: hymn.compasso });
                     }
                 }
             }
             
-            // Buscar nos coros
             for (let i = 1; i <= 6; i++) {
                 const key = `C${i}`;
                 const hymn = hymnsData[key];
@@ -1772,27 +1567,18 @@
                     const nomeLower = hymn.nome.toLowerCase();
                     const matches = terms.every(term => nomeLower.includes(term));
                     if (matches) {
-                        results.push({
-                            number: key,
-                            nome: hymn.nome,
-                            compasso: hymn.compasso,
-                            isCoro: true
-                        });
+                        results.push({ number: key, nome: hymn.nome, compasso: hymn.compasso, isCoro: true });
                     }
                 }
             }
             
-            // Ordenar resultados: números primeiro, depois coros
             results.sort((a, b) => {
                 if (a.isCoro && !b.isCoro) return 1;
                 if (!a.isCoro && b.isCoro) return -1;
-                if (a.isCoro && b.isCoro) {
-                    return parseInt(a.number.substring(1)) - parseInt(b.number.substring(1));
-                }
+                if (a.isCoro && b.isCoro) return parseInt(a.number.substring(1)) - parseInt(b.number.substring(1));
                 return parseInt(a.number) - parseInt(b.number);
             });
             
-            // Exibir resultados
             if (results.length === 0) {
                 searchResults.innerHTML = '<div class="no-results">❌ Nenhum hino encontrado</div>';
             } else {
@@ -1804,41 +1590,29 @@
                     </div>
                 `).join('');
                 
-                // Adicionar evento de clique em cada resultado
                 document.querySelectorAll('.search-result-item').forEach(item => {
                     item.addEventListener('click', () => {
                         const number = item.dataset.number;
                         const isCoro = item.dataset.iscoro === 'true';
-                        
-                        // Atualizar o input do hino
                         const hymnInput = document.getElementById('hymnInput');
                         if (isCoro) {
-                            const coroNum = number.substring(1);
-                            hymnInput.value = `coro ${coroNum}`;
+                            hymnInput.value = `coro ${number.substring(1)}`;
                         } else {
                             hymnInput.value = number;
                         }
-                        
-                        // Atualizar as informações do hino
                         updateHymnInfo();
-                        
-                        // Fechar o modal
                         closeSearchModal();
                     });
                 });
             }
         }
         
-        // Debounce para busca enquanto digita
         let searchTimeout;
         searchInput.addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                searchHymns(e.target.value);
-            }, 300);
+            searchTimeout = setTimeout(() => searchHymns(e.target.value), 300);
         });
         
-        // Buscar ao pressionar Enter
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 clearTimeout(searchTimeout);
@@ -1846,48 +1620,20 @@
             }
         });
         
-        // Fechar com tecla ESC
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && searchModal.classList.contains('active')) {
-                closeSearchModal();
-            }
+            if (e.key === 'Escape' && searchModal.classList.contains('active')) closeSearchModal();
         });
 
-        // ========== FUNÇÃO DE BPM TAP - ATUALIZA A PRÓPRIA DIV BPM ==========
-
-        // Adicionar uma variável global para armazenar o BPM personalizado
+        // Tap BPM
         let customTapBpm = null;
-
-        // Adicionar a figura musical ao lado do BPM atual
-        const currentSpeedDiv = document.querySelector('.current-speed');
-        const bpmValueSpan = document.getElementById('currentSpeed');
-
-        // Criar elemento da figura musical clicável
-        const tapBpmIcon = document.createElement('span');
-        //tapBpmIcon.innerHTML = '🎵';
-        tapBpmIcon.innerHTML = '<img src="tambor.png" style="width: 40px; height: 40px; vertical-align: middle;">';
-        tapBpmIcon.style.cursor = 'pointer';
-        tapBpmIcon.style.display = 'inline-block';
-        tapBpmIcon.style.marginLeft = '8px';
-        tapBpmIcon.style.verticalAlign = 'middle';
-        tapBpmIcon.style.transition = 'transform 0.1s';
-        tapBpmIcon.title = 'Clique no ritmo para calcular BPM';
-
-        // Inserir ao lado do valor BPM
-        currentSpeedDiv.style.display = 'flex';
-        currentSpeedDiv.style.alignItems = 'center';
-        currentSpeedDiv.style.justifyContent = 'center';
-        currentSpeedDiv.style.gap = '8px';
-        currentSpeedDiv.appendChild(tapBpmIcon);
-
-        // Variáveis para cálculo de BPM
         let tapTimes = [];
         let lastTapTime = 0;
-
-        // Função para calcular BPM a partir dos intervalos
+        const currentSpeedDiv = document.querySelector('.current-speed');
+        const bpmValueSpan = document.getElementById('currentSpeed');
+        const tapBpmIcon = document.getElementById('tapBpmIcon');
+        
         function calculateBPMFromTaps() {
             if (tapTimes.length < 2) return null;
-            
             let totalInterval = 0;
             for (let i = 1; i < tapTimes.length; i++) {
                 totalInterval += (tapTimes[i] - tapTimes[i-1]);
@@ -1895,134 +1641,102 @@
             const avgInterval = totalInterval / (tapTimes.length - 1);
             let bpm = Math.round(60 / avgInterval);
             bpm = Math.min(300, Math.max(30, bpm));
-            
             return bpm;
         }
-
-        // Função para atualizar a DIV de BPM com o novo valor
-        function updateBpmDiv(newBpm) {
-
-            // Armazenar o BPM personalizado
+        
+        function updateBpmDisplay(newBpm) {
             customTapBpm = newBpm;
-            
-            // Atualizar o span do BPM
             bpmValueSpan.textContent = newBpm;
-            
-            // NÃO atualiza o slider - mantém o slider no valor original
-            // slider.value NÃO é alterado
-            
-            // Feedback visual
             currentSpeedDiv.style.backgroundColor = '#fef3c7';
-            setTimeout(() => {
-                currentSpeedDiv.style.backgroundColor = '#eef2ff';
-            }, 300);
+            setTimeout(() => currentSpeedDiv.style.backgroundColor = '#eef2ff', 300);
         }
-
-        // Função para registrar um clique/tap
+        
         function registerTap() {
             const now = Date.now() / 1000;
-            
             if (lastTapTime > 0 && (now - lastTapTime) > 2) {
                 tapTimes = [];
-                customTapBpm = null; // Resetar BPM personalizado
+                customTapBpm = null;
             }
-            
             lastTapTime = now;
             tapTimes.push(now);
+            if (tapTimes.length > 8) tapTimes.shift();
             
-            if (tapTimes.length > 8) {
-                tapTimes.shift();
-            }
-            
-            tapBpmIcon.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                tapBpmIcon.style.transform = 'scale(1)';
-            }, 100);
+            tapBpmIcon.classList.add('tap-feedback');
+            setTimeout(() => tapBpmIcon.classList.remove('tap-feedback'), 300);
             
             const calculatedBpm = calculateBPMFromTaps();
-            
             if (calculatedBpm !== null && tapTimes.length >= 2) {
-                updateBpmDiv(calculatedBpm);
-                
-                // Se o metrônomo estiver tocando, reiniciar com o BPM calculado
-                if (metronomeInterval) {
-                    startMetronomeWithCustomBpm();
-                }
+                updateBpmDisplay(calculatedBpm);
+                if (metronomeInterval) startMetronome();
             }
         }
-
-        // NOVA FUNÇÃO: iniciar metrônomo com BPM personalizado (do tap)
-        function startMetronomeWithCustomBpm() {
-            if (!currentHymn) return;
-            
-            stopMetronome();
-            
-            // Usar o BPM do tap se existir, senão usar o slider
-            let bpm;
-            if (customTapBpm !== null) {
-                bpm = customTapBpm;
-            } else {
-                bpm = parseInt(document.getElementById('speedSlider').value);
-            }
-            
-            let intervalMs;
-            if (isDoubleSpeedMode) {
-                intervalMs = (60 / (bpm * 2)) * 1000;
-            } else {
-                intervalMs = (60 / bpm) * 1000;
-            }
-            
-            currentMovementIndex = 0;
-            executeBeat();
-            
-            metronomeInterval = setInterval(() => {
-                executeBeat();
-            }, intervalMs);
-        }
-
-        // MODIFICAR a função startMetronome original
-        const originalStartMetronome = startMetronome;
-        window.startMetronome = function() {
-            startMetronomeWithCustomBpm();
-        };
-
-        // Sobrescrever a função startMetronome
-        startMetronome = startMetronomeWithCustomBpm;
-
-        // Clique duplo para reiniciar
-        tapBpmIcon.addEventListener('dblclick', () => {
+        
+        function resetTapBpm() {
             tapTimes = [];
             lastTapTime = 0;
-            customTapBpm = null; // Resetar BPM personalizado
-            
-            // Restaurar o valor do slider na DIV
+            customTapBpm = null;
             const sliderValue = document.getElementById('speedSlider').value;
             bpmValueSpan.textContent = sliderValue;
-            
             currentSpeedDiv.style.backgroundColor = '#fee2e2';
-            setTimeout(() => {
-                currentSpeedDiv.style.backgroundColor = '#eef2ff';
-            }, 500);
+            setTimeout(() => currentSpeedDiv.style.backgroundColor = '#eef2ff', 500);
+            if (metronomeInterval) startMetronome();
+        }
+        
+        if (tapBpmIcon) {
+            tapBpmIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                registerTap();
+            });
+            tapBpmIcon.addEventListener('dblclick', (e) => {
+                e.stopPropagation();
+                resetTapBpm();
+            });
+        }
+        
+        function navegar(AntProx) {
+            const isMeiaHoraActive = document.getElementById('meiaHoraCheckbox').checked;
+            const chaves = Object.keys(hymnsData);
+            let inputVal = document.getElementById('hymnInput').value.trim().toLowerCase();
+            const NumeroHino = document.getElementById('hymnInput').value.replace('coro ', '48');
+            let indice = chaves.indexOf(NumeroHino);
             
-            // Se estiver tocando, reiniciar com o valor do slider
-            if (metronomeInterval) {
-                startMetronome();
+            if (AntProx == 1) {
+                indice = indice + AntProx;
+            } else {
+                indice = indice + AntProx;
             }
-        });
+            
+            if (indice >= chaves.length) {
+                indice = 0;
+            } else if (indice < 0) {
+                indice = chaves.length - 1;
+            }
+            
+            if (isMeiaHoraActive) {
+                let tentativas = 0;
+                while (hymnsData[chaves[indice]] && hymnsData[chaves[indice]].MeiaHora != "S" && tentativas < chaves.length) {
+                    indice = indice + AntProx;
+                    if (indice >= chaves.length) {
+                        indice = 0;
+                    } else if (indice < 0) {
+                        indice = chaves.length - 1;
+                    }
+                    tentativas++;
+                }
+            }
+            
+            if (indice > 480) {
+                document.getElementById('hymnInput').value = chaves[indice].replace('48', 'coro ');
+            } else {
+                document.getElementById('hymnInput').value = chaves[indice];
+            }
+            updateHymnInfo();
+        }
 
-        // Garantir que o botão Play use a nova função
-        document.getElementById('playBtn').removeEventListener('click', originalStartMetronome);
-        document.getElementById('playBtn').addEventListener('click', () => {
-            startMetronomeWithCustomBpm();
-        });
-
-        // Adicionar evento de clique na figura musical
-        tapBpmIcon.addEventListener('click', (e) => {
-            e.stopPropagation();
-            registerTap();
-        });
-
-        // Registrar Service Worker para instalação
+        // Inicialização
+        updateHymnInfo();
+        
+        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
@@ -2030,55 +1744,6 @@
                     .catch(err => console.log('Erro:', err));
             });
         }
-
-        // Função para verificar se o hino deve ter velocidade triplicada
-        function deveTriplicarVelocidade(hymnKey) {
-            // Converte para número se for hino (não coro)
-            if (!hymnKey.toString().startsWith('C')) {
-                const num = parseInt(hymnKey);
-                return hinosVelocidadeTriplicada.includes(num);
-            }
-            return false;
-        }
-
-        // Função para obter velocidades com possível triplicação
-        function getCurrentSpeedsWithTriple() {
-            
-            if (!currentHymn) return { min: 60, med: 70, max: 80 };
-            
-            let speeds;
-            if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
-                speeds = {
-                    min: currentHymn.velMinMeiaHora,
-                    med: currentHymn.velMedMeiaHora,
-                    max: currentHymn.velMaxMeiaHora
-                };
-            } else {
-                speeds = {
-                    min: currentHymn.velMin,
-                    med: currentHymn.velMed,
-                    max: currentHymn.velMax
-                };
-            }
-
-            // Verifica se o hino atual deve ter velocidade triplicada
-            const hymnKey = document.getElementById('hymnInput').value.trim().toLowerCase();
-            let hymnNumber = null;
-            
-            if (!hymnKey.startsWith('coro')) {
-                hymnNumber = parseInt(hymnKey);
-            }
-            
-            if (hymnNumber && hinosVelocidadeTriplicada.includes(hymnNumber)) {
-                return {
-                    min: speeds.min * 3,
-                    med: speeds.med * 3,
-                    max: speeds.max * 3
-                };
-            }
-            return speeds;
-        }
-
-</script>
+    </script>
 </body>
 </html>
