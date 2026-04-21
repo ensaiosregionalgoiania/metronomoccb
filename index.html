@@ -59,12 +59,6 @@
             padding: 16px;
         }
 
-        .selection-area {
-            background: #f8fafc;
-            padding: 16px;
-            border-radius: 20px;
-        }
-
         .hymn-nav {
             display: flex;
             align-items: center;
@@ -299,19 +293,20 @@
         .beat-figures-row {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 6px;
+            align-items: flex-start;
+            gap: 4px;
             flex-wrap: wrap;
             flex: 1;
         }
 
+        /* Estilo para cada figura (representa 3 tempos) */
         .figure-unit {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-width: 10px;
-            padding: 2px 1px;
+            min-width: 30px;
+            padding: 4px 3px;
             background: white;
             border-radius: 16px;
             transition: all 0.1s ease;
@@ -320,43 +315,44 @@
             position: relative;
         }
 
+        .figure-symbol {
+            font-size: 1.3rem;
+            font-family: 'Segoe UI', monospace;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        /* Container vertical dos dots (3 tempos) */
         .figure-movements {
             display: flex;
             flex-direction: column;
-            gap: 1px;
+            gap: 2px;
             justify-content: center;
             align-items: center;
             margin: 6px 0 4px;
         }
         
+        /* Cada linha representa um tempo (dot grande + dot pequeno) */
+        .movement-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+        }
+        
         .movement-dot {
-            width: 6px;
-            height: 6px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: #cbd5e1;
             transition: all 0.2s ease;
             cursor: pointer;
         }
         
-        .movement-row {
-            display: flex;
-            gap: 4px;
-            justify-content: center;
-            align-items: center;
-        }
-        
         .movement-dot.active-movement {
             background: #667eea;
             transform: scale(1.4);
             box-shadow: 0 0 6px #667eea;
-        }
-        
-        .movement-dot.strong-movement {
-            background: #dc2626;
-        }
-        
-        .movement-dot.secondary-movement {
-            background: #16a34a;
         }
         
         .movement-dot.inicio-movement {
@@ -367,14 +363,14 @@
         }
         
         .movement-dot.full-beat {
-            width: 10px;
-            height: 10px;
+            width: 14px;
+            height: 14px;
             background: #3b4b7a;
         }
 
         .movement-dot.half-beat {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             background: #94a3b8;
         }
 
@@ -389,6 +385,14 @@
             transform: scale(1.3);
             box-shadow: 0 0 4px #667eea;
         }
+        
+        /* Cores para acentos visuais nas figuras */
+        .figure-unit.strong-primary {
+            border-left: 3px solid #dc2626;
+        }
+        .figure-unit.strong-secondary {
+            border-left: 3px solid #16a34a;
+        }
                 
         @keyframes pulse-inicio {
             0% { transform: scale(1); background: #ff6b6b; }
@@ -401,12 +405,6 @@
             transform: scale(1.02);
             box-shadow: 0 4px 12px #ebebed;
             border-color: #ebebed;
-        }
-
-        .figure-symbol {
-            font-size: 1.0rem;
-            font-family: 'Segoe UI', monospace;
-            line-height: 1;
         }
 
         .legend {
@@ -456,8 +454,8 @@
                 padding: 12px;
             }
             .figure-unit {
-                min-width: 45px;
-                padding: 6px 4px;
+                min-width: 55px;
+                padding: 8px 4px;
             }
             .figure-symbol {
                 font-size: 1rem;
@@ -477,8 +475,11 @@
                 width: 6px;
                 height: 6px;
             }
+            .movement-row {
+                gap: 4px;
+            }
             .figure-movements {
-                gap: 3px;
+                gap: 4px;
             }
         }
 
@@ -830,7 +831,7 @@
                     <div class="metronome-visual">
                         <div class="beat-info">
                             <div id="beatFiguresRow" class="beat-figures-row">
-                                <!-- Figuras dinâmicas -->
+                                <!-- Figuras dinâmicas - cada figura representa 3 tempos -->
                             </div>
                         </div>
                         <div id="timeSignatureInfo" class="time-signature-info" style="margin-top: 8px;"></div>
@@ -865,13 +866,7 @@
     <script src="hinos.js"></script>
 
     <script>
-        // Dados dos hinos - exemplo com compasso 12/4
-        //const hymnsData = {
-        //    "1": { nome: "Cristo meu Mestre", compasso: "12/4", velMin: 56, velMed: 61, velMax: 66, inicio: 1, velMinMeiaHora: 35, velMedMeiaHora: 37, velMaxMeiaHora: 40, MeiaHora: "S", velX3: "N" },
-        //    "2": { nome: "Hino 2", compasso: "4/4", velMin: 60, velMed: 70, velMax: 80, inicio: 1, velMinMeiaHora: 35, velMedMeiaHora: 37, velMaxMeiaHora: 40, MeiaHora: "N", velX3: "N" }
-        //};
-        
-        // Adicionar dados padrão para os demais hinos
+        // Dados dos hinos - exemplo com compasso 12/4 (12 tempos = 4 figuras de 3 tempos)
         for (let i = 3; i <= 486; i++) {
             if (!hymnsData[i.toString()]) {
                 hymnsData[i.toString()] = { 
@@ -935,11 +930,6 @@
             return false;
         }
 
-        function shouldPlaySoundOnMovement(movementIndex) {
-            if (!isDoubleSpeedMode) return true;
-            return true;
-        }
-
         function getFigureSymbol(timeSignature) {
             if (timeSignature === '2/2' || timeSignature === '3/2' || timeSignature === '4/2') {
                 return '𝅗𝅥';
@@ -992,14 +982,17 @@
             const isCompound = isCompoundTime(timeSig);
             
             if (isCompound && isDoubleSpeedMode) {
-                // Modo Meia Hora para compassos compostos: cada tempo tem 2 subdivisões
-                // Layout: dot grande em cima, dot pequeno embaixo
-                const beatsPerBar = beatsPerMeasure;
+                // Para compassos compostos com Meia Hora:
+                // Cada figura representa 3 tempos
+                // Layout: linha de cima com 3 dots grandes, linha de baixo com 3 dots pequenos
+                const totalBeats = beatsPerMeasure;
+                const beatsPerFigure = 3; // Cada figura tem 3 tempos
+                const numberOfFigures = Math.ceil(totalBeats / beatsPerFigure);
                 
-                for (let i = 0; i < beatsPerBar; i++) {
+                for (let fig = 0; fig < numberOfFigures; fig++) {
                     const figureDiv = document.createElement('div');
                     figureDiv.className = `figure-unit`;
-                    figureDiv.dataset.beatIndex = i;
+                    figureDiv.dataset.figureIndex = fig;
                     
                     const symbolSpan = document.createElement('div');
                     symbolSpan.className = 'figure-symbol';
@@ -1007,27 +1000,45 @@
                     
                     const movementsDiv = document.createElement('div');
                     movementsDiv.className = 'figure-movements';
-                    movementsDiv.dataset.beat = i;
                     
-                    // Dot grande (1ª marcação) - linha de cima
+                    // Linha de cima: 3 dots grandes (1ª marcação de cada tempo)
                     const topRow = document.createElement('div');
-                    topRow.className = 'movement-row';
-                    const dotGrande = document.createElement('div');
-                    dotGrande.className = 'movement-dot full-beat';
-                    dotGrande.dataset.movement = 0;
-                    dotGrande.dataset.globalMovement = i * 2;
-                    dotGrande.dataset.beat = i;
-                    topRow.appendChild(dotGrande);
+                    topRow.className = 'movement-row top-row';
                     
-                    // Dot pequeno (2ª marcação) - linha de baixo
+                    // Linha de baixo: 3 dots pequenos (2ª marcação de cada tempo)
                     const bottomRow = document.createElement('div');
-                    bottomRow.className = 'movement-row';
-                    const dotPequeno = document.createElement('div');
-                    dotPequeno.className = 'movement-dot half-beat';
-                    dotPequeno.dataset.movement = 1;
-                    dotPequeno.dataset.globalMovement = i * 2 + 1;
-                    dotPequeno.dataset.beat = i;
-                    bottomRow.appendChild(dotPequeno);
+                    bottomRow.className = 'movement-row bottom-row';
+                    
+                    const startBeat = fig * beatsPerFigure;
+                    const endBeat = Math.min(startBeat + beatsPerFigure, totalBeats);
+                    
+                    for (let t = 0; t < beatsPerFigure; t++) {
+                        const beatIndex = startBeat + t;
+                        if (beatIndex >= totalBeats) break;
+                        
+                        // Dot grande (1ª marcação) - vai na linha de cima
+                        const dotGrande = document.createElement('div');
+                        dotGrande.className = 'movement-dot full-beat';
+                        dotGrande.dataset.movement = 0;
+                        dotGrande.dataset.globalMovement = beatIndex * 2;
+                        dotGrande.dataset.beat = beatIndex;
+                        dotGrande.dataset.figure = fig;
+                        dotGrande.dataset.tempo = t;
+                        dotGrande.dataset.row = 'top';
+                        
+                        // Dot pequeno (2ª marcação) - vai na linha de baixo
+                        const dotPequeno = document.createElement('div');
+                        dotPequeno.className = 'movement-dot half-beat';
+                        dotPequeno.dataset.movement = 1;
+                        dotPequeno.dataset.globalMovement = beatIndex * 2 + 1;
+                        dotPequeno.dataset.beat = beatIndex;
+                        dotPequeno.dataset.figure = fig;
+                        dotPequeno.dataset.tempo = t;
+                        dotPequeno.dataset.row = 'bottom';
+                        
+                        topRow.appendChild(dotGrande);
+                        bottomRow.appendChild(dotPequeno);
+                    }
                     
                     movementsDiv.appendChild(topRow);
                     movementsDiv.appendChild(bottomRow);
@@ -1036,9 +1047,8 @@
                     figureDiv.appendChild(movementsDiv);
                     container.appendChild(figureDiv);
                 }
-            } 
-            else if (isCompound && !isDoubleSpeedMode) {
-                // Modo normal para compassos compostos: uma figura por batida, sem subdivisão
+            } else if (isCompound && !isDoubleSpeedMode) {
+                // Modo normal para compassos compostos: uma figura por batida
                 const beatsPerBar = beatsPerMeasure;
                 
                 for (let i = 0; i < beatsPerBar; i++) {
@@ -1052,7 +1062,6 @@
                     
                     const movementsDiv = document.createElement('div');
                     movementsDiv.className = 'figure-movements';
-                    movementsDiv.dataset.beat = i;
                     
                     const row = document.createElement('div');
                     row.className = 'movement-row';
@@ -1070,7 +1079,7 @@
                 }
             }
             else {
-                // Compassos simples: cada tempo tem 2 subdivisões lado a lado
+                // Compassos simples: layout horizontal
                 for (let i = 0; i < beatsPerMeasure; i++) {
                     const beatNumber = i + 1;
                     const isStrong = beatNumber === 1;
@@ -1090,7 +1099,7 @@
                     const movementsDiv = document.createElement('div');
                     movementsDiv.className = 'figure-movements';
                     movementsDiv.style.flexDirection = 'row';
-                    movementsDiv.dataset.beat = i;
+                    movementsDiv.style.flexDirection = 'row';
                     
                     for (let s = 0; s < 2; s++) {
                         const dot = document.createElement('div');
@@ -1119,39 +1128,36 @@
             const movementNumber = movementIndex + 1;
             const isInicio = isInicioMovement(movementNumber);
             
-            // Para compassos compostos com modo double speed
-            if (isCompound && isDoubleSpeedMode) {
-                const beatIndex = Math.floor(movementIndex / 2);
-                const subMovement = movementIndex % 2;
-                const figures = document.querySelectorAll('.figure-unit');
-                
-                figures.forEach(fig => {
-                    fig.classList.remove('active-beat', 'pulse-beat', 'inicio-beat');
-                    const dots = fig.querySelectorAll('.movement-dot');
-                    dots.forEach(dot => {
-                        dot.classList.remove('active-movement', 'inicio-movement');
-                    });
+            // Remover destaques anteriores
+            document.querySelectorAll('.figure-unit').forEach(fig => {
+                fig.classList.remove('active-beat', 'pulse-beat', 'inicio-beat');
+                const dots = fig.querySelectorAll('.movement-dot');
+                dots.forEach(dot => {
+                    dot.classList.remove('active-movement', 'inicio-movement');
                 });
-                
-                if (figures[beatIndex]) {
-                    figures[beatIndex].classList.add('active-beat', 'pulse-beat');
-                    
-                    const dots = figures[beatIndex].querySelectorAll('.movement-dot');
-                    // subMovement: 0 = dot grande (cima), 1 = dot pequeno (baixo)
-                    if (dots[subMovement]) {
-                        dots[subMovement].classList.add('active-movement');
+            });
+            
+            if (isCompound && isDoubleSpeedMode) {
+                // Encontrar o dot correspondente ao movementIndex
+                const targetDot = document.querySelector(`.movement-dot[data-global-movement="${movementIndex}"]`);
+                if (targetDot) {
+                    // Encontrar a figura pai e destacar
+                    const figureUnit = targetDot.closest('.figure-unit');
+                    if (figureUnit) {
+                        figureUnit.classList.add('active-beat', 'pulse-beat');
+                        targetDot.classList.add('active-movement');
                         
                         if (isInicio) {
-                            dots[subMovement].classList.add('inicio-movement');
+                            targetDot.classList.add('inicio-movement');
                             setTimeout(() => {
-                                dots[subMovement]?.classList.remove('inicio-movement');
+                                targetDot.classList.remove('inicio-movement');
                             }, 400);
                         }
+                        
+                        setTimeout(() => {
+                            figureUnit.classList.remove('pulse-beat');
+                        }, 200);
                     }
-                    
-                    setTimeout(() => {
-                        figures[beatIndex]?.classList.remove('pulse-beat');
-                    }, 200);
                 }
                 return;
             }
@@ -1162,17 +1168,8 @@
                 const subMovement = movementIndex % 2;
                 const figures = document.querySelectorAll('.figure-unit');
                 
-                figures.forEach(fig => {
-                    fig.classList.remove('active-beat', 'pulse-beat', 'inicio-beat');
-                    const dots = fig.querySelectorAll('.movement-dot');
-                    dots.forEach(dot => {
-                        dot.classList.remove('active-movement', 'inicio-movement');
-                    });
-                });
-                
                 if (figures[beatIndex]) {
                     figures[beatIndex].classList.add('active-beat', 'pulse-beat');
-                    
                     const dots = figures[beatIndex].querySelectorAll('.movement-dot');
                     if (dots[subMovement]) {
                         dots[subMovement].classList.add('active-movement');
@@ -1184,7 +1181,6 @@
                             }, 400);
                         }
                     }
-                    
                     setTimeout(() => {
                         figures[beatIndex]?.classList.remove('pulse-beat');
                     }, 200);
@@ -1194,12 +1190,6 @@
             
             // Para compassos compostos sem double speed
             const figures = document.querySelectorAll('.figure-unit');
-            figures.forEach(fig => {
-                fig.classList.remove('active-beat', 'pulse-beat', 'inicio-beat');
-                const dots = fig.querySelectorAll('.movement-dot');
-                dots.forEach(dot => dot.classList.remove('active-movement', 'inicio-movement'));
-            });
-            
             if (figures[movementIndex]) {
                 figures[movementIndex].classList.add('active-beat', 'pulse-beat');
                 const dots = figures[movementIndex].querySelectorAll('.movement-dot');
@@ -1274,12 +1264,10 @@
                 }
             }
             
-            if (shouldPlaySoundOnMovement(currentMovementIndex)) {
-                if (!isSubdivision) {
-                    accentType = getAccentType(currentMovementIndex, accentEnabled, timeSig);
-                }
-                playSound(accentType, isSubdivision, useGraveSound);
+            if (!isSubdivision) {
+                accentType = getAccentType(currentMovementIndex, accentEnabled, timeSig);
             }
+            playSound(accentType, isSubdivision, useGraveSound);
             
             highlightCurrentMovement(currentMovementIndex);
             
@@ -1477,7 +1465,7 @@
             }
             
             if (isDoubleSpeedMode) {
-                document.getElementById('soundInfo').innerHTML = `🔊 1ª marcação (●): som forte/médio | 2ª marcação (○): som fraco`;
+                document.getElementById('soundInfo').innerHTML = `🔊 1ª marcação (●): som forte/médio | 2ª marcação (○): som fraco | Cada figura = 3 tempos`;
             } else {
                 document.getElementById('soundInfo').innerHTML = `🔊 Modo normal: um som por tempo`;
             }
