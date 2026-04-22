@@ -786,7 +786,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-1</h1>
+            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-2</h1>
             <p>Hinos 1-480 | Coro 1-6</p>
         </div>
         
@@ -907,7 +907,7 @@
         let inicioValue = 0;
         let isDoubleSpeedMode = false;
         let totalMovements = 0;
-        let isMeiaHoraMode = true;
+        let isMeiaHoraMode = false;
 
         // Carregar arquivos MP3
         const audioBeepForte = new Audio('beep_2000Hz.mp3');
@@ -1394,13 +1394,17 @@
         function getCurrentSpeeds() {
             if (!currentHymn) return { min: 60, med: 70, max: 80 };
             
+            // Se o checkbox Meia Hora estiver MARCADO, usa os valores de meia hora
             if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
+                console.log(isMeiaHoraMode)
                 return {
                     min: currentHymn.velMinMeiaHora,
                     med: currentHymn.velMedMeiaHora,
                     max: currentHymn.velMaxMeiaHora
                 };
             } else {
+                // Senão, usa os valores normais
+                console.log("bb")
                 return {
                     min: currentHymn.velMin,
                     med: currentHymn.velMed,
@@ -1526,13 +1530,25 @@
             }
             
             if (currentHymn) {
-                // FORÇA o recálculo completo
+                // ATUALIZA OS VALORES DE VELOCIDADE
+                const speeds = getCurrentSpeeds();
+                document.getElementById('minSpeed').textContent = speeds.min;
+                document.getElementById('avgSpeed').textContent = speeds.med;
+                document.getElementById('maxSpeed').textContent = speeds.max;
+                
+                const slider = document.getElementById('speedSlider');
+                slider.min = speeds.min;
+                slider.max = speeds.max;
+                slider.value = speeds.max;
+                document.getElementById('currentSpeed').innerHTML = `${speeds.max}`;
+                
+                // Recalcula o modo double speed
                 isDoubleSpeedMode = shouldUseDoubleSpeedMode(currentHymn);
                 
-                // Recalcula beatsPerMeasure (garantir que está correto)
+                // Recalcula beatsPerMeasure
                 beatsPerMeasure = parseInt(currentHymn.compasso.split('/')[0]);
                 
-                // CORREÇÃO: Recalcula totalMovements baseado no novo modo
+                // Recalcula totalMovements
                 if (isDoubleSpeedMode) {
                     totalMovements = beatsPerMeasure * 2;
                 } else {
