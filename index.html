@@ -786,7 +786,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-2</h1>
+            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-3</h1>
             <p>Hinos 1-480 | Coro 1-6</p>
         </div>
         
@@ -910,10 +910,10 @@
         let isMeiaHoraMode = false;
 
         // Carregar arquivos MP3
-        const audioBeepForte = new Audio('beep_2000Hz.mp3');
-        const audioBeepMedio = new Audio('beep_1060Hz.mp3');
-        const audioBeepFraco = new Audio('beep_530Hz.mp3');
-        const audioBeepGrave = new Audio('beep_260Hz.mp3');
+        const audioBeepForte = new Audio('do5.mp3');
+        const audioBeepMedio = new Audio('do5.mp3');
+        const audioBeepFraco = new Audio('do4.mp3');
+        const audioBeepGrave = new Audio('do3.mp3');
 
         audioBeepForte.preload = 'auto';
         audioBeepMedio.preload = 'auto';
@@ -1228,22 +1228,20 @@
                 volume = 0.8;
             }
             else if (isSubdivision) {
-                // 2ª marcação (subdivisão) - som fraco
+                // Dots pequenos (2ª marcação) - volume 30%
                 audioToPlay = audioBeepFraco;
-                volume = 0.15;
+                volume = 0.1;
             }
             else {
+                // Dots grandes (1ª marcação)
                 if (accentType === 'primary') {
-                    // Som FORTE (agudo) para 1º, 4º, 7º, 10º tempos
+                    // Som do DOT1 (primeiro dot grande) - volume máximo
                     audioToPlay = audioBeepForte;
                     volume = 1.0;
-                } else if (accentType === 'secondary') {
-                    audioToPlay = audioBeepMedio;
-                    volume = 0.5;
                 } else {
-                    // Som FRACO para os demais tempos (2º, 3º, 5º, 6º, 8º, 9º, 11º, 12º)
+                    // Demais dots grandes - volume máximo do som fraco
                     audioToPlay = audioBeepFraco;
-                    volume = 0.15;
+                    volume = 1.0;
                 }
             }
             
@@ -1396,7 +1394,6 @@
             
             // Se o checkbox Meia Hora estiver MARCADO, usa os valores de meia hora
             if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
-                console.log(isMeiaHoraMode)
                 return {
                     min: currentHymn.velMinMeiaHora,
                     med: currentHymn.velMedMeiaHora,
@@ -1404,7 +1401,6 @@
                 };
             } else {
                 // Senão, usa os valores normais
-                console.log("bb")
                 return {
                     min: currentHymn.velMin,
                     med: currentHymn.velMed,
@@ -1792,7 +1788,7 @@
             const beatNumber = beatIndex + 1;
             
             // Tempos fortes: 1, 4, 7, 10
-            if (beatNumber === 1 || beatNumber === 4 || beatNumber === 7 || beatNumber === 10) {
+            if (beatNumber === 1) {
                 return 'primary';
             }
             
