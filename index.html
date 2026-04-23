@@ -324,7 +324,7 @@
         .figure-movements {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
             justify-content: center;
             align-items: center;
             margin: 6px 0 4px;
@@ -337,6 +337,14 @@
             align-items: center;
         }
         
+        /* Container para cada par de dots (grande + pequeno) */
+        .movement-pair {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        
         .movement-dot {
             width: 10px;
             height: 10px;
@@ -344,6 +352,60 @@
             background: #cbd5e1;
             transition: all 0.2s ease;
             cursor: pointer;
+            position: relative;
+        }
+        
+        /* Estilo para dots que têm controle de volume */
+        .movement-dot.volume-control {
+            cursor: pointer;
+            border: 1px solid #f59e0b;
+            box-shadow: 0 0 2px #f59e0b;
+        }
+        
+        .movement-dot.volume-control::after {
+            content: "🎛️";
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        .movement-dot.volume-control:hover::after {
+            opacity: 0.8;
+        }
+        
+        /* Tooltip de volume */
+        .volume-tooltip {
+            position: fixed;
+            background: #1e293b;
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            z-index: 2000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .volume-tooltip input {
+            width: 100%;
+            margin: 8px 0;
+        }
+        
+        .volume-tooltip .volume-value {
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+        
+        .volume-tooltip .volume-label {
+            font-size: 0.7rem;
+            margin-bottom: 4px;
+            font-weight: bold;
         }
         
         .movement-dot.active-movement {
@@ -352,11 +414,18 @@
             box-shadow: 0 0 6px #667eea;
         }
         
+        /* Estilo para o dot de início */
         .movement-dot.inicio-movement {
-            background: inherit !important;
+            background: #ff6b6b !important;
             transform: scale(1.5);
-            box-shadow: 0 0 8px #374151;
+            box-shadow: 0 0 8px #ff6b6b;
             animation: pulse-inicio 0.3s ease-in-out;
+        }
+        
+        @keyframes pulse-inicio {
+            0% { transform: scale(1); background: #ff6b6b; }
+            50% { transform: scale(1.8); background: #ff9999; }
+            100% { transform: scale(1.5); background: #ff6b6b; }
         }
         
         .movement-dot.full-beat {
@@ -386,55 +455,11 @@
         .figure-unit.strong-primary {
             border-left: 3px solid #dc2626;
         }
+        
         .figure-unit.strong-secondary {
             border-left: 3px solid #16a34a;
         }
-                
-        @keyframes pulse-inicio {
-            0% { transform: scale(1); background: #ff6b6b; }
-            50% { transform: scale(1.8); background: #ff9999; }
-            100% { transform: scale(1.5); background: #ff6b6b; }
-        }
-
-        .figure-unit.active-beat {
-            background: #ebebed;
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px #ebebed;
-            border-color: #ebebed;
-        }
-
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 12px;
-            padding-top: 8px;
-            border-top: 1px solid #e2e8f0;
-            flex-wrap: wrap;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.6rem;
-            font-weight: 500;
-        }
-        .legend-color {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .error-message {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 8px;
-            border-radius: 30px;
-            margin-top: 12px;
-            text-align: center;
-            font-size: 0.7rem;
-        }
-
+        
         @keyframes pulse-beat {
             0% { transform: scale(1); }
             50% { transform: scale(1.02); }
@@ -477,13 +502,13 @@
             .figure-movements {
                 gap: 4px;
             }
-        }
-
-        .figure-unit.inicio-beat {
-            background: #ebebed;
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px #ebebed;
-            border-color: #ebebed;
+            .movement-pair {
+                gap: 2px;
+            }
+            .volume-tooltip {
+                min-width: 160px;
+                padding: 8px;
+            }
         }
 
         .time-signature-info {
@@ -520,6 +545,40 @@
             font-size: 0.6rem;
             font-weight: bold;
             margin-left: 8px;
+        }
+
+        .volume-reset-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        
+        .volume-reset-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Seta indicadora de início */
+        .inicio-arrow {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            color: #dc2626;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            animation: arrowPulse 0.5s ease-in-out;
+        }
+        
+        @keyframes arrowPulse {
+            0% { transform: translateX(-50%) translateY(0); opacity: 0; }
+            50% { transform: translateX(-50%) translateY(-5px); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(0); opacity: 1; }
         }
 
         .search-fab {
@@ -662,10 +721,6 @@
             background: #f1f5f9;
         }
         
-        .search-result-item:hover {
-            background: #f8fafc;
-        }
-        
         .result-number {
             font-weight: 800;
             color: #667eea;
@@ -750,10 +805,6 @@
             pointer-events: none;
         }
 
-        .tap-bpm-icon:hover {
-            background: rgba(44, 62, 102, 0.2);
-        }
-
         .tap-feedback {
             animation: tapPulse 0.3s ease;
         }
@@ -776,13 +827,81 @@
                 width: 20px;
             }
         }
+
+        /* Layout para compassos simples - dots lado a lado */
+        .compasso-simples .movement-row {
+            display: flex;
+            flex-direction: row !important;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .compasso-simples .movement-pair {
+            display: flex;
+            flex-direction: row !important;
+            gap: 4px;
+            align-items: center;
+        }
+
+        /* Layout para compassos compostos - dots empilhados */
+        .compasso-composto .movement-row {
+            display: flex;
+            flex-direction: row !important;
+            gap: 12px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .compasso-composto .movement-pair {
+            display: flex;
+            flex-direction: column !important;
+            gap: 4px;
+            align-items: center;
+        }
+
+        /* Animação da seta de início */
+        @keyframes arrowPulse {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { transform: translateY(-5px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Estilo para a seta */
+        .inicio-arrow {
+            pointer-events: none;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+
+        /* Ajuste para o container da seta */
+        .inicio-arrow-container {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Para garantir que o dot dentro do container mantenha o tamanho */
+        .inicio-arrow-container .movement-dot {
+            margin: 0;
+        }
+
+        /* Ajuste para diferentes tamanhos de tela */
+        @media (max-width: 480px) {
+            .inicio-arrow {
+                width: 10px !important;
+                height: 10px !important;
+            }
+        }
+
     </style>
+
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-9</h1>
-            <p>Hinos 1-480 | Coro 1-6</p>
+            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-10</h1>
+            <p>Hinos 1-480 | Coro 1-6 |</p>
         </div>
         
         <div class="content">
@@ -803,6 +922,7 @@
                     
                     <div class="time-sig-row">
                         <div class="time-sig-badge" id="timeSignature">-</div>
+                        <button class="volume-reset-btn" id="resetVolumesBtn">Resetar Volumes</button>
                     </div>
                     
                     <div class="speed-control">
@@ -875,7 +995,6 @@
     <script src="hinos.js"></script>
 
     <script>
-        // Placeholder para os dados dos hinos
         let currentHymn = null;
         let metronomeInterval = null;
         let currentMovementIndex = 0;
@@ -885,18 +1004,29 @@
         let totalMovements = 0;
         let isMeiaHoraMode = false;
         
-        // AudioContext para controle de volume
-        let audioCtx = null;
-        let forteBuffer = null;  // agudo.mp3
-        let medioBuffer = null;  // grave.mp3
+        let volumeSettings = {
+            simpleAgudoForte: 1.0,
+            simpleGraveForte: 1.0,
+            simpleSubdivisao: 0.3,
+            compoundAgudoForte: 1.0,
+            compoundAgudoFraco: 0.7,
+            compoundGraveForte: 1.0,
+            compoundSubdivisao: 0.3
+        };
         
-        // Inicializar AudioContext e carregar sons
+        const defaultVolumes = { ...volumeSettings };
+        
+        let audioCtx = null;
+        let forteBuffer = null;
+        let medioBuffer = null;
+        
+        let activeTooltip = null;
+        
         async function initAudio() {
             if (audioCtx) return;
             
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             
-            // Carregar os arquivos de áudio
             try {
                 const forteResponse = await fetch('agudo.mp3');
                 const medioResponse = await fetch('grave.mp3');
@@ -910,17 +1040,14 @@
                 console.log('Áudios carregados com sucesso!');
             } catch (error) {
                 console.error('Erro ao carregar áudios:', error);
-                // Criar buffers de beep sintético como fallback
                 createSyntheticBeeps();
             }
         }
         
-        // Fallback: criar beeps sintéticos
         function createSyntheticBeeps() {
             const sampleRate = 44100;
-            const duration = 0.2; // 200ms
+            const duration = 0.2;
             
-            // Som agudo (880Hz)
             const forteSamples = Math.floor(sampleRate * duration);
             const forteArray = new Float32Array(forteSamples);
             for (let i = 0; i < forteSamples; i++) {
@@ -929,7 +1056,6 @@
             forteBuffer = audioCtx.createBuffer(1, forteSamples, sampleRate);
             forteBuffer.getChannelData(0).set(forteArray);
             
-            // Som grave (440Hz)
             const medioSamples = Math.floor(sampleRate * duration);
             const medioArray = new Float32Array(medioSamples);
             for (let i = 0; i < medioSamples; i++) {
@@ -939,15 +1065,11 @@
             medioBuffer.getChannelData(0).set(medioArray);
         }
         
-        // Função principal para tocar som com volume controlado
         async function playSoundWithVolume(buffer, volume) {
             if (isMuted) return;
-            if (!audioCtx) {
-                await initAudio();
-            }
+            if (!audioCtx) await initAudio();
             if (!buffer) return;
             
-            // Garantir que o AudioContext está ativo
             if (audioCtx.state === 'suspended') {
                 await audioCtx.resume();
             }
@@ -963,14 +1085,12 @@
             
             source.start();
             
-            // Limpar nós após terminar
             source.onended = () => {
                 source.disconnect();
                 gainNode.disconnect();
             };
         }
         
-        // Função para tocar som com as regras específicas
         async function playSoundWithRules(beatNumber, isSubdivision = false, timeSignature) {
             if (isMuted) return;
             
@@ -979,43 +1099,38 @@
             let volume = 1.0;
             
             if (isSimple) {
-                // Compassos simples
                 if (isSubdivision) {
-                    // Subdivisões: som médio com 30%
                     buffer = medioBuffer;
-                    volume = 0.3;
+                    volume = volumeSettings.simpleSubdivisao;
                 } else {
-                    // Tempos principais
                     if (beatNumber === 1) {
-                        // Primeiro tempo: som forte 100%
                         buffer = forteBuffer;
-                        volume = 1.0;
-                    } else {
-                        // Demais tempos: som médio 100%
+                        volume = volumeSettings.simpleAgudoForte;
+                    } else if (beatNumber === 2) {
                         buffer = medioBuffer;
-                        volume = 0.3;
+                        volume = volumeSettings.simpleGraveForte;
+                    } else {
+                        buffer = medioBuffer;
+                        volume = volumeSettings.simpleGraveForte;
                     }
                 }
             } else {
-                // Compassos compostos
                 if (isSubdivision) {
-                    // Subdivisões: som médio com 30%
                     buffer = medioBuffer;
-                    volume = 0.3;
+                    volume = volumeSettings.compoundSubdivisao;
                 } else {
-                    // Tempos principais
                     if (beatNumber === 1) {
-                        // Primeiro tempo: som forte 100%
                         buffer = forteBuffer;
-                        volume = 1.0;
+                        volume = volumeSettings.compoundAgudoForte;
                     } else if (beatNumber === 4 || beatNumber === 7 || beatNumber === 10) {
-                        // Quarto, sétimo e décimo tempos: som forte 70%
                         buffer = forteBuffer;
-                        volume = 0.3;
-                    } else {
-                        // Demais tempos: som médio 100%
+                        volume = volumeSettings.compoundAgudoFraco;
+                    } else if (beatNumber === 2) {
                         buffer = medioBuffer;
-                        volume = 1.0;
+                        volume = volumeSettings.compoundGraveForte;
+                    } else {
+                        buffer = medioBuffer;
+                        volume = volumeSettings.compoundGraveForte;
                     }
                 }
             }
@@ -1025,7 +1140,6 @@
             }
         }
         
-        // Funções auxiliares
         function isSimpleTime(timeSignature) {
             const simplePatterns = ['2/4', '3/4', '4/4', '2/2', '3/2', '4/2'];
             return simplePatterns.includes(timeSignature);
@@ -1047,24 +1161,259 @@
         
         function getFigureSymbol(timeSignature) {
             if (timeSignature === '2/2' || timeSignature === '3/2' || timeSignature === '4/2') {
-                return '<img src="minima.jpg" class="figure-image" alt="mínima" style="width: 24px; height: auto; vertical-align: middle;">';
+                return '<img src="minima.jpg" class="figure-image" alt="mínima">';
             }
             if (timeSignature === '6/4' || timeSignature === '9/4' || timeSignature === '12/4') {
-                return '<img src="minimapontuada.jpg" class="figure-image" alt="mínima pontuada" style="width: 24px; height: auto; vertical-align: middle;">';
+                return '<img src="minimapontuada.jpg" class="figure-image" alt="mínima pontuada">';
             }
             if (timeSignature === '6/8' || timeSignature === '9/8' || timeSignature === '12/8') {
-                return '<img src="seminimapontuada.jpg" class="figure-image" alt="semínima pontuada" style="width: 24px; height: auto; vertical-align: middle;">';
+                return '<img src="seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">';
             }
-            return '<img src="seminima.jpg" class="figure-image" alt="semínima" style="width: 24px; height: auto; vertical-align: middle;">';
+            return '<img src="seminima.jpg" class="figure-image" alt="semínima">';
         }
         
+        function showVolumeTooltip(dot, volumeType, currentValue, onVolumeChange) {
+            if (activeTooltip) {
+                activeTooltip.remove();
+                activeTooltip = null;
+            }
+            
+            const tooltip = document.createElement('div');
+            tooltip.className = 'volume-tooltip';
+            
+            const labels = {
+                'simple-agudo-forte': '🎺 Som Forte (1º tempo)',
+                'simple-grave-forte': '🎸 Som Médio (2º tempo)',
+                'simple-subdivisao': '🔔 Subdivisões',
+                'compound-agudo-forte': '🎺 Som Forte (1º tempo)',
+                'compound-agudo-fraco': '🎷 Som Médio-Forte (4º tempo)',
+                'compound-grave-forte': '🎸 Som Médio (2º tempo)',
+                'compound-subdivisao': '🔔 Subdivisões'
+            };
+            
+            tooltip.innerHTML = `
+                <div class="volume-label">${labels[volumeType] || 'Volume'}</div>
+                <input type="range" min="0" max="100" step="1" value="${Math.round(currentValue * 100)}">
+                <div class="volume-value">${Math.round(currentValue * 100)}%</div>
+            `;
+            
+            const rect = dot.getBoundingClientRect();
+            tooltip.style.left = `${rect.left + rect.width / 2 - 100}px`;
+            tooltip.style.top = `${rect.top - 60}px`;
+            
+            const slider = tooltip.querySelector('input');
+            const valueDisplay = tooltip.querySelector('.volume-value');
+            
+            slider.addEventListener('input', (e) => {
+                const newValue = parseInt(e.target.value) / 100;
+                valueDisplay.textContent = `${e.target.value}%`;
+                onVolumeChange(newValue);
+            });
+            
+            document.body.appendChild(tooltip);
+            activeTooltip = tooltip;
+            
+            const closeHandler = (e) => {
+                if (!tooltip.contains(e.target) && e.target !== dot) {
+                    tooltip.remove();
+                    activeTooltip = null;
+                    document.removeEventListener('click', closeHandler);
+                }
+            };
+            setTimeout(() => document.addEventListener('click', closeHandler), 100);
+        }
+        
+        // Função para adicionar seta indicadora de início
+        function addInicioArrow() {
+            // Remove setas existentes
+            document.querySelectorAll('.inicio-arrow').forEach(arrow => arrow.remove());
+            
+            const inicio = currentHymn.inicio;
+            if (!inicio) return;
+            
+            // Determina qual dot deve receber a seta
+            let targetMovement;
+            
+            if (isDoubleSpeedMode) {
+                if (inicio % 1 === 0) {
+                    targetMovement = (inicio - 1) * 2;
+                } else {
+                    const beat = Math.floor(inicio);
+                    targetMovement = (beat - 1) * 2 + 1;
+                }
+            } else {
+                if (inicio % 1 === 0) {
+                    targetMovement = inicio - 1;
+                } else {
+                    const beat = Math.floor(inicio);
+                    const timeSig = currentHymn.compasso;
+                    const isSimple = isSimpleTime(timeSig);
+                    
+                    if (isSimple || isDoubleSpeedMode) {
+                        targetMovement = beat * 2;
+                    } else {
+                        targetMovement = beat;
+                    }
+                }
+            }
+            
+            const targetDot = document.querySelector(`.movement-dot[data-global-movement="${targetMovement}"]`);
+            if (targetDot) {
+                // Cria o elemento da seta
+                const arrowImg = document.createElement('img');
+                arrowImg.src = 'seta.png';
+                arrowImg.className = 'inicio-arrow';
+                arrowImg.alt = 'Início';
+                arrowImg.title = `Início do hino (tempo ${inicio})`;
+                
+                // Estilos para a seta - posicionada ABAIXO
+                arrowImg.style.position = 'absolute';
+                arrowImg.style.width = '14px';
+                arrowImg.style.height = '14px';
+                arrowImg.style.zIndex = '100';
+                arrowImg.style.pointerEvents = 'none';
+                
+                // Garante que o dot tenha position relative
+                targetDot.style.position = 'relative';
+                
+                // Posiciona a seta abaixo do dot
+                arrowImg.style.position = 'absolute';
+                arrowImg.style.left = '50%';
+                arrowImg.style.transform = 'translateX(-50%)';
+                arrowImg.style.top = '100%';  // 100% = logo abaixo do dot
+                arrowImg.style.marginTop = '2px';  // Pequeno espaçamento
+                arrowImg.style.animation = 'arrowPulse 0.5s ease-in-out';
+                
+                targetDot.appendChild(arrowImg);
+                
+                // Remove a animação após terminar
+                setTimeout(() => {
+                    arrowImg.style.animation = 'none';
+                }, 500);
+            }
+        }
+
+        function addVolumeControls() {
+            const timeSig = currentHymn.compasso;
+            const isSimple = isSimpleTime(timeSig);
+            
+            // Remove a classe inicio-movement de todos os dots (se houver)
+            document.querySelectorAll('.movement-dot.inicio-movement').forEach(dot => {
+                dot.classList.remove('inicio-movement');
+            });
+            
+            if (isSimple) {
+                // Compasso simples
+                const firstBeatDot = document.querySelector('.movement-dot[data-global-movement="0"]');
+                if (firstBeatDot) {
+                    firstBeatDot.classList.add('volume-control');
+                    firstBeatDot.setAttribute('data-volume-type', 'simple-agudo-forte');
+                    firstBeatDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(firstBeatDot, 'simple-agudo-forte', volumeSettings.simpleAgudoForte, (newVolume) => {
+                            volumeSettings.simpleAgudoForte = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+                
+                const secondBeatDot = document.querySelector('.movement-dot[data-global-movement="2"]');
+                if (secondBeatDot) {
+                    secondBeatDot.classList.add('volume-control');
+                    secondBeatDot.setAttribute('data-volume-type', 'simple-grave-forte');
+                    secondBeatDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(secondBeatDot, 'simple-grave-forte', volumeSettings.simpleGraveForte, (newVolume) => {
+                            volumeSettings.simpleGraveForte = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+                
+                const firstSubdivisionDot = document.querySelector('.movement-dot[data-global-movement="1"]');
+                if (firstSubdivisionDot) {
+                    firstSubdivisionDot.classList.add('volume-control');
+                    firstSubdivisionDot.setAttribute('data-volume-type', 'simple-subdivisao');
+                    firstSubdivisionDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(firstSubdivisionDot, 'simple-subdivisao', volumeSettings.simpleSubdivisao, (newVolume) => {
+                            volumeSettings.simpleSubdivisao = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+            } else {
+                // Compasso composto
+                const firstBeatDot = document.querySelector('.movement-dot[data-global-movement="0"]');
+                if (firstBeatDot) {
+                    firstBeatDot.classList.add('volume-control');
+                    firstBeatDot.setAttribute('data-volume-type', 'compound-agudo-forte');
+                    firstBeatDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(firstBeatDot, 'compound-agudo-forte', volumeSettings.compoundAgudoForte, (newVolume) => {
+                            volumeSettings.compoundAgudoForte = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+                
+                const fourthBeatDot = document.querySelector('.movement-dot[data-global-movement="3"]');
+                if (fourthBeatDot) {
+                    fourthBeatDot.classList.add('volume-control');
+                    fourthBeatDot.setAttribute('data-volume-type', 'compound-agudo-fraco');
+                    fourthBeatDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(fourthBeatDot, 'compound-agudo-fraco', volumeSettings.compoundAgudoFraco, (newVolume) => {
+                            volumeSettings.compoundAgudoFraco = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+                
+                const secondBeatDot = document.querySelector('.movement-dot[data-global-movement="1"]');
+                if (secondBeatDot) {
+                    secondBeatDot.classList.add('volume-control');
+                    secondBeatDot.setAttribute('data-volume-type', 'compound-grave-forte');
+                    secondBeatDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(secondBeatDot, 'compound-grave-forte', volumeSettings.compoundGraveForte, (newVolume) => {
+                            volumeSettings.compoundGraveForte = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+                
+                const firstSubdivisionDot = document.querySelector('.movement-dot.half-beat');
+                if (firstSubdivisionDot) {
+                    firstSubdivisionDot.classList.add('volume-control');
+                    firstSubdivisionDot.setAttribute('data-volume-type', 'compound-subdivisao');
+                    firstSubdivisionDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(firstSubdivisionDot, 'compound-subdivisao', volumeSettings.compoundSubdivisao, (newVolume) => {
+                            volumeSettings.compoundSubdivisao = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+            }
+        }
+
         function createBeatFiguresUI() {
             const container = document.getElementById('beatFiguresRow');
             container.innerHTML = '';
             const timeSig = currentHymn.compasso;
             const isCompound = isCompoundTime(timeSig);
             
+            // Adiciona classe no container para identificar o tipo de compasso
+            container.className = 'beat-figures-row';
             if (isCompound) {
+                container.classList.add('compasso-composto');
+            } else {
+                container.classList.add('compasso-simples');
+            }
+            
+            if (isCompound) {
+                // COMPASSOS COMPOSTOS - dots empilhados (um embaixo do outro)
                 const totalBeats = beatsPerMeasure;
                 const beatsPerFigure = 3;
                 const numberOfFigures = Math.ceil(totalBeats / beatsPerFigure);
@@ -1072,7 +1421,6 @@
                 for (let fig = 0; fig < numberOfFigures; fig++) {
                     const figureDiv = document.createElement('div');
                     figureDiv.className = `figure-unit`;
-                    figureDiv.dataset.figureIndex = fig;
                     
                     const symbolSpan = document.createElement('div');
                     symbolSpan.className = 'figure-symbol';
@@ -1081,11 +1429,9 @@
                     const movementsDiv = document.createElement('div');
                     movementsDiv.className = 'figure-movements';
                     
-                    const topRow = document.createElement('div');
-                    topRow.className = 'movement-row top-row';
-                    
-                    const bottomRow = document.createElement('div');
-                    bottomRow.className = 'movement-row bottom-row';
+                    const movementRow = document.createElement('div');
+                    movementRow.className = 'movement-row';
+                    movementRow.style.gap = '12px';
                     
                     const startBeat = fig * beatsPerFigure;
                     const endBeat = Math.min(startBeat + beatsPerFigure, totalBeats);
@@ -1094,47 +1440,41 @@
                         const beatIndex = startBeat + t;
                         if (beatIndex >= totalBeats) break;
                         
+                        const pairDiv = document.createElement('div');
+                        pairDiv.className = 'movement-pair';
+                        pairDiv.style.display = 'flex';
+                        pairDiv.style.flexDirection = 'column';
+                        pairDiv.style.alignItems = 'center';
+                        pairDiv.style.gap = '4px';
+                        
                         if (isDoubleSpeedMode) {
                             const dotGrande = document.createElement('div');
                             dotGrande.className = 'movement-dot full-beat';
-                            dotGrande.dataset.movement = 0;
                             dotGrande.dataset.globalMovement = beatIndex * 2;
-                            dotGrande.dataset.beat = beatIndex;
                             
                             const dotPequeno = document.createElement('div');
                             dotPequeno.className = 'movement-dot half-beat';
-                            dotPequeno.dataset.movement = 1;
                             dotPequeno.dataset.globalMovement = beatIndex * 2 + 1;
-                            dotPequeno.dataset.beat = beatIndex;
                             
-                            topRow.appendChild(dotGrande);
-                            bottomRow.appendChild(dotPequeno);
+                            pairDiv.appendChild(dotGrande);
+                            pairDiv.appendChild(dotPequeno);
                         } else {
                             const dot = document.createElement('div');
                             dot.className = 'movement-dot full-beat';
-                            dot.dataset.movement = 0;
                             dot.dataset.globalMovement = beatIndex;
-                            dot.dataset.beat = beatIndex;
-                            
-                            topRow.appendChild(dot);
+                            pairDiv.appendChild(dot);
                         }
+                        
+                        movementRow.appendChild(pairDiv);
                     }
                     
-                    movementsDiv.appendChild(topRow);
-                    if (!isDoubleSpeedMode) {
-                        const spacerRow = document.createElement('div');
-                        spacerRow.className = 'movement-row';
-                        spacerRow.style.height = '14px';
-                        movementsDiv.appendChild(spacerRow);
-                    } else {
-                        movementsDiv.appendChild(bottomRow);
-                    }
-                    
+                    movementsDiv.appendChild(movementRow);
                     figureDiv.appendChild(symbolSpan);
                     figureDiv.appendChild(movementsDiv);
                     container.appendChild(figureDiv);
                 }
-            } else if (isSimpleTime(timeSig)) {
+            } else {
+                // COMPASSOS SIMPLES - dots lado a lado (um ao lado do outro)
                 for (let i = 0; i < beatsPerMeasure; i++) {
                     const beatNumber = i + 1;
                     const isStrong = beatNumber === 1;
@@ -1145,7 +1485,6 @@
                     
                     const figureDiv = document.createElement('div');
                     figureDiv.className = `figure-unit ${accentClass}`;
-                    figureDiv.dataset.beatIndex = i;
                     
                     const symbolSpan = document.createElement('div');
                     symbolSpan.className = 'figure-symbol';
@@ -1153,30 +1492,45 @@
                     
                     const movementsDiv = document.createElement('div');
                     movementsDiv.className = 'figure-movements';
-                    movementsDiv.style.flexDirection = 'row';
-                    movementsDiv.style.gap = '8px';
                     
-                    for (let s = 0; s < 2; s++) {
-                        const dot = document.createElement('div');
-                        dot.className = 'movement-dot';
-                        if (s === 0) {
-                            dot.classList.add('full-beat');
-                        } else {
-                            dot.classList.add('half-beat');
-                        }
-                        dot.dataset.movement = s;
-                        dot.dataset.globalMovement = i * 2 + s;
-                        dot.dataset.beat = i;
-                        movementsDiv.appendChild(dot);
-                    }
+                    const movementRow = document.createElement('div');
+                    movementRow.className = 'movement-row';
+                    movementRow.style.display = 'flex';
+                    movementRow.style.flexDirection = 'row';
+                    movementRow.style.gap = '4px';
+                    movementRow.style.justifyContent = 'center';
+                    movementRow.style.alignItems = 'center';
                     
+                    const pairDiv = document.createElement('div');
+                    pairDiv.className = 'movement-pair';
+                    pairDiv.style.display = 'flex';
+                    pairDiv.style.flexDirection = 'row';
+                    pairDiv.style.gap = '4px';
+                    pairDiv.style.alignItems = 'center';
+                    
+                    const dotGrande = document.createElement('div');
+                    dotGrande.className = 'movement-dot full-beat';
+                    dotGrande.dataset.globalMovement = i * 2;
+                    
+                    const dotPequeno = document.createElement('div');
+                    dotPequeno.className = 'movement-dot half-beat';
+                    dotPequeno.dataset.globalMovement = i * 2 + 1;
+                    
+                    pairDiv.appendChild(dotGrande);
+                    pairDiv.appendChild(dotPequeno);
+                    movementRow.appendChild(pairDiv);
+                    
+                    movementsDiv.appendChild(movementRow);
                     figureDiv.appendChild(symbolSpan);
                     figureDiv.appendChild(movementsDiv);
                     container.appendChild(figureDiv);
                 }
             }
+            
+            addVolumeControls();
+            addInicioArrow();
         }
-        
+
         function highlightCurrentMovement(movementIndex) {
             document.querySelectorAll('.figure-unit').forEach(fig => {
                 fig.classList.remove('active-beat', 'pulse-beat');
@@ -1229,7 +1583,6 @@
             
             stopMetronome();
             
-            // Inicializar áudio se necessário
             await initAudio();
             if (audioCtx.state === 'suspended') {
                 await audioCtx.resume();
@@ -1323,6 +1676,80 @@
             }
         }
         
+        function resetVolumes() {
+            Object.assign(volumeSettings, defaultVolumes);
+            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+            createBeatFiguresUI();
+            alert('Volumes resetados para os valores padrão!');
+        }
+        
+        function navegar(AntProx) {
+            const isMeiaHoraActive = document.getElementById('meiaHoraCheckbox').checked;
+            const chaves = Object.keys(hymnsData);
+            let inputVal = document.getElementById('hymnInput').value.trim().toLowerCase();
+            let NumeroHino = inputVal.replace('coro ', '48');
+            let indice = chaves.indexOf(NumeroHino);
+            
+            if (indice === -1) {
+                for (let i = 0; i < chaves.length; i++) {
+                    const chave = chaves[i];
+                    const hino = hymnsData[chave];
+                    if (hino && hino.nome && hino.nome.toLowerCase().includes(inputVal)) {
+                        indice = i;
+                        break;
+                    }
+                }
+                if (indice === -1) indice = 0;
+            }
+            
+            let novaPosicao = indice + AntProx;
+            
+            if (isMeiaHoraActive) {
+                let tentativas = 0;
+                let encontrou = false;
+                
+                while (tentativas < chaves.length && !encontrou) {
+                    if (novaPosicao >= chaves.length) {
+                        novaPosicao = 0;
+                    } else if (novaPosicao < 0) {
+                        novaPosicao = chaves.length - 1;
+                    }
+                    
+                    const chaveAtual = chaves[novaPosicao];
+                    const hinoAtual = hymnsData[chaveAtual];
+                    
+                    if (hinoAtual && hinoAtual.MeiaHora === "S") {
+                        encontrou = true;
+                        break;
+                    }
+                    
+                    novaPosicao = novaPosicao + AntProx;
+                    tentativas++;
+                }
+                
+                if (!encontrou) {
+                    novaPosicao = indice;
+                    alert("Nenhum hino com Meia Hora disponível nesta direção!");
+                }
+            } else {
+                if (novaPosicao >= chaves.length) {
+                    novaPosicao = 0;
+                } else if (novaPosicao < 0) {
+                    novaPosicao = chaves.length - 1;
+                }
+            }
+            
+            const chaveSelecionada = chaves[novaPosicao];
+            if (chaveSelecionada.startsWith('C')) {
+                const numCoro = chaveSelecionada.substring(1);
+                document.getElementById('hymnInput').value = `coro ${numCoro}`;
+            } else {
+                document.getElementById('hymnInput').value = chaveSelecionada;
+            }
+            
+            updateHymnInfo();
+        }
+        
         function updateHymnInfo() {
             if (!processHymnInput()) {
                 stopMetronome();
@@ -1360,20 +1787,27 @@
             
             createBeatFiguresUI();
             
-            const isCompound = isCompoundTime(currentHymn.compasso);
-            const soundInfoText = isCompound ? 
-                `🔊 1º tempo (100% forte) | 4º/7º/10º tempos (70% forte) | demais (100% médio) | subdivisões (30% médio)` :
-                `🔊 1º tempo (100% forte) | demais tempos (100% médio) | subdivisões (30% médio)`;
+            const soundInfoText = `<img src="seta.png" style="width: 12px; height: 12px; vertical-align: middle; display: inline-block; margin-right: 2px;"> indica o início do hino (tempo ${currentHymn.inicio || 1}) | Clique nos dots com borda laranja para ajustar volumes`;
             document.getElementById('soundInfo').innerHTML = soundInfoText;
             
             stopMetronome();
             currentMovementIndex = 0;
         }
         
-        // Event Listeners
+        function loadSavedVolumes() {
+            const saved = localStorage.getItem('metronomo_volumes');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(volumeSettings, parsed);
+                } catch(e) {}
+            }
+        }
+        
         document.getElementById('nextBtn').addEventListener('click', () => navegar(1));
         document.getElementById('prevBtn').addEventListener('click', () => navegar(-1));
         document.getElementById('muteCheckbox').addEventListener('change', (e) => { isMuted = e.target.checked; });
+        document.getElementById('resetVolumesBtn').addEventListener('click', resetVolumes);
         
         document.getElementById('meiaHoraCheckbox').addEventListener('change', (e) => {
             isMeiaHoraMode = e.target.checked;
@@ -1405,7 +1839,6 @@
         document.getElementById('playBtn').addEventListener('click', startMetronome);
         document.getElementById('stopBtn').addEventListener('click', stopMetronome);
         
-        // Busca
         const searchFabBtn = document.getElementById('searchFabBtn');
         const searchModal = document.getElementById('searchModal');
         const searchCloseBtn = document.getElementById('searchCloseBtn');
@@ -1416,7 +1849,6 @@
             if (e.target === searchModal) searchModal.classList.remove('active');
         });
         
-        // Tap BPM
         let tapTimes = [];
         let lastTapTime = 0;
         const bpmValueSpan = document.getElementById('currentSpeed');
@@ -1452,86 +1884,10 @@
             });
         }
         
-        function navegar(AntProx) {
-            const isMeiaHoraActive = document.getElementById('meiaHoraCheckbox').checked;
-            const chaves = Object.keys(hymnsData);
-            let inputVal = document.getElementById('hymnInput').value.trim().toLowerCase();
-            let NumeroHino = inputVal.replace('coro ', '48');
-            let indice = chaves.indexOf(NumeroHino);
-            
-            if (indice === -1) {
-                // Se não encontrar, tenta encontrar o hino atual
-                for (let i = 0; i < chaves.length; i++) {
-                    const chave = chaves[i];
-                    const hino = hymnsData[chave];
-                    if (hino && hino.nome && hino.nome.toLowerCase().includes(inputVal)) {
-                        indice = i;
-                        break;
-                    }
-                }
-                if (indice === -1) indice = 0;
-            }
-            
-            let novaPosicao = indice + AntProx;
-            
-            // Se o modo Meia Hora estiver ativo, procurar próximo hino com MeiaHora = "S"
-            if (isMeiaHoraActive) {
-                let tentativas = 0;
-                let encontrou = false;
-                
-                while (tentativas < chaves.length && !encontrou) {
-                    // Ajustar índice para não sair do array
-                    if (novaPosicao >= chaves.length) {
-                        novaPosicao = 0;
-                    } else if (novaPosicao < 0) {
-                        novaPosicao = chaves.length - 1;
-                    }
-                    
-                    const chaveAtual = chaves[novaPosicao];
-                    const hinoAtual = hymnsData[chaveAtual];
-                    
-                    // Verificar se o hino atual tem MeiaHora = "S"
-                    if (hinoAtual && hinoAtual.MeiaHora === "S") {
-                        encontrou = true;
-                        break;
-                    }
-                    
-                    // Se não encontrou, continua procurando
-                    novaPosicao = novaPosicao + AntProx;
-                    tentativas++;
-                }
-                
-                // Se não encontrou nenhum hino com MeiaHora = "S", volta para o índice original
-                if (!encontrou) {
-                    novaPosicao = indice;
-                    alert("Nenhum hino com Meia Hora disponível nesta direção!");
-                }
-            } else {
-                // Modo normal: apenas garantir que está dentro dos limites
-                if (novaPosicao >= chaves.length) {
-                    novaPosicao = 0;
-                } else if (novaPosicao < 0) {
-                    novaPosicao = chaves.length - 1;
-                }
-            }
-            
-            // Atualizar o input com o novo valor
-            const chaveSelecionada = chaves[novaPosicao];
-            if (chaveSelecionada.startsWith('C')) {
-                const numCoro = chaveSelecionada.substring(1);
-                document.getElementById('hymnInput').value = `coro ${numCoro}`;
-            } else {
-                document.getElementById('hymnInput').value = chaveSelecionada;
-            }
-            
-            updateHymnInfo();
-        }
-
-        // Inicialização
+        loadSavedVolumes();
         updateHymnInfo();
         initAudio();
         
-        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
