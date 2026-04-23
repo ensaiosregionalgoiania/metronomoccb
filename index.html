@@ -781,7 +781,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-7</h1>
+            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-8</h1>
             <p>Hinos 1-480 | Coro 1-6</p>
         </div>
         
@@ -983,7 +983,7 @@
                 if (isSubdivision) {
                     // Subdivisões: som médio com 30%
                     buffer = medioBuffer;
-                    volume = 0.01;
+                    volume = 0.1;
                 } else {
                     // Tempos principais
                     if (beatNumber === 1) {
@@ -993,7 +993,7 @@
                     } else {
                         // Demais tempos: som médio 100%
                         buffer = medioBuffer;
-                        volume = 0.01;
+                        volume = 0.1;
                     }
                 }
             } else {
@@ -1001,7 +1001,7 @@
                 if (isSubdivision) {
                     // Subdivisões: som médio com 30%
                     buffer = medioBuffer;
-                    volume = 0.01;
+                    volume = 0.1;
                 } else {
                     // Tempos principais
                     if (beatNumber === 1) {
@@ -1011,7 +1011,7 @@
                     } else if (beatNumber === 4 || beatNumber === 7 || beatNumber === 10) {
                         // Quarto, sétimo e décimo tempos: som forte 70%
                         buffer = forteBuffer;
-                        volume = 0.03;
+                        volume = 0.3;
                     } else {
                         // Demais tempos: som médio 100%
                         buffer = medioBuffer;
@@ -1453,22 +1453,80 @@
         }
         
         function navegar(AntProx) {
+            const isMeiaHoraActive = document.getElementById('meiaHoraCheckbox').checked;
             const chaves = Object.keys(hymnsData);
-            let NumeroHino = document.getElementById('hymnInput').value.replace('coro ', '48');
+            let inputVal = document.getElementById('hymnInput').value.trim().toLowerCase();
+            let NumeroHino = inputVal.replace('coro ', '48');
             let indice = chaves.indexOf(NumeroHino);
-            indice = indice + AntProx;
             
-            if (indice >= chaves.length) indice = 0;
-            if (indice < 0) indice = chaves.length - 1;
-            
-            if (indice > 480) {
-                document.getElementById('hymnInput').value = chaves[indice].replace('48', 'coro ');
-            } else {
-                document.getElementById('hymnInput').value = chaves[indice];
+            if (indice === -1) {
+                // Se não encontrar, tenta encontrar o hino atual
+                for (let i = 0; i < chaves.length; i++) {
+                    const chave = chaves[i];
+                    const hino = hymnsData[chave];
+                    if (hino && hino.nome && hino.nome.toLowerCase().includes(inputVal)) {
+                        indice = i;
+                        break;
+                    }
+                }
+                if (indice === -1) indice = 0;
             }
+            
+            let novaPosicao = indice + AntProx;
+            
+            // Se o modo Meia Hora estiver ativo, procurar próximo hino com MeiaHora = "S"
+            if (isMeiaHoraActive) {
+                let tentativas = 0;
+                let encontrou = false;
+                
+                while (tentativas < chaves.length && !encontrou) {
+                    // Ajustar índice para não sair do array
+                    if (novaPosicao >= chaves.length) {
+                        novaPosicao = 0;
+                    } else if (novaPosicao < 0) {
+                        novaPosicao = chaves.length - 1;
+                    }
+                    
+                    const chaveAtual = chaves[novaPosicao];
+                    const hinoAtual = hymnsData[chaveAtual];
+                    
+                    // Verificar se o hino atual tem MeiaHora = "S"
+                    if (hinoAtual && hinoAtual.MeiaHora === "S") {
+                        encontrou = true;
+                        break;
+                    }
+                    
+                    // Se não encontrou, continua procurando
+                    novaPosicao = novaPosicao + AntProx;
+                    tentativas++;
+                }
+                
+                // Se não encontrou nenhum hino com MeiaHora = "S", volta para o índice original
+                if (!encontrou) {
+                    novaPosicao = indice;
+                    alert("Nenhum hino com Meia Hora disponível nesta direção!");
+                }
+            } else {
+                // Modo normal: apenas garantir que está dentro dos limites
+                if (novaPosicao >= chaves.length) {
+                    novaPosicao = 0;
+                } else if (novaPosicao < 0) {
+                    novaPosicao = chaves.length - 1;
+                }
+            }
+            
+            // Atualizar o input com o novo valor
+            const chaveSelecionada = chaves[novaPosicao];
+            if (chaveSelecionada.startsWith('C')) {
+                const numCoro = chaveSelecionada.substring(1);
+                document.getElementById('hymnInput').value = `coro ${numCoro}`;
+            } else {
+                document.getElementById('hymnInput').value = chaveSelecionada;
+            }
+            
             updateHymnInfo();
         }
-        
+
         // Inicialização
         updateHymnInfo();
         initAudio();
