@@ -900,7 +900,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="imagens/metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-18</h1>
+            <h1><img src="imagens/metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-19</h1>
             <p>Hinos 1-480 | Coro 1-6 |</p>
         </div>
         
@@ -955,7 +955,7 @@
                     <div class="controls">
                         <button class="control-btn btn-play" id="playBtn">▶ Tocar</button>
                         <button class="control-btn btn-stop" id="stopBtn">⏹ Parar</button>
-                        <button class="control-btn" id="activateAudioBtn" style="background: #f59e0b;">🔊 Ativar Áudio</button>
+                        <button class="control-btn" id="activateAudioBtn" style="background: #f59e0b; display: none;">🔊 Ativar Áudio</button>
                     </div>
                     
                     <div class="metronome-visual">
@@ -1023,8 +1023,67 @@
         let medioBuffer = null;
         
         let activeTooltip = null;
+
+        // No início do script, após as outras variáveis, adicione:
+        let useHTML5Audio = true; // Forçar uso de HTML5 Audio no iPhone
+        let forteAudioHTML5 = null;
+        let medioAudioHTML5 = null;
+        let isAudioActivated = false;
         
+        // Substitua a função initAudio por esta:
         async function initAudio() {
+            if (useHTML5Audio) {
+                if (forteAudioHTML5 && medioAudioHTML5) {
+                    // Já está inicializado
+                    return;
+                }
+                
+                try {
+                    // Criar elementos de áudio HTML5
+                    forteAudioHTML5 = new Audio('sons/agudo.mp3');
+                    medioAudioHTML5 = new Audio('sons/grave.mp3');
+                    
+                    // Pré-carregar os áudios
+                    forteAudioHTML5.preload = 'auto';
+                    medioAudioHTML5.preload = 'auto';
+                    
+                    // Configurar volumes iniciais
+                    forteAudioHTML5.volume = volumeSettings.simpleAgudoForte;
+                    medioAudioHTML5.volume = volumeSettings.simpleGraveForte;
+                    
+                    // Tentar "desbloquear" o áudio (tocar e pausar imediatamente)
+                    const unlockAudio = async (audio) => {
+                        try {
+                            audio.volume = 0.01;
+                            await audio.play();
+                            audio.pause();
+                            audio.currentTime = 0;
+                            audio.volume = 1.0;
+                        } catch (e) {
+                            console.log('Áudio ainda bloqueado:', e);
+                        }
+                    };
+                    
+                    // Tentar desbloquear (vai funcionar após interação do usuário)
+                    await unlockAudio(forteAudioHTML5);
+                    await unlockAudio(medioAudioHTML5);
+                    
+                    console.log('Áudios HTML5 carregados com sucesso!');
+                    isAudioActivated = true;
+                    
+                } catch (error) {
+                    console.error('Erro ao carregar áudios HTML5:', error);
+                    // Fallback para Web Audio
+                    useHTML5Audio = false;
+                    await initWebAudio();
+                }
+            } else {
+                await initWebAudio();
+            }
+        }
+        
+        // Função Web Audio original (renomeada)
+        async function initWebAudio() {
             if (audioCtx) return;
             
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1039,13 +1098,13 @@
                 forteBuffer = await audioCtx.decodeAudioData(forteArrayBuffer);
                 medioBuffer = await audioCtx.decodeAudioData(medioArrayBuffer);
                 
-                console.log('Áudios carregados com sucesso!');
+                console.log('Áudios Web Audio carregados com sucesso!');
             } catch (error) {
                 console.error('Erro ao carregar áudios:', error);
                 createSyntheticBeeps();
             }
         }
-        
+
         function createSyntheticBeeps() {
             const sampleRate = 44100;
             const duration = 0.2;
@@ -1069,79 +1128,143 @@
         
         async function playSoundWithVolume(buffer, volume) {
             if (isMuted) return;
-            if (!audioCtx) await initAudio();
-            if (!buffer) return;
             
-            if (audioCtx.state === 'suspended') {
-                await audioCtx.resume();
+            if (useHTML5Audio && (forteAudioHTML5 || medioAudioHTML5)) {
+                // Usar HTML5 Audio
+                let audio = null;
+                
+                // Identificar qual áudio usar baseado no buffer (aproximação)
+                if (buffer === forteBuffer || buffer?.constructor?.name === 'AudioBuffer') {
+                    audio = forteAudioHTML5.cloneNode();
+                } else {
+                    audio = medioAudioHTML5.cloneNode();
+                }
+                
+                if (audio) {
+                    audio.volume = Math.min(volume * 1.2, 1.5); // Aumenta um pouco o volume
+                    audio.currentTime = 0;
+                    
+                    try {
+                        const playPromise = audio.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                console.log('Erro ao tocar HTML5:', error);
+                                // Se falhar, tenta recriar o áudio
+                                if (error.name === 'NotAllowedError') {
+                                    console.log('Áudio bloqueado, tente ativar manualmente');
+                                }
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Erro ao tocar:', error);
+                    }
+                }
+            } else {
+                // Usar Web Audio original
+                if (!audioCtx) await initAudio();
+                if (!buffer) return;
+                
+                if (audioCtx.state === 'suspended') {
+                    await audioCtx.resume();
+                }
+                
+                const source = audioCtx.createBufferSource();
+                const gainNode = audioCtx.createGain();
+                
+                gainNode.gain.value = volume;
+                source.buffer = buffer;
+                source.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                source.start();
+                
+                source.onended = () => {
+                    source.disconnect();
+                    gainNode.disconnect();
+                };
             }
-            
-            const source = audioCtx.createBufferSource();
-            const gainNode = audioCtx.createGain();
-            
-            source.buffer = buffer;
-            gainNode.gain.value = volume;
-            
-            source.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            source.start();
-            
-            source.onended = () => {
-                source.disconnect();
-                gainNode.disconnect();
-            };
         }
-        
+                
         async function playSoundWithRules(beatNumber, isSubdivision = false, timeSignature) {
             if (isMuted) return;
             
             const isSimple = isSimpleTime(timeSignature);
-            let buffer = null;
+            let soundType = 'medio';
             let volume = 1.0;
             
             if (isSimple) {
                 if (isSubdivision) {
-                    buffer = medioBuffer;
+                    soundType = 'medio';
                     volume = volumeSettings.simpleSubdivisao;
                 } else {
                     if (beatNumber === 1) {
-                        buffer = forteBuffer;
+                        soundType = 'forte';
                         volume = volumeSettings.simpleAgudoForte;
                     } else if (beatNumber === 2) {
-                        buffer = medioBuffer;
+                        soundType = 'medio';
                         volume = volumeSettings.simpleGraveForte;
                     } else {
-                        buffer = medioBuffer;
+                        soundType = 'medio';
                         volume = volumeSettings.simpleGraveForte;
                     }
                 }
             } else {
                 if (isSubdivision) {
-                    buffer = medioBuffer;
+                    soundType = 'medio';
                     volume = volumeSettings.compoundSubdivisao;
                 } else {
                     if (beatNumber === 1) {
-                        buffer = forteBuffer;
+                        soundType = 'forte';
                         volume = volumeSettings.compoundAgudoForte;
                     } else if (beatNumber === 4 || beatNumber === 7 || beatNumber === 10) {
-                        buffer = forteBuffer;
+                        soundType = 'forte';
                         volume = volumeSettings.compoundAgudoFraco;
                     } else if (beatNumber === 2) {
-                        buffer = medioBuffer;
+                        soundType = 'medio';
                         volume = volumeSettings.compoundGraveForte;
                     } else {
-                        buffer = medioBuffer;
+                        soundType = 'medio';
                         volume = volumeSettings.compoundGraveForte;
                     }
                 }
             }
             
-            if (buffer) {
-                await playSoundWithVolume(buffer, volume);
+            // Tocar com HTML5 ou Web Audio
+            await playHTML5Sound(soundType, volume);
+        }
+
+        // Nova função específica para HTML5
+        async function playHTML5Sound(type, volume) {
+            if (isMuted) return;
+            
+            if (!forteAudioHTML5 || !medioAudioHTML5) {
+                await initAudio();
+            }
+            
+            let audio = null;
+            
+            if (type === 'forte') {
+                audio = forteAudioHTML5.cloneNode();
+                audio.volume = Math.min(volume * 1.3, 1.5);
+            } else {
+                audio = medioAudioHTML5.cloneNode();
+                audio.volume = Math.min(volume * 1.3, 1.5);
+            }
+            
+            if (audio) {
+                audio.currentTime = 0;
+                try {
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.log('Erro ao tocar:', error);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                }
             }
         }
-        
+
         function isSimpleTime(timeSignature) {
             const simplePatterns = ['2/4', '3/4', '4/4', '2/2', '3/2', '4/2'];
             return simplePatterns.includes(timeSignature);
@@ -1849,7 +1972,28 @@
             }
         });
         
-        document.getElementById('playBtn').addEventListener('click', startMetronome);
+        document.getElementById('playBtn').addEventListener('click', async () => {
+            // Garantir que o áudio está inicializado
+            await initAudio();
+            
+            // Se for iOS e áudio ainda não ativado, tenta ativar
+            if (isIOS && !isAudioActivated) {
+                if (forteAudioHTML5) {
+                    try {
+                        forteAudioHTML5.volume = 0.01;
+                        await forteAudioHTML5.play();
+                        forteAudioHTML5.pause();
+                        forteAudioHTML5.currentTime = 0;
+                        isAudioActivated = true;
+                    } catch(e) {
+                        console.log('Áudio ainda bloqueado');
+                    }
+                }
+            }
+            
+            startMetronome();
+        });
+
         document.getElementById('stopBtn').addEventListener('click', stopMetronome);
         
         const searchFabBtn = document.getElementById('searchFabBtn');
@@ -1916,24 +2060,27 @@
             }
         });        
 
-        // JavaScript para mostrar botão de ativação no iOS
+        // Detectar iOS e mostrar botão se necessário
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
         if (isIOS) {
             const activateBtn = document.getElementById('activateAudioBtn');
-            activateBtn.style.display = 'flex';
-            
-            activateBtn.addEventListener('click', async () => {
-                await initAudio();
-                
-                if (useHTML5Audio) {
-                    // Toca e pausa para "desbloquear" o áudio
-                    await forteAudio.play();
-                    forteAudio.pause();
-                    forteAudio.currentTime = 0;
-                }
-                
-                activateBtn.style.display = 'none';
-                alert('Áudio ativado! Agora você pode usar o metrônomo.');
-            });
+            if (activateBtn) {
+                activateBtn.style.display = 'flex';
+                activateBtn.addEventListener('click', async () => {
+                    await initAudio();
+                    // Tocar um som silencioso para ativar
+                    if (forteAudioHTML5) {
+                        forteAudioHTML5.volume = 0.01;
+                        await forteAudioHTML5.play();
+                        forteAudioHTML5.pause();
+                        forteAudioHTML5.currentTime = 0;
+                        forteAudioHTML5.volume = 1.0;
+                    }
+                    activateBtn.style.display = 'none';
+                    alert('Áudio ativado! Agora você pode usar o metrônomo.');
+                });
+            }
         }
 
         if ('serviceWorker' in navigator) {
