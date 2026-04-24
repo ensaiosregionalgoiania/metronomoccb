@@ -900,7 +900,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-13</h1>
+            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-14</h1>
             <p>Hinos 1-480 | Coro 1-6 |</p>
         </div>
         
@@ -1663,21 +1663,29 @@
         function getCurrentSpeeds() {
             if (!currentHymn) return { min: 60, med: 70, max: 80 };
             
+            let min, med, max;
+            
+            // Verifica se é Meia Hora
             if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
-                return {
-                    min: currentHymn.velMinMeiaHora,
-                    med: currentHymn.velMedMeiaHora,
-                    max: currentHymn.velMaxMeiaHora
-                };
+                min = currentHymn.velMinMeiaHora;
+                med = currentHymn.velMedMeiaHora;
+                max = currentHymn.velMaxMeiaHora;
             } else {
-                return {
-                    min: currentHymn.velMin,
-                    med: currentHymn.velMed,
-                    max: currentHymn.velMax
-                };
+                min = currentHymn.velMin;
+                med = currentHymn.velMed;
+                max = currentHymn.velMax;
             }
+            
+            // Aplica velX3 se necessário (MULTIPLICA POR 3)
+            if (currentHymn.velX3 === "S") {
+                min = min * 3;
+                med = med * 3;
+                max = max * 3;
+            }
+            
+            return { min, med, max };
         }
-        
+
         function resetVolumes() {
             Object.assign(volumeSettings, defaultVolumes);
             localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
@@ -1763,7 +1771,6 @@
             const displayVal = document.getElementById('hymnInput').value.trim();
             const isCoro = displayVal.toLowerCase().startsWith('coro');
             const nomeDisplay = isCoro ? `🎵 ${currentHymn.nome}` : currentHymn.nome;
-            
             document.getElementById('hymnName').textContent = nomeDisplay;
             
             const speeds = getCurrentSpeeds();
@@ -1775,8 +1782,11 @@
             slider.min = speeds.min;
             slider.max = speeds.max;
             slider.value = speeds.max;
-            document.getElementById('currentSpeed').innerHTML = `${speeds.max}`;
-            
+            if (currentHymn.velX3 === "S") {
+                document.getElementById('currentSpeed').innerHTML = `${speeds.max} (${speeds.max/3}<img src="seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">)`;
+            } else {
+                document.getElementById('currentSpeed').innerHTML = `${speeds.max}`;
+            }            
             document.getElementById('timeSignature').textContent = currentHymn.compasso;
             
             beatsPerMeasure = parseInt(currentHymn.compasso.split('/')[0]);
@@ -1889,7 +1899,22 @@
         loadSavedVolumes();
         updateHymnInfo();
         initAudio();
-        
+
+        // Usando 'change' em vez de 'input' - atualiza apenas quando soltar o mouse
+        speedSlider.addEventListener('change', function() {
+            if (currentHymn.velX3 === "S") {
+                const bpmValue = Math.floor(this.value / 3) * 3;
+                document.getElementById('currentSpeed').innerHTML = `${bpmValue} (${bpmValue/3}<img src="seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">)`;
+            } else {
+                const bpmValue = this.value;
+                document.getElementById('currentSpeed').innerHTML = `${bpmValue}`;
+            }            
+            
+            if (metronomeInterval) {
+                startMetronome();
+            }
+        });        
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
