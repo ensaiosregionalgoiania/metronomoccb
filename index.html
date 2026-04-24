@@ -900,7 +900,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-12</h1>
+            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-13</h1>
             <p>Hinos 1-480 | Coro 1-6 |</p>
         </div>
         
@@ -1269,8 +1269,8 @@
                 
                 // Estilos para a seta - posicionada ABAIXO
                 arrowImg.style.position = 'absolute';
-                arrowImg.style.width = '14px';
-                arrowImg.style.height = '14px';
+                arrowImg.style.width = '17px';
+                arrowImg.style.height = '17px';
                 arrowImg.style.zIndex = '100';
                 arrowImg.style.pointerEvents = 'none';
                 
@@ -1789,7 +1789,7 @@
             
             createBeatFiguresUI();
             
-            const soundInfoText = `<img src="seta.png" style="width: 12px; height: 12px; vertical-align: middle; display: inline-block; margin-right: 2px;"> indica o início do hino (tempo ${currentHymn.inicio || 1}) | Clique nos dots com borda laranja para ajustar volumes`;
+            const soundInfoText = `<img src="seta.png" style="width: 17px; height: 17px; vertical-align: middle; display: inline-block; margin-right: 2px;"> indica o início do hino (tempo ${currentHymn.inicio || 1}) | Clique nos dots com borda laranja para ajustar volumes`;
             document.getElementById('soundInfo').innerHTML = soundInfoText;
             
             stopMetronome();
