@@ -900,7 +900,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-11</h1>
+            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-12</h1>
             <p>Hinos 1-480 | Coro 1-6 |</p>
         </div>
         
@@ -995,6 +995,7 @@
     <script src="hinos.js"></script>
 
     <script>
+
         let currentHymn = null;
         let metronomeInterval = null;
         let currentMovementIndex = 0;
@@ -1619,13 +1620,14 @@
         }
         
         function processHymnInput() {
-            const input = document.getElementById('hymnInput').value.trim().toLowerCase();
+            const input = document.getElementById('hymnInput').value.replace('coro ', '48');
             const errorDiv = document.getElementById('errorMessage');
             errorDiv.style.display = 'none';
             let hymnKey = null;
             
             const coroMatch = input.match(/^coro\s*(\d+)$/i);
             if (coroMatch) {
+
                 let num = parseInt(coroMatch[1]);
                 if (num >= 1 && num <= 6) {
                     hymnKey = `C${num}`;
@@ -1740,13 +1742,14 @@
             }
             
             const chaveSelecionada = chaves[novaPosicao];
-            if (chaveSelecionada.startsWith('C')) {
-                const numCoro = chaveSelecionada.substring(1);
-                document.getElementById('hymnInput').value = `coro ${numCoro}`;
+            document.getElementById('hymnInput').value = 
+            document.getElementById('hymnInput').value = chaveSelecionada;
+
+            if (chaveSelecionada > 480) {
+                document.getElementById('hymnInput').value = chaveSelecionada.replace('48', 'coro ');
             } else {
                 document.getElementById('hymnInput').value = chaveSelecionada;
             }
-            
             updateHymnInfo();
         }
         
@@ -1757,7 +1760,6 @@
             }
             
             isDoubleSpeedMode = shouldUseDoubleSpeedMode(currentHymn);
-            
             const displayVal = document.getElementById('hymnInput').value.trim();
             const isCoro = displayVal.toLowerCase().startsWith('coro');
             const nomeDisplay = isCoro ? `🎵 ${currentHymn.nome}` : currentHymn.nome;
