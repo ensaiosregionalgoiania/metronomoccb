@@ -900,7 +900,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="imagens/metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-15</h1>
+            <h1><img src="imagens/metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-16</h1>
             <p>Hinos 1-480 | Coro 1-6 |</p>
         </div>
         
@@ -1022,10 +1022,38 @@
         let medioBuffer = null;
         
         let activeTooltip = null;
+        // Detecta se é iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+        let useHTML5Audio = isIOS; // Usa HTML5 no iPhone, Web Audio em outros
         
         async function initAudio() {
-            if (audioCtx) return;
+            if (useHTML5Audio) {
+                if (forteAudio && medioAudio) return;
+                
+                forteAudio = new Audio('sons/agudo.mp3');
+                medioAudio = new Audio('sons/grave.mp3');
+                
+                // Pré-carrega
+                await Promise.all([
+                    forteAudio.play().catch(() => {}),
+                    medioAudio.play().catch(() => {})
+                ]);
+                
+                // Pausa imediatamente após carregar
+                forteAudio.pause();
+                medioAudio.pause();
+                forteAudio.currentTime = 0;
+                medioAudio.currentTime = 0;
+                
+                forteAudio.volume = 1.0;
+                medioAudio.volume = 1.0;
+                
+                return;
+            }
             
+            // Código original do Web Audio para outros dispositivos
+            if (audioCtx) return;
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             
             try {
@@ -1037,8 +1065,6 @@
                 
                 forteBuffer = await audioCtx.decodeAudioData(forteArrayBuffer);
                 medioBuffer = await audioCtx.decodeAudioData(medioArrayBuffer);
-                
-                console.log('Áudios carregados com sucesso!');
             } catch (error) {
                 console.error('Erro ao carregar áudios:', error);
                 createSyntheticBeeps();
@@ -1848,7 +1874,24 @@
             }
         });
         
-        document.getElementById('playBtn').addEventListener('click', startMetronome);
+        // Botão Play otimizado para iOS
+        document.getElementById('playBtn').addEventListener('click', async () => {
+            // No iPhone, precisa de interação do usuário para ativar áudio
+            if (isIOS && !useHTML5Audio) {
+                // Se for iOS, tenta HTML5 primeiro
+                useHTML5Audio = true;
+                await initAudio();
+            } else {
+                await initAudio();
+            }
+            
+            if (!useHTML5Audio && audioCtx && audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+            
+            startMetronome();
+        });
+
         document.getElementById('stopBtn').addEventListener('click', stopMetronome);
         
         const searchFabBtn = document.getElementById('searchFabBtn');
