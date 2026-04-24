@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Metrônomo CCB</title>
-    <link rel="icon" type="image/png" sizes="16x16" href="metronomo.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="metronomo.png">
-    <link rel="shortcut icon" href="metronomo.png">    
+    <link rel="icon" type="image/png" sizes="16x16" href="imagens/metronomo.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="imagens/metronomo.png">
+    <link rel="shortcut icon" href="imagens/metronomo.png">    
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="metronomo.png">
+    <link rel="apple-touch-icon" href="imagens/metronomo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Metrônomo">
@@ -900,7 +900,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-14</h1>
+            <h1><img src="imagens/metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-15</h1>
             <p>Hinos 1-480 | Coro 1-6 |</p>
         </div>
         
@@ -936,7 +936,7 @@
                         <div class="current-speed">
                             <span id="currentSpeed">120</span> BPM
                             <div class="tap-bpm-icon" id="tapBpmIcon" title="Clique no ritmo para calcular BPM">
-                                <img src="tambor.png" alt="Tap BPM" style="width: 32px; height: 32px; vertical-align: middle;">
+                                <img src="imagens/tambor.png" alt="Tap BPM" style="width: 32px; height: 32px; vertical-align: middle;">
                             </div>
                         </div>
                     </div>
@@ -1029,8 +1029,8 @@
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             
             try {
-                const forteResponse = await fetch('agudo.mp3');
-                const medioResponse = await fetch('grave.mp3');
+                const forteResponse = await fetch('sons/agudo.mp3');
+                const medioResponse = await fetch('sons/grave.mp3');
                 
                 const forteArrayBuffer = await forteResponse.arrayBuffer();
                 const medioArrayBuffer = await medioResponse.arrayBuffer();
@@ -1162,15 +1162,15 @@
         
         function getFigureSymbol(timeSignature) {
             if (timeSignature === '2/2' || timeSignature === '3/2' || timeSignature === '4/2') {
-                return '<img src="minima.jpg" class="figure-image" alt="mínima">';
+                return '<img src="imagens/minima.jpg" class="figure-image" alt="mínima">';
             }
             if (timeSignature === '6/4' || timeSignature === '9/4' || timeSignature === '12/4') {
-                return '<img src="minimapontuada.jpg" class="figure-image" alt="mínima pontuada">';
+                return '<img src="imagens/minimapontuada.jpg" class="figure-image" alt="mínima pontuada">';
             }
             if (timeSignature === '6/8' || timeSignature === '9/8' || timeSignature === '12/8') {
-                return '<img src="seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">';
+                return '<img src="imagens/seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">';
             }
-            return '<img src="seminima.jpg" class="figure-image" alt="semínima">';
+            return '<img src="imagens/seminima.jpg" class="figure-image" alt="semínima">';
         }
         
         function showVolumeTooltip(dot, volumeType, currentValue, onVolumeChange) {
@@ -1262,7 +1262,7 @@
             if (targetDot) {
                 // Cria o elemento da seta
                 const arrowImg = document.createElement('img');
-                arrowImg.src = 'seta.png';
+                arrowImg.src = 'imagens/seta.png';
                 arrowImg.className = 'inicio-arrow';
                 arrowImg.alt = 'Início';
                 arrowImg.title = `Início do hino (tempo ${inicio})`;
@@ -1783,7 +1783,7 @@
             slider.max = speeds.max;
             slider.value = speeds.max;
             if (currentHymn.velX3 === "S") {
-                document.getElementById('currentSpeed').innerHTML = `${speeds.max} (${speeds.max/3}<img src="seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">)`;
+                document.getElementById('currentSpeed').innerHTML = `${speeds.max} (${speeds.max/3}<img src="imagens/seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">)`;
             } else {
                 document.getElementById('currentSpeed').innerHTML = `${speeds.max}`;
             }            
@@ -1799,7 +1799,7 @@
             
             createBeatFiguresUI();
             
-            const soundInfoText = `<img src="seta.png" style="width: 17px; height: 17px; vertical-align: middle; display: inline-block; margin-right: 2px;"> indica o início do hino (tempo ${currentHymn.inicio || 1}) | Clique nos dots com borda laranja para ajustar volumes`;
+            const soundInfoText = `<img src="imagens/seta.png" style="width: 17px; height: 17px; vertical-align: middle; display: inline-block; margin-right: 2px;"> indica o início do hino (tempo ${currentHymn.inicio || 1}) | Clique nos dots com borda laranja para ajustar volumes`;
             document.getElementById('soundInfo').innerHTML = soundInfoText;
             
             stopMetronome();
@@ -1904,7 +1904,7 @@
         speedSlider.addEventListener('change', function() {
             if (currentHymn.velX3 === "S") {
                 const bpmValue = Math.floor(this.value / 3) * 3;
-                document.getElementById('currentSpeed').innerHTML = `${bpmValue} (${bpmValue/3}<img src="seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">)`;
+                document.getElementById('currentSpeed').innerHTML = `${bpmValue} (${bpmValue/3}<img src="imagens/seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">)`;
             } else {
                 const bpmValue = this.value;
                 document.getElementById('currentSpeed').innerHTML = `${bpmValue}`;
