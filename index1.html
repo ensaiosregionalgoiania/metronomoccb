@@ -853,14 +853,14 @@
             align-items: center;
         }
 
-        /* Modal de ativação de áudio - apenas para iOS */
-        .audio-activation-modal {
+        /* Modal simples para iPhone */
+        .iphone-mute-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             backdrop-filter: blur(8px);
             z-index: 2000;
             display: flex;
@@ -869,84 +869,77 @@
             padding: 20px;
         }
         
-        .audio-activation-card {
+        .mute-card {
             background: white;
             border-radius: 28px;
-            max-width: 400px;
+            max-width: 380px;
             width: 100%;
-            padding: 24px;
+            padding: 28px 24px;
             text-align: center;
             animation: slideUp 0.3s ease;
         }
         
-        .audio-activation-card h3 {
-            color: #2c3e66;
+        .mute-card h3 {
+            color: #dc2626;
             margin-bottom: 16px;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
         }
         
-        .audio-activation-card .sound-icon {
-            font-size: 64px;
-            margin: 20px 0;
-        }
-        
-        .audio-activation-card .mute-guide {
-            background: #f1f5f9;
-            padding: 16px;
-            border-radius: 16px;
+        .mute-card .icon {
+            font-size: 60px;
             margin: 16px 0;
-            text-align: left;
         }
         
-        .audio-activation-card .mute-guide img {
+        .mute-card .mute-image {
             width: 100%;
             max-width: 200px;
-            margin: 12px auto;
+            margin: 16px auto;
             display: block;
-            border-radius: 12px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
-        .audio-activation-card button {
+        .mute-card p {
+            color: #334155;
+            margin: 16px 0;
+            line-height: 1.4;
+            font-size: 1rem;
+        }
+        
+        .mute-card .highlight {
+            background: #fef3c7;
+            padding: 12px;
+            border-radius: 16px;
+            margin: 16px 0;
+            font-weight: 600;
+            color: #92400e;
+        }
+        
+        .mute-card button {
             background: #2c6e3c;
             color: white;
             border: none;
-            padding: 14px 24px;
+            padding: 14px 28px;
             border-radius: 40px;
             font-size: 1rem;
             font-weight: bold;
-            margin-top: 16px;
             cursor: pointer;
             width: 100%;
-        }
-        
-        .audio-activation-card button:active {
-            transform: scale(0.97);
-        }
-        
-        .audio-activation-card .confirm-buttons {
-            display: flex;
-            gap: 12px;
             margin-top: 16px;
         }
         
-        .audio-activation-card .confirm-buttons button {
-            flex: 1;
-            margin-top: 0;
+        .mute-card button:active {
+            transform: scale(0.97);
+            background: #1f5430;
         }
         
-        .audio-activation-card .btn-no {
-            background: #6c757d;
-        }
-        
-        .audio-activated-badge {
-            background: #22c55e;
-            color: white;
-            padding: 4px 12px;
+        .device-badge {
+            font-size: 0.6rem;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
             border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            margin-left: 8px;
             display: inline-block;
+            margin-left: 8px;
         }
 
         @keyframes arrowPulse {
@@ -960,32 +953,17 @@
             filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
         }
 
-        .inicio-arrow-container {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .inicio-arrow-container .movement-dot {
-            margin: 0;
-        }
-
         @media (max-width: 480px) {
             .inicio-arrow {
                 width: 10px !important;
                 height: 10px !important;
             }
-        }
-        
-        /* Badge indicando dispositivo */
-        .device-badge {
-            font-size: 0.6rem;
-            background: rgba(255,255,255,0.2);
-            padding: 2px 8px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-left: 8px;
+            .mute-card {
+                padding: 20px 16px;
+            }
+            .mute-card h3 {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -993,7 +971,7 @@
     <div class="container">
         <div class="header">
             <h1><img src="imagens/metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-15</h1>
-            <p>Hinos 1-480 | Coro 1-6 | <span id="audioStatus">✅ Áudio ativo</span> <span id="deviceBadge" class="device-badge"></span></p>
+            <p>Hinos 1-480 | Coro 1-6 | <span id="deviceBadge" class="device-badge"></span></p>
         </div>
         
         <div class="content">
@@ -1085,33 +1063,6 @@
         </div>
     </div>
     
-    <div id="audioActivationModal" class="audio-activation-modal" style="display: none;">
-        <div class="audio-activation-card">
-            <h3>🎵 Ativar Áudio no iPhone</h3>
-            <div class="sound-icon">🔊</div>
-            <p>Vamos testar o som do metrônomo!</p>
-            <div id="testSoundArea">
-                <button id="testSoundBtn">🔊 Testar Som</button>
-            </div>
-            <div id="confirmationArea" style="display: none;">
-                <p style="margin: 16px 0; color: #2c6e3c; font-weight: bold;">✓ Você ouviu o som?</p>
-                <div class="confirm-buttons">
-                    <button id="confirmYesBtn" class="btn-play">Sim, ouvi!</button>
-                    <button id="confirmNoBtn" class="btn-no">Não ouvi</button>
-                </div>
-            </div>
-            <div id="muteGuideArea" style="display: none;">
-                <div class="mute-guide">
-                    <p><strong>🔇 O som não foi ouvido</strong></p>
-                    <p>Verifique se o botão de silenciar do iPhone está desativado:</p>
-                    <img src="imagens/iphone-mute-button.jpg" alt="Botão silenciar iPhone" style="width: 100%; max-width: 200px; margin: 12px auto; display: block;" onerror="this.style.display='none'">
-                    <p style="font-size: 0.9rem; margin-top: 12px;">⬆️ O botão acima do volume deve estar na posição <strong style="color: #dc2626;">laranja/vermelho</strong> para desligar o mudo.</p>
-                    <p style="font-size: 0.85rem; margin-top: 8px;">Após desativar o mudo, clique no botão abaixo para testar novamente.</p>
-                </div>
-                <button id="retryTestBtn">🔄 Testar novamente</button>
-            </div>
-        </div>
-    </div>
     <script src="hinos.js"></script>
 
     <script>
@@ -1129,8 +1080,8 @@
         let isDoubleSpeedMode = false;
         let totalMovements = 0;
         let isMeiaHoraMode = false;
-        let audioActivated = !isIOS(); // Para Android/PC, já começa ativado
         let isIOSDevice = isIOS();
+        let muteWarningShown = false; // Para mostrar apenas uma vez por sessão
         
         let volumeSettings = {
             simpleAgudoForte: 1.0,
@@ -1195,7 +1146,6 @@
         
         async function playSoundWithVolume(buffer, volume) {
             if (isMuted) return false;
-            if (!audioActivated) return false;
             if (!audioCtx) await initAudio();
             if (!buffer) return false;
             
@@ -1222,17 +1172,8 @@
             return true;
         }
         
-        async function playTestSound() {
-            if (!audioCtx) await initAudio();
-            if (audioCtx.state === 'suspended') {
-                await audioCtx.resume();
-            }
-            return await playSoundWithVolume(forteBuffer, 1.0);
-        }
-        
         async function playSoundWithRules(beatNumber, isSubdivision = false, timeSignature) {
             if (isMuted) return;
-            if (!audioActivated) return;
             
             const isSimple = isSimpleTime(timeSignature);
             let buffer = null;
@@ -1701,14 +1642,51 @@
             }
         }
         
+        // Função para mostrar o aviso do mute do iPhone
+        function showMuteWarning() {
+            return new Promise((resolve) => {
+                // Cria o modal
+                const modal = document.createElement('div');
+                modal.className = 'iphone-mute-modal';
+                modal.innerHTML = `
+                    <div class="mute-card">
+                        <h3>🔇 Verifique o Silenciador</h3>
+                        <p>Caso o som do seu Iphone nao esteja sendo reproduzido, pode ser  que <strong>modo silencioso</strong> esteja ativado.</p>
+                        <div class="highlight">
+                            ⚡ Desative o modo silencioso do iPhone
+                        </div>
+                        <img src="imagens/iphone.jpg" class="mute-image" alt="Botão silenciar iPhone" onerror="this.style.display='none'">
+                        <button id="muteModalOkBtn">OK, entendi</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // Aguarda o clique no OK
+                const okBtn = modal.querySelector('#muteModalOkBtn');
+                okBtn.addEventListener('click', () => {
+                    modal.remove();
+                    resolve();
+                });
+                
+                // Fecha se clicar fora (opcional)
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.remove();
+                        resolve();
+                    }
+                });
+            });
+        }
+        
         async function startMetronome() {
-            // Se for iOS e ainda não ativou, mostra o modal
-            if (isIOSDevice && !audioActivated) {
-                showAudioActivationModal();
-                return;
+            // Se for iPhone e ainda não mostrou o aviso esta sessão
+            if (isIOSDevice && !muteWarningShown) {
+                muteWarningShown = true;
+                await showMuteWarning();
             }
             
-            // Para Android/PC ou iOS já ativado, toca normalmente
+            // Toca normalmente
             if (!currentHymn) {
                 if (!processHymnInput()) return;
                 updateHymnInfo();
@@ -1944,54 +1922,6 @@
             }
         }
         
-        function showAudioActivationModal() {
-            const modal = document.getElementById('audioActivationModal');
-            const testSoundArea = document.getElementById('testSoundArea');
-            const confirmationArea = document.getElementById('confirmationArea');
-            const muteGuideArea = document.getElementById('muteGuideArea');
-            
-            testSoundArea.style.display = 'block';
-            confirmationArea.style.display = 'none';
-            muteGuideArea.style.display = 'none';
-            modal.style.display = 'flex';
-        }
-        
-        function activateAudio() {
-            audioActivated = true;
-            localStorage.setItem('audio_activated_ios', 'true');
-            const statusSpan = document.getElementById('audioStatus');
-            statusSpan.innerHTML = '✅ Áudio ativo';
-            statusSpan.style.color = '#22c55e';
-            
-            const modal = document.getElementById('audioActivationModal');
-            modal.style.display = 'none';
-        }
-        
-        function checkAudioActivation() {
-            if (!isIOSDevice) {
-                // Para Android/PC, áudio já está ativo
-                audioActivated = true;
-                const statusSpan = document.getElementById('audioStatus');
-                statusSpan.innerHTML = '✅ Áudio ativo';
-                statusSpan.style.color = '#22c55e';
-            } else {
-                // Para iPhone, verifica se já foi ativado antes
-                const saved = localStorage.getItem('audio_activated_ios');
-                if (saved === 'true') {
-                    audioActivated = true;
-                    const statusSpan = document.getElementById('audioStatus');
-                    statusSpan.innerHTML = '✅ Áudio ativo';
-                    statusSpan.style.color = '#22c55e';
-                } else {
-                    audioActivated = false;
-                    const statusSpan = document.getElementById('audioStatus');
-                    statusSpan.innerHTML = '🔇 Ativação necessária (iPhone)';
-                    statusSpan.style.color = '#f97316';
-                }
-            }
-        }
-        
-        // Configurar badge do dispositivo
         function updateDeviceBadge() {
             const badge = document.getElementById('deviceBadge');
             if (isIOSDevice) {
@@ -2003,8 +1933,8 @@
             }
         }
         
-        document.getElementById('prevBtn').addEventListener('click', () => navegar(1));
-        document.getElementById('nextBtn').addEventListener('click', () => navegar(-1));
+        document.getElementById('prevBtn').addEventListener('click', () => navegar(-1));
+        document.getElementById('nextBtn').addEventListener('click', () => navegar(1));
         document.getElementById('muteCheckbox').addEventListener('change', (e) => { isMuted = e.target.checked; });
         document.getElementById('resetVolumesBtn').addEventListener('click', resetVolumes);
         
@@ -2073,6 +2003,8 @@
                 let bpm = Math.round(60 / avgInterval);
                 bpm = Math.min(300, Math.max(30, bpm));
                 bpmValueSpan.textContent = bpm;
+                const slider = document.getElementById('speedSlider');
+                if (slider) slider.value = bpm;
                 if (metronomeInterval) startMetronome();
             }
         }
@@ -2099,60 +2031,7 @@
             }
         });
         
-        // Configuração do modal de ativação de áudio (apenas para iOS)
-        const testSoundBtn = document.getElementById('testSoundBtn');
-        const confirmationArea = document.getElementById('confirmationArea');
-        const testSoundArea = document.getElementById('testSoundArea');
-        const muteGuideArea = document.getElementById('muteGuideArea');
-        const confirmYesBtn = document.getElementById('confirmYesBtn');
-        const confirmNoBtn = document.getElementById('confirmNoBtn');
-        const retryTestBtn = document.getElementById('retryTestBtn');
-        
-        if (testSoundBtn) {
-            testSoundBtn.addEventListener('click', async () => {
-                await initAudio();
-                const played = await playTestSound();
-                
-                if (played !== false) {
-                    testSoundArea.style.display = 'none';
-                    confirmationArea.style.display = 'block';
-                    muteGuideArea.style.display = 'none';
-                } else {
-                    testSoundArea.style.display = 'none';
-                    muteGuideArea.style.display = 'block';
-                    confirmationArea.style.display = 'none';
-                }
-            });
-        }
-        
-        if (confirmYesBtn) {
-            confirmYesBtn.addEventListener('click', () => {
-                activateAudio();
-                // Após ativar, toca o metrônomo se foi chamado
-                if (currentHymn) {
-                    startMetronome();
-                }
-            });
-        }
-        
-        if (confirmNoBtn) {
-            confirmNoBtn.addEventListener('click', () => {
-                testSoundArea.style.display = 'none';
-                confirmationArea.style.display = 'none';
-                muteGuideArea.style.display = 'block';
-            });
-        }
-        
-        if (retryTestBtn) {
-            retryTestBtn.addEventListener('click', async () => {
-                testSoundArea.style.display = 'block';
-                confirmationArea.style.display = 'none';
-                muteGuideArea.style.display = 'none';
-            });
-        }
-        
         loadSavedVolumes();
-        checkAudioActivation();
         updateDeviceBadge();
         updateHymnInfo();
         initAudio();
