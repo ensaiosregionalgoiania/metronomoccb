@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Teste de Áudio iPhone</title>
+    <title>Metrônomo CCB</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="imagens/metronomo.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="imagens/metronomo.png">
+    <link rel="shortcut icon" href="imagens/metronomo.png">    
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="imagens/metronomo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Metrônomo">
+    <meta name="theme-color" content="#2c3e66">
     <style>
         * {
             margin: 0;
@@ -14,592 +23,2116 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             min-height: 100vh;
+            padding: 12px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(115deg, #2c3e66 0%, #1e2a44 100%);
+            color: white;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 0.7em;
+            opacity: 0.85;
+        }
+
+        .content {
+            padding: 16px;
+        }
+
+        .hymn-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .nav-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: #3b4b7a;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+            flex-shrink: 0;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.94);
+            background: #2c3e66;
+        }
+
+        .hymn-input-group {
+            flex: 1;
+        }
+
+        .hymn-input {
+            width: 100%;
+            padding: 12px 8px;
+            border: 2px solid #cbd5e1;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            text-align: center;
+            font-weight: 600;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .hymn-input:focus {
+            outline: none;
+            border-color: #3b4b7a;
+        }
+
+        .hint {
+            font-size: 0.65rem;
+            color: #475569;
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        .hymn-info {
+            background: white;
+            padding: 14px;
+            border-radius: 20px;
+            margin-top: 16px;
+        }
+
+        .hymn-name-row {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .hymn-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            background: #f1f5f9;
+            padding: 8px 12px;
+            border-radius: 40px;
+            display: inline-block;
+        }
+
+        .time-sig-row {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .time-sig-badge {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #3b4b7a;
+            background: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+
+        .speed-control {
+            margin: 16px 0;
+        }
+
+        .speed-control label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.85rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #cbd5e1;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b4b7a;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .speed-values {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .current-speed {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 12px 0 8px;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2c3e66;
+            background: #eef2ff;
+            border-radius: 50px;
+            padding: 6px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+
+        .control-btn {
+            padding: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            max-width: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-play {
+            background: #2c6e3c;
+            color: white;
+        }
+        .btn-play:active {
+            background: #1f5430;
+            transform: scale(0.97);
+        }
+        .btn-stop {
+            background: #b91c1c;
+            color: white;
+        }
+        .btn-stop:active {
+            background: #991b1b;
+            transform: scale(0.97);
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin: 12px 0;
+            padding: 10px 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: #0f172a;
+        }
+        .checkbox-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #3b4b7a;
+        }
+
+        .metronome-visual {
+            text-align: center;
+            margin-top: 16px;
+            padding: 1px;
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .beat-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .beat-figures-row {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 1px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .figure-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 30px;
+            padding: 4px 3px;
+            background: white;
+            border-radius: 16px;
+            transition: all 0.1s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #141515;
+            position: relative;
+        }
+
+        .figure-symbol {
+            font-size: 1.3rem;
+            font-family: 'Segoe UI', monospace;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .figure-movements {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            justify-content: center;
+            align-items: center;
+            margin: 6px 0 4px;
+        }
+        
+        .movement-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Container para cada par de dots (grande + pequeno) */
+        .movement-pair {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .movement-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        /* Estilo para dots que têm controle de volume */
+        .movement-dot.volume-control {
+            cursor: pointer;
+            border: 1px solid #f59e0b;
+            box-shadow: 0 0 2px #f59e0b;
+        }
+        
+        .movement-dot.volume-control::after {
+            content: "🎛️";
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        .movement-dot.volume-control:hover::after {
+            opacity: 0.8;
+        }
+        
+        /* Tooltip de volume */
+        .volume-tooltip {
+            position: fixed;
+            background: #1e293b;
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            z-index: 2000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .volume-tooltip input {
+            width: 100%;
+            margin: 8px 0;
+        }
+        
+        .volume-tooltip .volume-value {
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+        
+        .volume-tooltip .volume-label {
+            font-size: 0.7rem;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+        
+        .movement-dot.active-movement {
+            background: #667eea;
+            transform: scale(1.4);
+            box-shadow: 0 0 6px #667eea;
+        }
+        
+        /* Estilo para o dot de início */
+        .movement-dot.inicio-movement {
+            background: #ff6b6b !important;
+            transform: scale(1.5);
+            box-shadow: 0 0 8px #ff6b6b;
+            animation: pulse-inicio 0.3s ease-in-out;
+        }
+        
+        @keyframes pulse-inicio {
+            0% { transform: scale(1); background: #ff6b6b; }
+            50% { transform: scale(1.8); background: #ff9999; }
+            100% { transform: scale(1.5); background: #ff6b6b; }
+        }
+        
+        .movement-dot.full-beat {
+            width: 14px;
+            height: 14px;
+            background: #3b4b7a;
+        }
+
+        .movement-dot.half-beat {
+            width: 8px;
+            height: 8px;
+            background: #94a3b8;
+        }
+
+        .movement-dot.active-movement.full-beat {
+            background: #667eea;
+            transform: scale(1.4);
+            box-shadow: 0 0 6px #667eea;
+        }
+
+        .movement-dot.active-movement.half-beat {
+            background: #667eea;
+            transform: scale(1.3);
+            box-shadow: 0 0 4px #667eea;
+        }
+        
+        .figure-unit.strong-primary {
+            border-left: 3px solid #dc2626;
+        }
+        
+        .figure-unit.strong-secondary {
+            border-left: 3px solid #16a34a;
+        }
+        
+        @keyframes pulse-beat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse-beat {
+            animation: pulse-beat 0.1s ease;
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 12px;
+            }
+            .figure-unit {
+                min-width: 55px;
+                padding: 8px 4px;
+            }
+            .figure-symbol {
+                font-size: 1rem;
+            }
+            .current-speed {
+                font-size: 1.6rem;
+            }
+            .movement-dot {
+                width: 7px;
+                height: 7px;
+            }
+            .movement-dot.full-beat {
+                width: 11px;
+                height: 11px;
+            }
+            .movement-dot.half-beat {
+                width: 6px;
+                height: 6px;
+            }
+            .movement-row {
+                gap: 4px;
+            }
+            .figure-movements {
+                gap: 4px;
+            }
+            .movement-pair {
+                gap: 2px;
+            }
+            .volume-tooltip {
+                min-width: 160px;
+                padding: 8px;
+            }
+        }
+
+        .time-signature-info {
+            font-size: 0.7rem;
+            margin-top: 8px;
+            color: #475569;
+            background: #f8fafc;
+            padding: 4px 8px;
+            border-radius: 16px;
+            display: inline-block;
+        }
+        
+        .accent-desc {
+            font-size: 0.65rem;
+            margin-top: 6px;
+            color: #475569;
+        }
+        
+        .sound-info {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            margin-top: 6px;
+            display: inline-block;
+        }
+        
+        .meia-hora-badge {
+            background: #8b5cf6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .volume-reset-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        
+        .volume-reset-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* Seta indicadora de início */
+        .inicio-arrow {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            color: #dc2626;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            animation: arrowPulse 0.5s ease-in-out;
+        }
+        
+        @keyframes arrowPulse {
+            0% { transform: translateX(-50%) translateY(0); opacity: 0; }
+            50% { transform: translateX(-50%) translateY(-5px); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .search-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+        
+        .search-fab:active {
+            transform: scale(0.94);
+        }
+        
+        .search-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .search-modal.active {
+            display: flex;
+        }
+        
+        .search-window {
+            background: white;
+            border-radius: 28px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .search-header {
+            background: linear-gradient(115deg, #2c3e66 0%, #1e2a44 100%);
+            color: white;
             padding: 20px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .search-header h3 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        
+        .search-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .search-close:active {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .search-body {
+            padding: 20px;
+        }
+        
+        .search-input-group {
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 40px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-results {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .search-result-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .search-result-item:active {
+            background: #f1f5f9;
+        }
+        
+        .result-number {
+            font-weight: 800;
+            color: #667eea;
+            background: #eef2ff;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .result-name {
+            flex: 1;
+            margin: 0 12px;
+            font-weight: 500;
+            color: #1e293b;
+        }
+        
+        .result-compasso {
+            font-size: 0.7rem;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        
+        .search-loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        
+        @media (max-width: 480px) {
+            .search-fab {
+                bottom: 16px;
+                right: 16px;
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
+            
+            .search-window {
+                max-height: 85vh;
+            }
+            
+            .search-result-item {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .result-name {
+                width: 100%;
+                margin: 0 0 4px 0;
+            }
+        }
+
+        .tap-bpm-icon {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(44, 62, 102, 0.1);
+        }
+
+        .tap-bpm-icon:active {
+            transform: scale(0.9);
+        }
+        
+        .tap-bpm-icon img {
+            width: 28px;
+            height: 28px;
+            pointer-events: none;
+        }
+
+        .tap-feedback {
+            animation: tapPulse 0.3s ease;
+        }
+
+        @keyframes tapPulse {
+            0% { transform: scale(1); background: rgba(44, 62, 102, 0.1); }
+            50% { transform: scale(1.1); background: rgba(44, 62, 102, 0.4); }
+            100% { transform: scale(1); background: rgba(44, 62, 102, 0.1); }
+        }
+
+        .figure-image {
+            width: 24px;
+            height: auto;
+            vertical-align: middle;
+            display: inline-block;
+        }
+
+        @media (max-width: 480px) {
+            .figure-image {
+                width: 20px;
+            }
+        }
+
+        /* Layout para compassos simples - dots lado a lado */
+        .compasso-simples .movement-row {
+            display: flex;
+            flex-direction: row !important;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .compasso-simples .movement-pair {
+            display: flex;
+            flex-direction: row !important;
+            gap: 4px;
+            align-items: center;
+        }
+
+        /* Layout para compassos compostos - dots empilhados */
+        .compasso-composto .movement-row {
+            display: flex;
+            flex-direction: row !important;
+            gap: 12px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .compasso-composto .movement-pair {
+            display: flex;
+            flex-direction: column !important;
+            gap: 4px;
+            align-items: center;
+        }
+
+        /* Animação da seta de início */
+        @keyframes arrowPulse {
+            0% { transform: translateY(0); opacity: 0; }
+            50% { transform: translateY(-5px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Estilo para a seta */
+        .inicio-arrow {
+            pointer-events: none;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+        }
+
+        /* Ajuste para o container da seta */
+        .inicio-arrow-container {
+            display: inline-flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
-        .container {
-            max-width: 500px;
-            width: 100%;
-            background: white;
-            border-radius: 28px;
-            padding: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        /* Para garantir que o dot dentro do container mantenha o tamanho */
+        .inicio-arrow-container .movement-dot {
+            margin: 0;
         }
 
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-            color: #1e293b;
-            text-align: center;
+        /* Ajuste para diferentes tamanhos de tela */
+        @media (max-width: 480px) {
+            .inicio-arrow {
+                width: 10px !important;
+                height: 10px !important;
+            }
         }
 
-        .subtitle {
-            text-align: center;
-            color: #64748b;
-            margin-bottom: 24px;
-            font-size: 0.9rem;
-        }
-
-        .status-card {
-            background: #f1f5f9;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .status-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-
-        .status-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .status-detail {
-            font-size: 0.85rem;
-            color: #64748b;
-        }
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .btn {
-            padding: 16px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            touch-action: manipulation;
-        }
-
-        .btn-primary {
-            background: #667eea;
+        /* Botão de autorização para iPhone */
+        #authorizeAudioBtn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             color: white;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
         }
 
-        .btn-primary:active {
+        #authorizeAudioBtn:active {
             transform: scale(0.97);
-            background: #5a67d8;
         }
 
-        .btn-success {
-            background: #2c6e3c;
-            color: white;
-        }
-
-        .btn-success:active {
-            transform: scale(0.97);
-            background: #1f5430;
-        }
-
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .btn-warning:active {
-            transform: scale(0.97);
-            background: #d97706;
-        }
-
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-        }
-
-        .btn-danger:active {
-            transform: scale(0.97);
-            background: #dc2626;
-        }
-
-        .sound-selector {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 20px;
-        }
-
-        .sound-selector h3 {
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            color: #334155;
-        }
-
-        .sound-buttons {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .sound-btn {
-            flex: 1;
-            padding: 12px;
-            background: #e2e8f0;
-            border: none;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .sound-btn:active {
-            transform: scale(0.95);
-        }
-
-        .log-area {
-            background: #0f172a;
-            color: #a5f3fc;
-            border-radius: 16px;
-            padding: 16px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.75rem;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .log-title {
-            color: #cbd5e1;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .log-entry {
-            padding: 4px 0;
-            border-bottom: 1px solid #334155;
-            font-size: 0.7rem;
-        }
-
-        .badge {
+        /* Badge de iPhone no título */
+        .iphone-badge {
             display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-left: 8px;
-        }
-
-        .badge-ios {
             background: #000;
-            color: white;
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-left: 8px;
+            vertical-align: middle;
         }
 
-        .badge-android {
-            background: #3ddc84;
-            color: #000;
-        }
-
-        .badge-web {
-            background: #4285f4;
-            color: white;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.7rem;
-            color: #94a3b8;
-        }
     </style>
+
 </head>
 <body>
     <div class="container">
-        <h1>🎵 Teste de Áudio iPhone</h1>
-        <div class="subtitle">Teste diferentes métodos de ativação de som</div>
-
-        <div class="status-card">
-            <div class="status-icon" id="statusIcon">🔇</div>
-            <div class="status-text" id="statusText">Áudio não ativado</div>
-            <div class="status-detail" id="statusDetail">Clique em um botão abaixo para ativar</div>
+        <div class="header">
+            <h1><img src="imagens/metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-15</h1>
+            <p>Hinos 1-480 | Coro 1-6 |</p>
         </div>
-
-        <div class="button-group">
-            <button class="btn btn-primary" id="btnActivateBasic">🎯 Ativação Básica (Web Audio)</button>
-            <button class="btn btn-warning" id="btnActivateHTML5">🎵 Ativação HTML5 Audio</button>
-            <button class="btn btn-success" id="btnPlaySound">🔊 Tocar Som de Teste</button>
-            <button class="btn btn-danger" id="btnStopAll">⏹ Parar Todos os Sons</button>
-        </div>
-
-        <div class="sound-selector">
-            <h3>🎼 Escolha o tipo de som:</h3>
-            <div class="sound-buttons">
-                <button class="sound-btn" data-sound="beep">📢 Beep (880Hz)</button>
-                <button class="sound-btn" data-sound="boop">🎸 Boop (440Hz)</button>
-                <button class="sound-btn" data-sound="click">👆 Click</button>
+        
+        <div class="content">
+            <div class="inicio">
+                <div class="hymn-nav">
+                    <button class="nav-btn" id="prevBtn">◀</button>
+                    <div class="hymn-input-group">
+                        <input type="text" id="hymnInput" class="hymn-input" value="1" autocomplete="off" inputmode="numeric">
+                    </div>
+                    <button class="nav-btn" id="nextBtn">▶</button>
+                </div>
+                <div class="hint">Digite 1-480 ou "coro 1" a "coro 6"</div>
+                
+                <div id="hymnInfo" class="hymn-info">
+                    <div class="hymn-name-row">
+                        <div class="hymn-name" id="hymnName">-</div>
+                    </div>
+                    
+                    <div class="time-sig-row">
+                        <div class="time-sig-badge" id="timeSignature">-</div>
+                        <button class="volume-reset-btn" id="resetVolumesBtn">Resetar Volumes</button>
+                    </div>
+                    
+                    <div class="speed-control">
+                        <label>⚡ BPM <span id="speedModeLabel"></span><span id="meiaHoraLabel" class="meia-hora-badge" style="display:none;">Meia Hora</span></label>
+                        <input type="range" id="speedSlider" min="40" max="200" step="1" value="120">
+                        <div class="speed-values">
+                            <span>Mín: <span id="minSpeed">-</span></span>
+                            <span>Méd: <span id="avgSpeed">-</span></span>
+                            <span>Máx: <span id="maxSpeed">-</span></span>
+                        </div>
+                        <div class="current-speed">
+                            <span id="currentSpeed">120</span> BPM
+                            <div class="tap-bpm-icon" id="tapBpmIcon" title="Clique no ritmo para calcular BPM">
+                                <img src="imagens/tambor.png" alt="Tap BPM" style="width: 32px; height: 32px; vertical-align: middle;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="accentCheckbox" checked> 🎯 Fortes
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="muteCheckbox"> 🔇 Silenciar
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="meiaHoraCheckbox"> ⏱️ Meia Hora
+                        </label>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="control-btn btn-play" id="playBtn">▶ Tocar</button>
+                        <button class="control-btn btn-stop" id="stopBtn">⏹ Parar</button>
+                        <button class="control-btn" id="authorizeAudioBtn" style="background: #f59e0b; display: none;">🔊 Autorizar Som</button>
+                    </div>
+                    
+                    <div class="metronome-visual">
+                        <div class="beat-info">
+                            <div id="beatFiguresRow" class="beat-figures-row">
+                                <!-- Figuras dinâmicas -->
+                            </div>
+                        </div>
+                        <div id="timeSignatureInfo" class="time-signature-info" style="margin-top: 8px;"></div>
+                        <div id="accentDescription" class="accent-desc" style="margin-top: 6px;"></div>
+                        <div id="soundInfo" class="sound-info" style="margin-top: 6px;"></div>
+                    </div>
+                </div>
+                
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
             </div>
         </div>
-
-        <div class="log-area">
-            <div class="log-title">📋 Log de Eventos:</div>
-            <div id="logEntries">
-                <div class="log-entry">✅ Página carregada - Aguardando interação</div>
-                <div class="log-entry">📱 Dispositivo detectado: <span id="deviceType">-</span></div>
-            </div>
-        </div>
-
-        <footer>
-            💡 Dica: No iPhone, o som só toca após uma interação do usuário (toque)
-        </footer>
     </div>
+    
+    <button class="search-fab" id="searchFabBtn">🔍</button>
+    
+    <div class="search-modal" id="searchModal">
+        <div class="search-window">
+            <div class="search-header">
+                <h3>🔍 Buscar Hino</h3>
+                <button class="search-close" id="searchCloseBtn">✕</button>
+            </div>
+            <div class="search-body">
+                <div class="search-input-group">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Digite palavra(s) do título..." autocomplete="off">
+                </div>
+                <div class="search-results" id="searchResults">
+                    <div class="search-loading">Digite para buscar...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="hinos.js"></script>
 
     <script>
-        // Variáveis globais
+
+        let currentHymn = null;
+        let metronomeInterval = null;
+        let currentMovementIndex = 0;
+        let beatsPerMeasure = 4;
+        let isMuted = false;
+        let isDoubleSpeedMode = false;
+        let totalMovements = 0;
+        let isMeiaHoraMode = false;
+        
+        let volumeSettings = {
+            simpleAgudoForte: 1.0,
+            simpleGraveForte: 1.0,
+            simpleSubdivisao: 0.3,
+            compoundAgudoForte: 1.0,
+            compoundAgudoFraco: 0.7,
+            compoundGraveForte: 1.0,
+            compoundSubdivisao: 0.3
+        };
+        
+        const defaultVolumes = { ...volumeSettings };
+        
         let audioCtx = null;
-        let isAudioActivated = false;
-        let activeOscillator = null;
-        let html5Audio = null;
+        let forteBuffer = null;
+        let medioBuffer = null;
         
-        // Detectar dispositivo
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isAndroid = /Android/.test(navigator.userAgent);
+        let activeTooltip = null;
         
-        // Elementos DOM
-        const statusIcon = document.getElementById('statusIcon');
-        const statusText = document.getElementById('statusText');
-        const statusDetail = document.getElementById('statusDetail');
-        const logEntries = document.getElementById('logEntries');
-        
-        // Função para adicionar log
-        function addLog(message, type = 'info') {
-            const logDiv = document.createElement('div');
-            logDiv.className = 'log-entry';
-            const time = new Date().toLocaleTimeString();
-            const icon = type === 'error' ? '❌' : (type === 'success' ? '✅' : 'ℹ️');
-            logDiv.innerHTML = `${icon} [${time}] ${message}`;
-            logEntries.appendChild(logDiv);
-            logDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        async function initAudio() {
+            if (audioCtx) return;
             
-            // Limitar número de logs
-            while (logEntries.children.length > 20) {
-                logEntries.removeChild(logEntries.firstChild);
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            try {
+                const forteResponse = await fetch('sons/agudo.mp3');
+                const medioResponse = await fetch('sons/grave.mp3');
+                
+                const forteArrayBuffer = await forteResponse.arrayBuffer();
+                const medioArrayBuffer = await medioResponse.arrayBuffer();
+                
+                forteBuffer = await audioCtx.decodeAudioData(forteArrayBuffer);
+                medioBuffer = await audioCtx.decodeAudioData(medioArrayBuffer);
+                
+                console.log('Áudios carregados com sucesso!');
+            } catch (error) {
+                console.error('Erro ao carregar áudios:', error);
+                createSyntheticBeeps();
             }
         }
         
-        // Atualizar status
-        function updateStatus(activated, method = null) {
-            if (activated) {
-                statusIcon.innerHTML = '🔊';
-                statusText.innerHTML = '✅ Áudio ATIVADO';
-                statusDetail.innerHTML = method ? `Método: ${method} | Pronto para tocar!` : 'Pronto para tocar!';
-                isAudioActivated = true;
+        function createSyntheticBeeps() {
+            const sampleRate = 44100;
+            const duration = 0.2;
+            
+            const forteSamples = Math.floor(sampleRate * duration);
+            const forteArray = new Float32Array(forteSamples);
+            for (let i = 0; i < forteSamples; i++) {
+                forteArray[i] = Math.sin(2 * Math.PI * 880 * i / sampleRate);
+            }
+            forteBuffer = audioCtx.createBuffer(1, forteSamples, sampleRate);
+            forteBuffer.getChannelData(0).set(forteArray);
+            
+            const medioSamples = Math.floor(sampleRate * duration);
+            const medioArray = new Float32Array(medioSamples);
+            for (let i = 0; i < medioSamples; i++) {
+                medioArray[i] = Math.sin(2 * Math.PI * 440 * i / sampleRate);
+            }
+            medioBuffer = audioCtx.createBuffer(1, medioSamples, sampleRate);
+            medioBuffer.getChannelData(0).set(medioArray);
+        }
+        
+        async function playSoundWithVolume(buffer, volume) {
+            if (isMuted) return;
+            if (!audioCtx) await initAudio();
+            if (!buffer) return;
+            
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+            
+            const source = audioCtx.createBufferSource();
+            const gainNode = audioCtx.createGain();
+            
+            source.buffer = buffer;
+            gainNode.gain.value = volume;
+            
+            source.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            source.start();
+            
+            source.onended = () => {
+                source.disconnect();
+                gainNode.disconnect();
+            };
+        }
+        
+        async function playSoundWithRules(beatNumber, isSubdivision = false, timeSignature) {
+            if (isMuted) return;
+            
+            const isSimple = isSimpleTime(timeSignature);
+            let buffer = null;
+            let volume = 1.0;
+            
+            if (isSimple) {
+                if (isSubdivision) {
+                    buffer = medioBuffer;
+                    volume = volumeSettings.simpleSubdivisao;
+                } else {
+                    if (beatNumber === 1) {
+                        buffer = forteBuffer;
+                        volume = volumeSettings.simpleAgudoForte;
+                    } else if (beatNumber === 2) {
+                        buffer = medioBuffer;
+                        volume = volumeSettings.simpleGraveForte;
+                    } else {
+                        buffer = medioBuffer;
+                        volume = volumeSettings.simpleGraveForte;
+                    }
+                }
             } else {
-                statusIcon.innerHTML = '🔇';
-                statusText.innerHTML = '⏸ Áudio DESATIVADO';
-                statusDetail.innerHTML = 'Toque em um botão para ativar o áudio';
-                isAudioActivated = false;
-            }
-        }
-        
-        // ========== MÉTODO 1: WEB AUDIO API ==========
-        async function activateWebAudio() {
-            addLog('Tentando ativar Web Audio API...');
-            
-            try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    addLog('✅ Contexto de áudio criado');
+                if (isSubdivision) {
+                    buffer = medioBuffer;
+                    volume = volumeSettings.compoundSubdivisao;
+                } else {
+                    if (beatNumber === 1) {
+                        buffer = forteBuffer;
+                        volume = volumeSettings.compoundAgudoForte;
+                    } else if (beatNumber === 4 || beatNumber === 7 || beatNumber === 10) {
+                        buffer = forteBuffer;
+                        volume = volumeSettings.compoundAgudoFraco;
+                    } else if (beatNumber === 2) {
+                        buffer = medioBuffer;
+                        volume = volumeSettings.compoundGraveForte;
+                    } else {
+                        buffer = medioBuffer;
+                        volume = volumeSettings.compoundGraveForte;
+                    }
                 }
-                
-                if (audioCtx.state === 'suspended') {
-                    await audioCtx.resume();
-                    addLog('✅ Contexto de áudio RESUMIDO', 'success');
+            }
+            
+            if (buffer) {
+                await playSoundWithVolume(buffer, volume);
+            }
+        }
+        
+        function isSimpleTime(timeSignature) {
+            const simplePatterns = ['2/4', '3/4', '4/4', '2/2', '3/2', '4/2'];
+            return simplePatterns.includes(timeSignature);
+        }
+
+        function isCompoundTime(timeSignature) {
+            const compoundPatterns = ['6/8', '9/8', '12/8', '6/4', '9/4', '12/4'];
+            return compoundPatterns.includes(timeSignature);
+        }
+        
+        function shouldUseDoubleSpeedMode(hymn) {
+            if (!hymn) return false;
+            if (isSimpleTime(hymn.compasso)) return true;
+            if (isCompoundTime(hymn.compasso)) {
+                return isMeiaHoraMode;
+            }
+            return false;
+        }
+        
+        function getFigureSymbol(timeSignature) {
+            if (timeSignature === '2/2' || timeSignature === '3/2' || timeSignature === '4/2') {
+                return '<img src="imagens/minima.jpg" class="figure-image" alt="mínima">';
+            }
+            if (timeSignature === '6/4' || timeSignature === '9/4' || timeSignature === '12/4') {
+                return '<img src="imagens/minimapontuada.jpg" class="figure-image" alt="mínima pontuada">';
+            }
+            if (timeSignature === '6/8' || timeSignature === '9/8' || timeSignature === '12/8') {
+                return '<img src="imagens/seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">';
+            }
+            return '<img src="imagens/seminima.jpg" class="figure-image" alt="semínima">';
+        }
+        
+        function showVolumeTooltip(dot, volumeType, currentValue, onVolumeChange) {
+            if (activeTooltip) {
+                activeTooltip.remove();
+                activeTooltip = null;
+            }
+            
+            const tooltip = document.createElement('div');
+            tooltip.className = 'volume-tooltip';
+            
+            const labels = {
+                'simple-agudo-forte': '🎺 Som Forte (1º tempo)',
+                'simple-grave-forte': '🎸 Som Médio (2º tempo)',
+                'simple-subdivisao': '🔔 Subdivisões',
+                'compound-agudo-forte': '🎺 Som Forte (1º tempo)',
+                'compound-agudo-fraco': '🎷 Som Médio-Forte (4º tempo)',
+                'compound-grave-forte': '🎸 Som Médio (2º tempo)',
+                'compound-subdivisao': '🔔 Subdivisões'
+            };
+            
+            tooltip.innerHTML = `
+                <div class="volume-label">${labels[volumeType] || 'Volume'}</div>
+                <input type="range" min="0" max="100" step="1" value="${Math.round(currentValue * 100)}">
+                <div class="volume-value">${Math.round(currentValue * 100)}%</div>
+            `;
+            
+            const rect = dot.getBoundingClientRect();
+            tooltip.style.left = `${rect.left + rect.width / 2 - 100}px`;
+            tooltip.style.top = `${rect.top - 60}px`;
+            
+            const slider = tooltip.querySelector('input');
+            const valueDisplay = tooltip.querySelector('.volume-value');
+            
+            slider.addEventListener('input', (e) => {
+                const newValue = parseInt(e.target.value) / 100;
+                valueDisplay.textContent = `${e.target.value}%`;
+                onVolumeChange(newValue);
+            });
+            
+            document.body.appendChild(tooltip);
+            activeTooltip = tooltip;
+            
+            const closeHandler = (e) => {
+                if (!tooltip.contains(e.target) && e.target !== dot) {
+                    tooltip.remove();
+                    activeTooltip = null;
+                    document.removeEventListener('click', closeHandler);
                 }
-                
-                // Tocar um som silencioso para ativar
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                gainNode.gain.value = 0.001; // Quase silencioso
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.start();
-                oscillator.stop(0.05);
-                
-                updateStatus(true, 'Web Audio API');
-                addLog('🎉 Web Audio API ativada com sucesso!', 'success');
-                return true;
-                
-            } catch (error) {
-                addLog(`❌ Erro ao ativar Web Audio: ${error.message}`, 'error');
-                return false;
-            }
+            };
+            setTimeout(() => document.addEventListener('click', closeHandler), 100);
         }
         
-        // ========== MÉTODO 2: HTML5 AUDIO ==========
-        async function activateHTML5Audio() {
-            addLog('Tentando ativar HTML5 Audio...');
+        // Função para adicionar seta indicadora de início
+        function addInicioArrow() {
+            // Remove setas existentes
+            document.querySelectorAll('.inicio-arrow').forEach(arrow => arrow.remove());
             
-            try {
-                // Criar elemento de áudio
-                html5Audio = new Audio();
-                
-                // Criar um beep em base64 (som silencioso para ativação)
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const sampleRate = 44100;
-                const duration = 0.1;
-                const samples = Math.floor(sampleRate * duration);
-                const buffer = audioContext.createBuffer(1, samples, sampleRate);
-                const channelData = buffer.getChannelData(0);
-                
-                for (let i = 0; i < samples; i++) {
-                    channelData[i] = 0; // Silencioso
+            const inicio = currentHymn.inicio;
+            if (!inicio) return;
+            
+            // Determina qual dot deve receber a seta
+            let targetMovement;
+            
+            if (isDoubleSpeedMode) {
+                if (inicio % 1 === 0) {
+                    targetMovement = (inicio - 1) * 2;
+                } else {
+                    const beat = Math.floor(inicio);
+                    targetMovement = (beat - 1) * 2 + 1;
                 }
-                
-                // Converter para WAV (base64)
-                const wav = bufferToWav(buffer);
-                const blob = new Blob([wav], { type: 'audio/wav' });
-                const url = URL.createObjectURL(blob);
-                
-                html5Audio.src = url;
-                html5Audio.volume = 0.01; // Volume baixo para ativação
-                
-                await html5Audio.play();
-                html5Audio.pause();
-                html5Audio.currentTime = 0;
-                
-                URL.revokeObjectURL(url);
-                audioContext.close();
-                
-                updateStatus(true, 'HTML5 Audio');
-                addLog('🎉 HTML5 Audio ativado com sucesso!', 'success');
-                return true;
-                
-            } catch (error) {
-                addLog(`❌ Erro ao ativar HTML5 Audio: ${error.message}`, 'error');
-                return false;
-            }
-        }
-        
-        // Função auxiliar: converter Buffer para WAV
-        function bufferToWav(buffer) {
-            const numChannels = buffer.numberOfChannels;
-            const sampleRate = buffer.sampleRate;
-            const format = 1;
-            const bitDepth = 16;
-            
-            let samples = buffer.getChannelData(0);
-            let dataLength = samples.length * (bitDepth / 8);
-            let buffer_length = 44 + dataLength;
-            
-            const arrayBuffer = new ArrayBuffer(buffer_length);
-            const view = new DataView(arrayBuffer);
-            
-            // RIFF chunk
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, buffer_length - 8, true);
-            writeString(view, 8, 'WAVE');
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true);
-            view.setUint16(20, format, true);
-            view.setUint16(22, numChannels, true);
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, sampleRate * numChannels * (bitDepth / 8), true);
-            view.setUint16(32, numChannels * (bitDepth / 8), true);
-            view.setUint16(34, bitDepth, true);
-            writeString(view, 36, 'data');
-            view.setUint32(40, dataLength, true);
-            
-            // Write samples
-            let offset = 44;
-            for (let i = 0; i < samples.length; i++) {
-                const sample = Math.max(-1, Math.min(1, samples[i]));
-                view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
-                offset += 2;
-            }
-            
-            return arrayBuffer;
-        }
-        
-        function writeString(view, offset, str) {
-            for (let i = 0; i < str.length; i++) {
-                view.setUint8(offset + i, str.charCodeAt(i));
-            }
-        }
-        
-        // ========== TOCAR SONS ==========
-        async function playBeep() {
-            if (!isAudioActivated) {
-                addLog('⚠️ Áudio não ativado! Ative primeiro.', 'error');
-                alert('Clique primeiro em um botão de ativação (Verde ou Laranja)');
-                return;
-            }
-            
-            addLog('🔊 Tocando Beep (880Hz)...');
-            
-            try {
-                if (audioCtx && audioCtx.state === 'running') {
-                    // Usar Web Audio
-                    const oscillator = audioCtx.createOscillator();
-                    const gainNode = audioCtx.createGain();
-                    oscillator.type = 'sine';
-                    oscillator.frequency.value = 880;
-                    gainNode.gain.value = 0.5;
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-                    oscillator.start();
-                    oscillator.stop(audioCtx.currentTime + 0.2);
-                    addLog('✅ Beep tocado (Web Audio)', 'success');
-                } else if (html5Audio) {
-                    // Usar HTML5 Audio
-                    const audio = new Audio();
-                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                    const sampleRate = 44100;
-                    const duration = 0.2;
-                    const samples = Math.floor(sampleRate * duration);
-                    const buffer = ctx.createBuffer(1, samples, sampleRate);
-                    const channelData = buffer.getChannelData(0);
+            } else {
+                if (inicio % 1 === 0) {
+                    targetMovement = inicio - 1;
+                } else {
+                    const beat = Math.floor(inicio);
+                    const timeSig = currentHymn.compasso;
+                    const isSimple = isSimpleTime(timeSig);
                     
-                    for (let i = 0; i < samples; i++) {
-                        channelData[i] = Math.sin(2 * Math.PI * 880 * i / sampleRate) * 0.5;
+                    if (isSimple || isDoubleSpeedMode) {
+                        targetMovement = beat * 2;
+                    } else {
+                        targetMovement = beat;
+                    }
+                }
+            }
+            
+            const targetDot = document.querySelector(`.movement-dot[data-global-movement="${targetMovement}"]`);
+            if (targetDot) {
+                // Cria o elemento da seta
+                const arrowImg = document.createElement('img');
+                arrowImg.src = 'imagens/seta.png';
+                arrowImg.className = 'inicio-arrow';
+                arrowImg.alt = 'Início';
+                arrowImg.title = `Início do hino (tempo ${inicio})`;
+                
+                // Estilos para a seta - posicionada ABAIXO
+                arrowImg.style.position = 'absolute';
+                arrowImg.style.width = '17px';
+                arrowImg.style.height = '17px';
+                arrowImg.style.zIndex = '100';
+                arrowImg.style.pointerEvents = 'none';
+                
+                // Garante que o dot tenha position relative
+                targetDot.style.position = 'relative';
+                
+                // Posiciona a seta abaixo do dot
+                arrowImg.style.position = 'absolute';
+                arrowImg.style.left = '50%';
+                arrowImg.style.transform = 'translateX(-50%)';
+                arrowImg.style.top = '100%';  // 100% = logo abaixo do dot
+                arrowImg.style.marginTop = '2px';  // Pequeno espaçamento
+                arrowImg.style.animation = 'arrowPulse 0.5s ease-in-out';
+                
+                targetDot.appendChild(arrowImg);
+                
+                // Remove a animação após terminar
+                setTimeout(() => {
+                    arrowImg.style.animation = 'none';
+                }, 500);
+            }
+        }
+
+        function addVolumeControls() {
+            const timeSig = currentHymn.compasso;
+            const isSimple = isSimpleTime(timeSig);
+            
+            // Remove a classe inicio-movement de todos os dots (se houver)
+            document.querySelectorAll('.movement-dot.inicio-movement').forEach(dot => {
+                dot.classList.remove('inicio-movement');
+            });
+            
+            if (isSimple) {
+                // Compasso simples
+                const firstBeatDot = document.querySelector('.movement-dot[data-global-movement="0"]');
+                if (firstBeatDot) {
+                    firstBeatDot.classList.add('volume-control');
+                    firstBeatDot.setAttribute('data-volume-type', 'simple-agudo-forte');
+                    firstBeatDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(firstBeatDot, 'simple-agudo-forte', volumeSettings.simpleAgudoForte, (newVolume) => {
+                            volumeSettings.simpleAgudoForte = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+                
+                const secondBeatDot = document.querySelector('.movement-dot[data-global-movement="2"]');
+                if (secondBeatDot) {
+                    secondBeatDot.classList.add('volume-control');
+                    secondBeatDot.setAttribute('data-volume-type', 'simple-grave-forte');
+                    secondBeatDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(secondBeatDot, 'simple-grave-forte', volumeSettings.simpleGraveForte, (newVolume) => {
+                            volumeSettings.simpleGraveForte = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+                
+                const firstSubdivisionDot = document.querySelector('.movement-dot[data-global-movement="1"]');
+                if (firstSubdivisionDot) {
+                    firstSubdivisionDot.classList.add('volume-control');
+                    firstSubdivisionDot.setAttribute('data-volume-type', 'simple-subdivisao');
+                    firstSubdivisionDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(firstSubdivisionDot, 'simple-subdivisao', volumeSettings.simpleSubdivisao, (newVolume) => {
+                            volumeSettings.simpleSubdivisao = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+            } else {
+                // Compasso composto
+                const firstBeatDot = document.querySelector('.movement-dot[data-global-movement="0"]');
+                if (firstBeatDot) {
+                    firstBeatDot.classList.add('volume-control');
+                    firstBeatDot.setAttribute('data-volume-type', 'compound-agudo-forte');
+                    firstBeatDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(firstBeatDot, 'compound-agudo-forte', volumeSettings.compoundAgudoForte, (newVolume) => {
+                            volumeSettings.compoundAgudoForte = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+                
+                const fourthBeatDot = document.querySelector('.movement-dot[data-global-movement="3"]');
+                if (fourthBeatDot) {
+                    fourthBeatDot.classList.add('volume-control');
+                    fourthBeatDot.setAttribute('data-volume-type', 'compound-agudo-fraco');
+                    fourthBeatDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(fourthBeatDot, 'compound-agudo-fraco', volumeSettings.compoundAgudoFraco, (newVolume) => {
+                            volumeSettings.compoundAgudoFraco = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+                
+                const secondBeatDot = document.querySelector('.movement-dot[data-global-movement="1"]');
+                if (secondBeatDot) {
+                    secondBeatDot.classList.add('volume-control');
+                    secondBeatDot.setAttribute('data-volume-type', 'compound-grave-forte');
+                    secondBeatDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(secondBeatDot, 'compound-grave-forte', volumeSettings.compoundGraveForte, (newVolume) => {
+                            volumeSettings.compoundGraveForte = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+                
+                const firstSubdivisionDot = document.querySelector('.movement-dot.half-beat');
+                if (firstSubdivisionDot) {
+                    firstSubdivisionDot.classList.add('volume-control');
+                    firstSubdivisionDot.setAttribute('data-volume-type', 'compound-subdivisao');
+                    firstSubdivisionDot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showVolumeTooltip(firstSubdivisionDot, 'compound-subdivisao', volumeSettings.compoundSubdivisao, (newVolume) => {
+                            volumeSettings.compoundSubdivisao = newVolume;
+                            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+                        });
+                    });
+                }
+            }
+        }
+
+        function createBeatFiguresUI() {
+            const container = document.getElementById('beatFiguresRow');
+            container.innerHTML = '';
+            const timeSig = currentHymn.compasso;
+            const isCompound = isCompoundTime(timeSig);
+            
+            // Adiciona classe no container para identificar o tipo de compasso
+            container.className = 'beat-figures-row';
+            if (isCompound) {
+                container.classList.add('compasso-composto');
+            } else {
+                container.classList.add('compasso-simples');
+            }
+            
+            if (isCompound) {
+                // COMPASSOS COMPOSTOS - dots empilhados (um embaixo do outro)
+                const totalBeats = beatsPerMeasure;
+                const beatsPerFigure = 3;
+                const numberOfFigures = Math.ceil(totalBeats / beatsPerFigure);
+                
+                for (let fig = 0; fig < numberOfFigures; fig++) {
+                    const figureDiv = document.createElement('div');
+                    figureDiv.className = `figure-unit`;
+                    
+                    const symbolSpan = document.createElement('div');
+                    symbolSpan.className = 'figure-symbol';
+                    symbolSpan.innerHTML = getFigureSymbol(timeSig);
+                    
+                    const movementsDiv = document.createElement('div');
+                    movementsDiv.className = 'figure-movements';
+                    
+                    const movementRow = document.createElement('div');
+                    movementRow.className = 'movement-row';
+                    movementRow.style.gap = '12px';
+                    
+                    const startBeat = fig * beatsPerFigure;
+                    const endBeat = Math.min(startBeat + beatsPerFigure, totalBeats);
+                    
+                    for (let t = 0; t < beatsPerFigure; t++) {
+                        const beatIndex = startBeat + t;
+                        if (beatIndex >= totalBeats) break;
+                        
+                        const pairDiv = document.createElement('div');
+                        pairDiv.className = 'movement-pair';
+                        pairDiv.style.display = 'flex';
+                        pairDiv.style.flexDirection = 'column';
+                        pairDiv.style.alignItems = 'center';
+                        pairDiv.style.gap = '4px';
+                        
+                        if (isDoubleSpeedMode) {
+                            const dotGrande = document.createElement('div');
+                            dotGrande.className = 'movement-dot full-beat';
+                            dotGrande.dataset.globalMovement = beatIndex * 2;
+                            
+                            const dotPequeno = document.createElement('div');
+                            dotPequeno.className = 'movement-dot half-beat';
+                            dotPequeno.dataset.globalMovement = beatIndex * 2 + 1;
+                            
+                            pairDiv.appendChild(dotGrande);
+                            pairDiv.appendChild(dotPequeno);
+                        } else {
+                            const dot = document.createElement('div');
+                            dot.className = 'movement-dot full-beat';
+                            dot.dataset.globalMovement = beatIndex;
+                            pairDiv.appendChild(dot);
+                        }
+                        
+                        movementRow.appendChild(pairDiv);
                     }
                     
-                    const wav = bufferToWav(buffer);
-                    const blob = new Blob([wav], { type: 'audio/wav' });
-                    const url = URL.createObjectURL(blob);
-                    audio.src = url;
-                    audio.volume = 0.8;
-                    await audio.play();
-                    URL.revokeObjectURL(url);
-                    ctx.close();
-                    addLog('✅ Beep tocado (HTML5)', 'success');
+                    movementsDiv.appendChild(movementRow);
+                    figureDiv.appendChild(symbolSpan);
+                    figureDiv.appendChild(movementsDiv);
+                    container.appendChild(figureDiv);
                 }
-            } catch (error) {
-                addLog(`❌ Erro ao tocar beep: ${error.message}`, 'error');
+            } else {
+                // COMPASSOS SIMPLES - dots lado a lado (um ao lado do outro)
+                for (let i = 0; i < beatsPerMeasure; i++) {
+                    const beatNumber = i + 1;
+                    const isStrong = beatNumber === 1;
+                    let accentClass = '';
+                    if (isStrong) {
+                        accentClass = 'strong-primary';
+                    }
+                    
+                    const figureDiv = document.createElement('div');
+                    figureDiv.className = `figure-unit ${accentClass}`;
+                    
+                    const symbolSpan = document.createElement('div');
+                    symbolSpan.className = 'figure-symbol';
+                    symbolSpan.innerHTML = getFigureSymbol(timeSig);
+                    
+                    const movementsDiv = document.createElement('div');
+                    movementsDiv.className = 'figure-movements';
+                    
+                    const movementRow = document.createElement('div');
+                    movementRow.className = 'movement-row';
+                    movementRow.style.display = 'flex';
+                    movementRow.style.flexDirection = 'row';
+                    movementRow.style.gap = '4px';
+                    movementRow.style.justifyContent = 'center';
+                    movementRow.style.alignItems = 'center';
+                    
+                    const pairDiv = document.createElement('div');
+                    pairDiv.className = 'movement-pair';
+                    pairDiv.style.display = 'flex';
+                    pairDiv.style.flexDirection = 'row';
+                    pairDiv.style.gap = '4px';
+                    pairDiv.style.alignItems = 'center';
+                    
+                    const dotGrande = document.createElement('div');
+                    dotGrande.className = 'movement-dot full-beat';
+                    dotGrande.dataset.globalMovement = i * 2;
+                    
+                    const dotPequeno = document.createElement('div');
+                    dotPequeno.className = 'movement-dot half-beat';
+                    dotPequeno.dataset.globalMovement = i * 2 + 1;
+                    
+                    pairDiv.appendChild(dotGrande);
+                    pairDiv.appendChild(dotPequeno);
+                    movementRow.appendChild(pairDiv);
+                    
+                    movementsDiv.appendChild(movementRow);
+                    figureDiv.appendChild(symbolSpan);
+                    figureDiv.appendChild(movementsDiv);
+                    container.appendChild(figureDiv);
+                }
+            }
+            
+            addVolumeControls();
+            addInicioArrow();
+        }
+
+        function highlightCurrentMovement(movementIndex) {
+            document.querySelectorAll('.figure-unit').forEach(fig => {
+                fig.classList.remove('active-beat', 'pulse-beat');
+                const dots = fig.querySelectorAll('.movement-dot');
+                dots.forEach(dot => dot.classList.remove('active-movement'));
+            });
+            
+            const targetDot = document.querySelector(`.movement-dot[data-global-movement="${movementIndex}"]`);
+            if (targetDot) {
+                const figureUnit = targetDot.closest('.figure-unit');
+                if (figureUnit) {
+                    figureUnit.classList.add('active-beat', 'pulse-beat');
+                    targetDot.classList.add('active-movement');
+                    setTimeout(() => figureUnit.classList.remove('pulse-beat'), 200);
+                }
             }
         }
         
-        async function playBoop() {
-            if (!isAudioActivated) {
-                addLog('⚠️ Áudio não ativado! Ative primeiro.', 'error');
-                alert('Clique primeiro em um botão de ativação');
+        async function executeBeat() {
+            const timeSig = currentHymn.compasso;
+            
+            let beatNumber;
+            let isSubdivision = false;
+            
+            if (isDoubleSpeedMode) {
+                if (currentMovementIndex % 2 === 1) {
+                    isSubdivision = true;
+                    beatNumber = Math.floor(currentMovementIndex / 2) + 1;
+                } else {
+                    beatNumber = Math.floor(currentMovementIndex / 2) + 1;
+                }
+            } else {
+                beatNumber = currentMovementIndex + 1;
+            }
+            
+            await playSoundWithRules(beatNumber, isSubdivision, timeSig);
+            highlightCurrentMovement(currentMovementIndex);
+            
+            currentMovementIndex++;
+            if (currentMovementIndex >= totalMovements) {
+                currentMovementIndex = 0;
+            }
+        }
+        
+        async function startMetronome() {
+            if (!currentHymn) {
+                if (!processHymnInput()) return;
+                updateHymnInfo();
+            }
+            
+            stopMetronome();
+            
+            await initAudio();
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+            
+            let bpm = parseInt(document.getElementById('speedSlider').value);
+            let intervalMs;
+            
+            if (isDoubleSpeedMode) {
+                intervalMs = (60 / (bpm * 2)) * 1000;
+            } else {
+                intervalMs = (60 / bpm) * 1000;
+            }
+            
+            currentMovementIndex = 0;
+            await executeBeat();
+            
+            metronomeInterval = setInterval(async () => {
+                await executeBeat();
+            }, intervalMs);
+        }
+        
+        function stopMetronome() {
+            if (metronomeInterval) {
+                clearInterval(metronomeInterval);
+                metronomeInterval = null;
+            }
+            document.querySelectorAll('.figure-unit').forEach(fig => {
+                fig.classList.remove('active-beat');
+                const dots = fig.querySelectorAll('.movement-dot');
+                dots.forEach(dot => dot.classList.remove('active-movement'));
+            });
+            currentMovementIndex = 0;
+        }
+        
+        function processHymnInput() {
+            const input = document.getElementById('hymnInput').value.replace('coro ', '48');
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.style.display = 'none';
+            let hymnKey = null;
+            
+            const coroMatch = input.match(/^coro\s*(\d+)$/i);
+            if (coroMatch) {
+
+                let num = parseInt(coroMatch[1]);
+                if (num >= 1 && num <= 6) {
+                    hymnKey = `C${num}`;
+                } else {
+                    errorDiv.textContent = 'Coro inválido (1-6)';
+                    errorDiv.style.display = 'block';
+                    return false;
+                }
+            } else if (/^\d+$/.test(input)) {
+                let num = parseInt(input);
+                if (num >= 1 && num <= 486) {
+                    hymnKey = num.toString();
+                } else {
+                    errorDiv.textContent = 'Número inválido (1-480)';
+                    errorDiv.style.display = 'block';
+                    return false;
+                }
+            } else {
+                errorDiv.textContent = 'Digite 1-480 ou "coro 1" a "coro 6"';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            
+            currentHymn = hymnsData[hymnKey];
+            if (!currentHymn) {
+                errorDiv.textContent = 'Hino/Coro não encontrado';
+                errorDiv.style.display = 'block';
+                return false;
+            }
+            return true;
+        }
+        
+        function getCurrentSpeeds() {
+            if (!currentHymn) return { min: 60, med: 70, max: 80 };
+            
+            let min, med, max;
+            
+            // Verifica se é Meia Hora
+            if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
+                min = currentHymn.velMinMeiaHora;
+                med = currentHymn.velMedMeiaHora;
+                max = currentHymn.velMaxMeiaHora;
+            } else {
+                min = currentHymn.velMin;
+                med = currentHymn.velMed;
+                max = currentHymn.velMax;
+            }
+            
+            // Aplica velX3 se necessário (MULTIPLICA POR 3)
+            if (currentHymn.velX3 === "S") {
+                min = min * 3;
+                med = med * 3;
+                max = max * 3;
+            }
+            
+            return { min, med, max };
+        }
+
+        function resetVolumes() {
+            Object.assign(volumeSettings, defaultVolumes);
+            localStorage.setItem('metronomo_volumes', JSON.stringify(volumeSettings));
+            createBeatFiguresUI();
+            alert('Volumes resetados para os valores padrão!');
+        }
+        
+        function navegar(AntProx) {
+            const isMeiaHoraActive = document.getElementById('meiaHoraCheckbox').checked;
+            const chaves = Object.keys(hymnsData);
+            let inputVal = document.getElementById('hymnInput').value.trim().toLowerCase();
+            let NumeroHino = inputVal.replace('coro ', '48');
+            let indice = chaves.indexOf(NumeroHino);
+            
+            if (indice === -1) {
+                for (let i = 0; i < chaves.length; i++) {
+                    const chave = chaves[i];
+                    const hino = hymnsData[chave];
+                    if (hino && hino.nome && hino.nome.toLowerCase().includes(inputVal)) {
+                        indice = i;
+                        break;
+                    }
+                }
+                if (indice === -1) indice = 0;
+            }
+            
+            let novaPosicao = indice + AntProx;
+            
+            if (isMeiaHoraActive) {
+                let tentativas = 0;
+                let encontrou = false;
+                
+                while (tentativas < chaves.length && !encontrou) {
+                    if (novaPosicao >= chaves.length) {
+                        novaPosicao = 0;
+                    } else if (novaPosicao < 0) {
+                        novaPosicao = chaves.length - 1;
+                    }
+                    
+                    const chaveAtual = chaves[novaPosicao];
+                    const hinoAtual = hymnsData[chaveAtual];
+                    
+                    if (hinoAtual && hinoAtual.MeiaHora === "S") {
+                        encontrou = true;
+                        break;
+                    }
+                    
+                    novaPosicao = novaPosicao + AntProx;
+                    tentativas++;
+                }
+                
+                if (!encontrou) {
+                    novaPosicao = indice;
+                    alert("Nenhum hino com Meia Hora disponível nesta direção!");
+                }
+            } else {
+                if (novaPosicao >= chaves.length) {
+                    novaPosicao = 0;
+                } else if (novaPosicao < 0) {
+                    novaPosicao = chaves.length - 1;
+                }
+            }
+            
+            const chaveSelecionada = chaves[novaPosicao];
+            document.getElementById('hymnInput').value = 
+            document.getElementById('hymnInput').value = chaveSelecionada;
+
+            if (chaveSelecionada > 480) {
+                document.getElementById('hymnInput').value = chaveSelecionada.replace('48', 'coro ');
+            } else {
+                document.getElementById('hymnInput').value = chaveSelecionada;
+            }
+            updateHymnInfo();
+        }
+        
+        function updateHymnInfo() {
+            if (!processHymnInput()) {
+                stopMetronome();
                 return;
             }
             
-            addLog('🎸 Tocando Boop (440Hz)...');
+            isDoubleSpeedMode = shouldUseDoubleSpeedMode(currentHymn);
+            const displayVal = document.getElementById('hymnInput').value.trim();
+            const isCoro = displayVal.toLowerCase().startsWith('coro');
+            const nomeDisplay = isCoro ? `🎵 ${currentHymn.nome}` : currentHymn.nome;
+            document.getElementById('hymnName').textContent = nomeDisplay;
+            
+            const speeds = getCurrentSpeeds();
+            document.getElementById('minSpeed').textContent = speeds.min;
+            document.getElementById('avgSpeed').textContent = speeds.med;
+            document.getElementById('maxSpeed').textContent = speeds.max;
+            
+            const slider = document.getElementById('speedSlider');
+            slider.min = speeds.min;
+            slider.max = speeds.max;
+            slider.value = speeds.max;
+            if (currentHymn.velX3 === "S") {
+                document.getElementById('currentSpeed').innerHTML = `${speeds.max} (${speeds.max/3}<img src="imagens/seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">)`;
+            } else {
+                document.getElementById('currentSpeed').innerHTML = `${speeds.max}`;
+            }            
+            document.getElementById('timeSignature').textContent = currentHymn.compasso;
+            
+            beatsPerMeasure = parseInt(currentHymn.compasso.split('/')[0]);
+            
+            if (isDoubleSpeedMode) {
+                totalMovements = beatsPerMeasure * 2;
+            } else {
+                totalMovements = beatsPerMeasure;
+            }
+            
+            createBeatFiguresUI();
+            
+            const soundInfoText = `<img src="imagens/seta.png" style="width: 17px; height: 17px; vertical-align: middle; display: inline-block; margin-right: 2px;"> indica o início do hino (tempo ${currentHymn.inicio || 1}) | Clique nos dots com borda laranja para ajustar volumes`;
+            document.getElementById('soundInfo').innerHTML = soundInfoText;
+            
+            stopMetronome();
+            currentMovementIndex = 0;
+        }
+        
+        function loadSavedVolumes() {
+            const saved = localStorage.getItem('metronomo_volumes');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    Object.assign(volumeSettings, parsed);
+                } catch(e) {}
+            }
+        }
+        
+        document.getElementById('nextBtn').addEventListener('click', () => navegar(1));
+        document.getElementById('prevBtn').addEventListener('click', () => navegar(-1));
+        document.getElementById('muteCheckbox').addEventListener('change', (e) => { isMuted = e.target.checked; });
+        document.getElementById('resetVolumesBtn').addEventListener('click', resetVolumes);
+        
+        document.getElementById('meiaHoraCheckbox').addEventListener('change', (e) => {
+            isMeiaHoraMode = e.target.checked;
+            const meiaHoraLabel = document.getElementById('meiaHoraLabel');
+            meiaHoraLabel.style.display = isMeiaHoraMode ? 'inline-block' : 'none';
+            
+            if (currentHymn) {
+                const speeds = getCurrentSpeeds();
+                document.getElementById('minSpeed').textContent = speeds.min;
+                document.getElementById('avgSpeed').textContent = speeds.med;
+                document.getElementById('maxSpeed').textContent = speeds.max;
+                
+                const slider = document.getElementById('speedSlider');
+                slider.min = speeds.min;
+                slider.max = speeds.max;
+                slider.value = speeds.max;
+                document.getElementById('currentSpeed').innerHTML = `${speeds.max}`;
+                
+                isDoubleSpeedMode = shouldUseDoubleSpeedMode(currentHymn);
+                beatsPerMeasure = parseInt(currentHymn.compasso.split('/')[0]);
+                totalMovements = isDoubleSpeedMode ? beatsPerMeasure * 2 : beatsPerMeasure;
+                
+                createBeatFiguresUI();
+                
+                if (metronomeInterval) startMetronome();
+            }
+        });
+        
+        document.getElementById('playBtn').addEventListener('click', startMetronome);
+        document.getElementById('stopBtn').addEventListener('click', stopMetronome);
+        
+        const searchFabBtn = document.getElementById('searchFabBtn');
+        const searchModal = document.getElementById('searchModal');
+        const searchCloseBtn = document.getElementById('searchCloseBtn');
+        
+        searchFabBtn.addEventListener('click', () => searchModal.classList.add('active'));
+        searchCloseBtn.addEventListener('click', () => searchModal.classList.remove('active'));
+        searchModal.addEventListener('click', (e) => {
+            if (e.target === searchModal) searchModal.classList.remove('active');
+        });
+        
+        let tapTimes = [];
+        let lastTapTime = 0;
+        const bpmValueSpan = document.getElementById('currentSpeed');
+        const tapBpmIcon = document.getElementById('tapBpmIcon');
+        
+        function registerTap() {
+            const now = Date.now() / 1000;
+            if (lastTapTime > 0 && (now - lastTapTime) > 2) tapTimes = [];
+            lastTapTime = now;
+            tapTimes.push(now);
+            if (tapTimes.length > 8) tapTimes.shift();
+            
+            tapBpmIcon.classList.add('tap-feedback');
+            setTimeout(() => tapBpmIcon.classList.remove('tap-feedback'), 300);
+            
+            if (tapTimes.length >= 2) {
+                let totalInterval = 0;
+                for (let i = 1; i < tapTimes.length; i++) {
+                    totalInterval += (tapTimes[i] - tapTimes[i-1]);
+                }
+                const avgInterval = totalInterval / (tapTimes.length - 1);
+                let bpm = Math.round(60 / avgInterval);
+                bpm = Math.min(300, Math.max(30, bpm));
+                bpmValueSpan.textContent = bpm;
+                if (metronomeInterval) startMetronome();
+            }
+        }
+        
+        if (tapBpmIcon) {
+            tapBpmIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                registerTap();
+            });
+        }
+        
+        loadSavedVolumes();
+        updateHymnInfo();
+        initAudio();
+
+        // Usando 'change' em vez de 'input' - atualiza apenas quando soltar o mouse
+        speedSlider.addEventListener('change', function() {
+            if (currentHymn.velX3 === "S") {
+                const bpmValue = Math.floor(this.value / 3) * 3;
+                document.getElementById('currentSpeed').innerHTML = `${bpmValue} (${bpmValue/3}<img src="imagens/seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">)`;
+            } else {
+                const bpmValue = this.value;
+                document.getElementById('currentSpeed').innerHTML = `${bpmValue}`;
+            }            
+            
+            if (metronomeInterval) {
+                startMetronome();
+            }
+        });        
+
+        // ========== SISTEMA DE ÁUDIO PARA IPHONE ==========
+        let audioElements = {
+            forte: null,
+            medio: null
+        };
+        let isAudioAuthorized = false;
+        let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+        // Inicializar elementos de áudio
+        function initAudioElements() {
+            if (audioElements.forte && audioElements.medio) return;
+            
+            audioElements.forte = new Audio('sons/agudo.mp3');
+            audioElements.medio = new Audio('sons/grave.mp3');
+            
+            audioElements.forte.preload = 'auto';
+            audioElements.medio.preload = 'auto';
+            audioElements.forte.volume = 1.0;
+            audioElements.medio.volume = 1.0;
+            
+            console.log('Elementos de áudio criados');
+        }
+
+        // Função para autorizar som no iPhone
+        async function authorizeAudio() {
+            console.log('Autorizando áudio...');
+            
+            if (!audioElements.forte) {
+                initAudioElements();
+            }
             
             try {
-                if (audioCtx && audioCtx.state === 'running') {
-                    const oscillator = audioCtx.createOscillator();
-                    const gainNode = audioCtx.createGain();
-                    oscillator.type = 'sine';
-                    oscillator.frequency.value = 440;
-                    gainNode.gain.value = 0.5;
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-                    oscillator.start();
-                    oscillator.stop(audioCtx.currentTime + 0.3);
-                    addLog('✅ Boop tocado', 'success');
+                // Tenta tocar e pausar imediatamente para autorizar
+                const authorize = async (audio) => {
+                    if (!audio) return false;
+                    audio.volume = 0.1;
+                    await audio.play();
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audio.volume = 1.0;
+                    return true;
+                };
+                
+                await authorize(audioElements.forte);
+                await authorize(audioElements.medio);
+                
+                isAudioAuthorized = true;
+                console.log('✅ Áudio autorizado com sucesso!');
+                
+                // Esconder botão de autorização
+                const authBtn = document.getElementById('authorizeAudioBtn');
+                if (authBtn) authBtn.style.display = 'none';
+                
+                // Mostrar mensagem de sucesso
+                const soundInfo = document.getElementById('soundInfo');
+                if (soundInfo) {
+                    const originalText = soundInfo.innerHTML;
+                    soundInfo.innerHTML = '✅ Áudio autorizado! Agora você pode usar o metrônomo. ' + originalText;
+                    setTimeout(() => {
+                        soundInfo.innerHTML = originalText;
+                    }, 3000);
                 }
+                
+                return true;
+                
             } catch (error) {
-                addLog(`❌ Erro: ${error.message}`, 'error');
+                console.error('Erro ao autorizar áudio:', error);
+                alert('Toque no botão "Autorizar Som" novamente para ativar o áudio.');
+                return false;
             }
         }
-        
-        function playClick() {
-            if (!isAudioActivated) {
-                addLog('⚠️ Áudio não ativado!', 'error');
-                alert('Ative o áudio primeiro');
+
+        // Função para tocar som (versão simplificada)
+        async function playAuthorizedSound(type, volume) {
+            if (isMuted) return;
+            
+            if (!isAudioAuthorized) {
+                console.log('Áudio não autorizado. Clique no botão "Autorizar Som" primeiro.');
                 return;
             }
             
-            addLog('👆 Click (som visual apenas)');
-            // Feedback visual
-            const btn = event.target;
-            btn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                btn.style.transform = '';
-            }, 100);
-        }
-        
-        function stopAllSounds() {
-            addLog('⏹ Parando todos os sons...');
+            let audio = type === 'forte' ? audioElements.forte : audioElements.medio;
             
-            if (audioCtx) {
-                // Não podemos fechar o contexto, apenas paramos osciladores ativos
-                addLog('✅ Web Audio contexto pausado (apenas visual)', 'success');
+            if (!audio) {
+                initAudioElements();
+                audio = type === 'forte' ? audioElements.forte : audioElements.medio;
             }
             
-            if (html5Audio) {
-                html5Audio.pause();
-                html5Audio.currentTime = 0;
-                addLog('✅ HTML5 Audio parado', 'success');
-            }
+            // Clona para permitir sobreposição
+            const soundClone = audio.cloneNode();
+            soundClone.volume = Math.min(volume * 1.2, 1.5);
+            soundClone.currentTime = 0;
             
-            statusIcon.innerHTML = '🔇';
-            statusText.innerHTML = '⏸ Sons Parados';
-            setTimeout(() => {
-                if (isAudioActivated) {
-                    statusIcon.innerHTML = '🔊';
-                    statusText.innerHTML = '✅ Áudio ATIVADO';
+            try {
+                const playPromise = soundClone.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.error('Erro ao tocar:', error);
+                        if (error.name === 'NotAllowedError') {
+                            isAudioAuthorized = false;
+                            const authBtn = document.getElementById('authorizeAudioBtn');
+                            if (authBtn) authBtn.style.display = 'flex';
+                            alert('Clique no botão "Autorizar Som" para ativar o áudio novamente.');
+                        }
+                    });
                 }
-            }, 1500);
+            } catch (error) {
+                console.error('Erro:', error);
+            }
         }
-        
-        // ========== INICIALIZAÇÃO ==========
-        function init() {
-            // Detectar dispositivo
-            let deviceText = '';
-            if (isIOS) {
-                deviceText = 'iPhone/iPad (iOS) 🍎';
-                addLog('📱 Dispositivo iOS detectado - Requer toque para ativar áudio');
-            } else if (isAndroid) {
-                deviceText = 'Android 🤖';
-                addLog('📱 Dispositivo Android detectado');
+
+        // Substituir a função playSoundWithRules
+        async function playSoundWithRules(beatNumber, isSubdivision = false, timeSignature) {
+            if (isMuted) return;
+            if (!isAudioAuthorized) return;
+            
+            const isSimple = isSimpleTime(timeSignature);
+            let soundType = 'medio';
+            let volume = 1.0;
+            
+            if (isSimple) {
+                if (isSubdivision) {
+                    soundType = 'medio';
+                    volume = volumeSettings.simpleSubdivisao;
+                } else {
+                    if (beatNumber === 1) {
+                        soundType = 'forte';
+                        volume = volumeSettings.simpleAgudoForte;
+                    } else {
+                        soundType = 'medio';
+                        volume = volumeSettings.simpleGraveForte;
+                    }
+                }
             } else {
-                deviceText = 'Desktop/Outro 💻';
-                addLog('💻 Desktop detectado');
+                if (isSubdivision) {
+                    soundType = 'medio';
+                    volume = volumeSettings.compoundSubdivisao;
+                } else {
+                    if (beatNumber === 1) {
+                        soundType = 'forte';
+                        volume = volumeSettings.compoundAgudoForte;
+                    } else if (beatNumber === 4 || beatNumber === 7 || beatNumber === 10) {
+                        soundType = 'forte';
+                        volume = volumeSettings.compoundAgudoFraco;
+                    } else {
+                        soundType = 'medio';
+                        volume = volumeSettings.compoundGraveForte;
+                    }
+                }
             }
             
-            document.getElementById('deviceType').innerHTML = `${deviceText} <span class="badge ${isIOS ? 'badge-ios' : (isAndroid ? 'badge-android' : 'badge-web')}">${isIOS ? 'iOS' : (isAndroid ? 'Android' : 'Web')}</span>`;
-            
-            // Adicionar event listeners
-            document.getElementById('btnActivateBasic').addEventListener('click', async () => {
-                await activateWebAudio();
-            });
-            
-            document.getElementById('btnActivateHTML5').addEventListener('click', async () => {
-                await activateHTML5Audio();
-            });
-            
-            document.getElementById('btnPlaySound').addEventListener('click', async () => {
-                await playBeep();
-            });
-            
-            document.getElementById('btnStopAll').addEventListener('click', () => {
-                stopAllSounds();
-            });
-            
-            // Botões de som
-            document.querySelectorAll('.sound-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const sound = btn.dataset.sound;
-                    if (sound === 'beep') await playBeep();
-                    else if (sound === 'boop') await playBoop();
-                    else if (sound === 'click') playClick();
-                });
-            });
-            
-            addLog('✨ Página pronta! Clique em um dos botões de ativação.', 'success');
-            addLog('💡 No iPhone: O som só funciona APÓS o primeiro toque');
+            await playAuthorizedSound(soundType, volume);
         }
-        
-        // Iniciar
-        init();
+
+        // Modificar a função startMetronome
+        async function startMetronome() {
+            if (!isAudioAuthorized) {
+                alert('⚠️ Primeiro clique no botão "🔊 Autorizar Som" para ativar o áudio no iPhone!');
+                return;
+            }
+            
+            if (!currentHymn) {
+                if (!processHymnInput()) return;
+                updateHymnInfo();
+            }
+            
+            stopMetronome();
+            
+            let bpm = parseInt(document.getElementById('speedSlider').value);
+            let intervalMs;
+            
+            if (isDoubleSpeedMode) {
+                intervalMs = (60 / (bpm * 2)) * 1000;
+            } else {
+                intervalMs = (60 / bpm) * 1000;
+            }
+            
+            currentMovementIndex = 0;
+            await executeBeat();
+            
+            metronomeInterval = setInterval(async () => {
+                await executeBeat();
+            }, intervalMs);
+        }
+
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registrado!', reg))
+                    .catch(err => console.log('Erro:', err));
+            });
+        }
     </script>
 </body>
 </html>
