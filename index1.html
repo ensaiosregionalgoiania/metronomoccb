@@ -337,7 +337,6 @@
             align-items: center;
         }
         
-        /* Container para cada par de dots (grande + pequeno) */
         .movement-pair {
             display: flex;
             flex-direction: column;
@@ -355,7 +354,6 @@
             position: relative;
         }
         
-        /* Estilo para dots que têm controle de volume */
         .movement-dot.volume-control {
             cursor: pointer;
             border: 1px solid #f59e0b;
@@ -379,7 +377,6 @@
             opacity: 0.8;
         }
         
-        /* Tooltip de volume */
         .volume-tooltip {
             position: fixed;
             background: #1e293b;
@@ -414,7 +411,6 @@
             box-shadow: 0 0 6px #667eea;
         }
         
-        /* Estilo para o dot de início */
         .movement-dot.inicio-movement {
             background: #ff6b6b !important;
             transform: scale(1.5);
@@ -562,7 +558,6 @@
             transform: scale(0.95);
         }
         
-        /* Seta indicadora de início */
         .inicio-arrow {
             position: absolute;
             top: -20px;
@@ -828,7 +823,6 @@
             }
         }
 
-        /* Layout para compassos simples - dots lado a lado */
         .compasso-simples .movement-row {
             display: flex;
             flex-direction: row !important;
@@ -844,7 +838,6 @@
             align-items: center;
         }
 
-        /* Layout para compassos compostos - dots empilhados */
         .compasso-composto .movement-row {
             display: flex;
             flex-direction: row !important;
@@ -860,20 +853,113 @@
             align-items: center;
         }
 
-        /* Animação da seta de início */
+        /* Modal de ativação de áudio - apenas para iOS */
+        .audio-activation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .audio-activation-card {
+            background: white;
+            border-radius: 28px;
+            max-width: 400px;
+            width: 100%;
+            padding: 24px;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .audio-activation-card h3 {
+            color: #2c3e66;
+            margin-bottom: 16px;
+            font-size: 1.3rem;
+        }
+        
+        .audio-activation-card .sound-icon {
+            font-size: 64px;
+            margin: 20px 0;
+        }
+        
+        .audio-activation-card .mute-guide {
+            background: #f1f5f9;
+            padding: 16px;
+            border-radius: 16px;
+            margin: 16px 0;
+            text-align: left;
+        }
+        
+        .audio-activation-card .mute-guide img {
+            width: 100%;
+            max-width: 200px;
+            margin: 12px auto;
+            display: block;
+            border-radius: 12px;
+        }
+        
+        .audio-activation-card button {
+            background: #2c6e3c;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .audio-activation-card button:active {
+            transform: scale(0.97);
+        }
+        
+        .audio-activation-card .confirm-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .audio-activation-card .confirm-buttons button {
+            flex: 1;
+            margin-top: 0;
+        }
+        
+        .audio-activation-card .btn-no {
+            background: #6c757d;
+        }
+        
+        .audio-activated-badge {
+            background: #22c55e;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 8px;
+            display: inline-block;
+        }
+
         @keyframes arrowPulse {
             0% { transform: translateY(0); opacity: 0; }
             50% { transform: translateY(-5px); opacity: 1; }
             100% { transform: translateY(0); opacity: 1; }
         }
 
-        /* Estilo para a seta */
         .inicio-arrow {
             pointer-events: none;
             filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
         }
 
-        /* Ajuste para o container da seta */
         .inicio-arrow-container {
             display: inline-flex;
             flex-direction: column;
@@ -881,51 +967,33 @@
             justify-content: center;
         }
 
-        /* Para garantir que o dot dentro do container mantenha o tamanho */
         .inicio-arrow-container .movement-dot {
             margin: 0;
         }
 
-        /* Ajuste para diferentes tamanhos de tela */
         @media (max-width: 480px) {
             .inicio-arrow {
                 width: 10px !important;
                 height: 10px !important;
             }
         }
-
-        /* Botão de autorização para iPhone */
-        #authorizeAudioBtn {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-        }
-
-        #authorizeAudioBtn:active {
-            transform: scale(0.97);
-        }
-
-        /* Badge de iPhone no título */
-        .iphone-badge {
-            display: inline-block;
-            background: #000;
-            color: #fff;
+        
+        /* Badge indicando dispositivo */
+        .device-badge {
             font-size: 0.6rem;
+            background: rgba(255,255,255,0.2);
             padding: 2px 8px;
             border-radius: 20px;
+            display: inline-block;
             margin-left: 8px;
-            vertical-align: middle;
         }
-
     </style>
-
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1><img src="imagens/metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-15</h1>
-            <p>Hinos 1-480 | Coro 1-6 |</p>
+            <p>Hinos 1-480 | Coro 1-6 | <span id="audioStatus">✅ Áudio ativo</span> <span id="deviceBadge" class="device-badge"></span></p>
         </div>
         
         <div class="content">
@@ -979,7 +1047,6 @@
                     <div class="controls">
                         <button class="control-btn btn-play" id="playBtn">▶ Tocar</button>
                         <button class="control-btn btn-stop" id="stopBtn">⏹ Parar</button>
-                        <button class="control-btn" id="authorizeAudioBtn" style="background: #f59e0b; display: none;">🔊 Autorizar Som</button>
                     </div>
                     
                     <div class="metronome-visual">
@@ -1017,10 +1084,43 @@
             </div>
         </div>
     </div>
+    
+    <div id="audioActivationModal" class="audio-activation-modal" style="display: none;">
+        <div class="audio-activation-card">
+            <h3>🎵 Ativar Áudio no iPhone</h3>
+            <div class="sound-icon">🔊</div>
+            <p>Vamos testar o som do metrônomo!</p>
+            <div id="testSoundArea">
+                <button id="testSoundBtn">🔊 Testar Som</button>
+            </div>
+            <div id="confirmationArea" style="display: none;">
+                <p style="margin: 16px 0; color: #2c6e3c; font-weight: bold;">✓ Você ouviu o som?</p>
+                <div class="confirm-buttons">
+                    <button id="confirmYesBtn" class="btn-play">Sim, ouvi!</button>
+                    <button id="confirmNoBtn" class="btn-no">Não ouvi</button>
+                </div>
+            </div>
+            <div id="muteGuideArea" style="display: none;">
+                <div class="mute-guide">
+                    <p><strong>🔇 O som não foi ouvido</strong></p>
+                    <p>Verifique se o botão de silenciar do iPhone está desativado:</p>
+                    <img src="imagens/iphone-mute-button.jpg" alt="Botão silenciar iPhone" style="width: 100%; max-width: 200px; margin: 12px auto; display: block;" onerror="this.style.display='none'">
+                    <p style="font-size: 0.9rem; margin-top: 12px;">⬆️ O botão acima do volume deve estar na posição <strong style="color: #dc2626;">laranja/vermelho</strong> para desligar o mudo.</p>
+                    <p style="font-size: 0.85rem; margin-top: 8px;">Após desativar o mudo, clique no botão abaixo para testar novamente.</p>
+                </div>
+                <button id="retryTestBtn">🔄 Testar novamente</button>
+            </div>
+        </div>
+    </div>
     <script src="hinos.js"></script>
 
     <script>
-
+        // Detectar se é iPhone/iOS
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+        
         let currentHymn = null;
         let metronomeInterval = null;
         let currentMovementIndex = 0;
@@ -1029,6 +1129,8 @@
         let isDoubleSpeedMode = false;
         let totalMovements = 0;
         let isMeiaHoraMode = false;
+        let audioActivated = !isIOS(); // Para Android/PC, já começa ativado
+        let isIOSDevice = isIOS();
         
         let volumeSettings = {
             simpleAgudoForte: 1.0,
@@ -1092,9 +1194,10 @@
         }
         
         async function playSoundWithVolume(buffer, volume) {
-            if (isMuted) return;
+            if (isMuted) return false;
+            if (!audioActivated) return false;
             if (!audioCtx) await initAudio();
-            if (!buffer) return;
+            if (!buffer) return false;
             
             if (audioCtx.state === 'suspended') {
                 await audioCtx.resume();
@@ -1115,10 +1218,21 @@
                 source.disconnect();
                 gainNode.disconnect();
             };
+            
+            return true;
+        }
+        
+        async function playTestSound() {
+            if (!audioCtx) await initAudio();
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+            return await playSoundWithVolume(forteBuffer, 1.0);
         }
         
         async function playSoundWithRules(beatNumber, isSubdivision = false, timeSignature) {
             if (isMuted) return;
+            if (!audioActivated) return;
             
             const isSimple = isSimpleTime(timeSignature);
             let buffer = null;
@@ -1249,15 +1363,12 @@
             setTimeout(() => document.addEventListener('click', closeHandler), 100);
         }
         
-        // Função para adicionar seta indicadora de início
         function addInicioArrow() {
-            // Remove setas existentes
             document.querySelectorAll('.inicio-arrow').forEach(arrow => arrow.remove());
             
             const inicio = currentHymn.inicio;
             if (!inicio) return;
             
-            // Determina qual dot deve receber a seta
             let targetMovement;
             
             if (isDoubleSpeedMode) {
@@ -1285,34 +1396,29 @@
             
             const targetDot = document.querySelector(`.movement-dot[data-global-movement="${targetMovement}"]`);
             if (targetDot) {
-                // Cria o elemento da seta
                 const arrowImg = document.createElement('img');
                 arrowImg.src = 'imagens/seta.png';
                 arrowImg.className = 'inicio-arrow';
                 arrowImg.alt = 'Início';
                 arrowImg.title = `Início do hino (tempo ${inicio})`;
                 
-                // Estilos para a seta - posicionada ABAIXO
                 arrowImg.style.position = 'absolute';
                 arrowImg.style.width = '17px';
                 arrowImg.style.height = '17px';
                 arrowImg.style.zIndex = '100';
                 arrowImg.style.pointerEvents = 'none';
                 
-                // Garante que o dot tenha position relative
                 targetDot.style.position = 'relative';
                 
-                // Posiciona a seta abaixo do dot
                 arrowImg.style.position = 'absolute';
                 arrowImg.style.left = '50%';
                 arrowImg.style.transform = 'translateX(-50%)';
-                arrowImg.style.top = '100%';  // 100% = logo abaixo do dot
-                arrowImg.style.marginTop = '2px';  // Pequeno espaçamento
+                arrowImg.style.top = '100%';
+                arrowImg.style.marginTop = '2px';
                 arrowImg.style.animation = 'arrowPulse 0.5s ease-in-out';
                 
                 targetDot.appendChild(arrowImg);
                 
-                // Remove a animação após terminar
                 setTimeout(() => {
                     arrowImg.style.animation = 'none';
                 }, 500);
@@ -1323,13 +1429,11 @@
             const timeSig = currentHymn.compasso;
             const isSimple = isSimpleTime(timeSig);
             
-            // Remove a classe inicio-movement de todos os dots (se houver)
             document.querySelectorAll('.movement-dot.inicio-movement').forEach(dot => {
                 dot.classList.remove('inicio-movement');
             });
             
             if (isSimple) {
-                // Compasso simples
                 const firstBeatDot = document.querySelector('.movement-dot[data-global-movement="0"]');
                 if (firstBeatDot) {
                     firstBeatDot.classList.add('volume-control');
@@ -1369,7 +1473,6 @@
                     });
                 }
             } else {
-                // Compasso composto
                 const firstBeatDot = document.querySelector('.movement-dot[data-global-movement="0"]');
                 if (firstBeatDot) {
                     firstBeatDot.classList.add('volume-control');
@@ -1430,7 +1533,6 @@
             const timeSig = currentHymn.compasso;
             const isCompound = isCompoundTime(timeSig);
             
-            // Adiciona classe no container para identificar o tipo de compasso
             container.className = 'beat-figures-row';
             if (isCompound) {
                 container.classList.add('compasso-composto');
@@ -1439,7 +1541,6 @@
             }
             
             if (isCompound) {
-                // COMPASSOS COMPOSTOS - dots empilhados (um embaixo do outro)
                 const totalBeats = beatsPerMeasure;
                 const beatsPerFigure = 3;
                 const numberOfFigures = Math.ceil(totalBeats / beatsPerFigure);
@@ -1500,7 +1601,6 @@
                     container.appendChild(figureDiv);
                 }
             } else {
-                // COMPASSOS SIMPLES - dots lado a lado (um ao lado do outro)
                 for (let i = 0; i < beatsPerMeasure; i++) {
                     const beatNumber = i + 1;
                     const isStrong = beatNumber === 1;
@@ -1602,6 +1702,13 @@
         }
         
         async function startMetronome() {
+            // Se for iOS e ainda não ativou, mostra o modal
+            if (isIOSDevice && !audioActivated) {
+                showAudioActivationModal();
+                return;
+            }
+            
+            // Para Android/PC ou iOS já ativado, toca normalmente
             if (!currentHymn) {
                 if (!processHymnInput()) return;
                 updateHymnInfo();
@@ -1610,7 +1717,7 @@
             stopMetronome();
             
             await initAudio();
-            if (audioCtx.state === 'suspended') {
+            if (audioCtx && audioCtx.state === 'suspended') {
                 await audioCtx.resume();
             }
             
@@ -1652,7 +1759,6 @@
             
             const coroMatch = input.match(/^coro\s*(\d+)$/i);
             if (coroMatch) {
-
                 let num = parseInt(coroMatch[1]);
                 if (num >= 1 && num <= 6) {
                     hymnKey = `C${num}`;
@@ -1690,7 +1796,6 @@
             
             let min, med, max;
             
-            // Verifica se é Meia Hora
             if (isMeiaHoraMode && currentHymn.velMinMeiaHora) {
                 min = currentHymn.velMinMeiaHora;
                 med = currentHymn.velMedMeiaHora;
@@ -1701,7 +1806,6 @@
                 max = currentHymn.velMax;
             }
             
-            // Aplica velX3 se necessário (MULTIPLICA POR 3)
             if (currentHymn.velX3 === "S") {
                 min = min * 3;
                 med = med * 3;
@@ -1775,7 +1879,6 @@
             }
             
             const chaveSelecionada = chaves[novaPosicao];
-            document.getElementById('hymnInput').value = 
             document.getElementById('hymnInput').value = chaveSelecionada;
 
             if (chaveSelecionada > 480) {
@@ -1841,8 +1944,67 @@
             }
         }
         
-        document.getElementById('nextBtn').addEventListener('click', () => navegar(1));
-        document.getElementById('prevBtn').addEventListener('click', () => navegar(-1));
+        function showAudioActivationModal() {
+            const modal = document.getElementById('audioActivationModal');
+            const testSoundArea = document.getElementById('testSoundArea');
+            const confirmationArea = document.getElementById('confirmationArea');
+            const muteGuideArea = document.getElementById('muteGuideArea');
+            
+            testSoundArea.style.display = 'block';
+            confirmationArea.style.display = 'none';
+            muteGuideArea.style.display = 'none';
+            modal.style.display = 'flex';
+        }
+        
+        function activateAudio() {
+            audioActivated = true;
+            localStorage.setItem('audio_activated_ios', 'true');
+            const statusSpan = document.getElementById('audioStatus');
+            statusSpan.innerHTML = '✅ Áudio ativo';
+            statusSpan.style.color = '#22c55e';
+            
+            const modal = document.getElementById('audioActivationModal');
+            modal.style.display = 'none';
+        }
+        
+        function checkAudioActivation() {
+            if (!isIOSDevice) {
+                // Para Android/PC, áudio já está ativo
+                audioActivated = true;
+                const statusSpan = document.getElementById('audioStatus');
+                statusSpan.innerHTML = '✅ Áudio ativo';
+                statusSpan.style.color = '#22c55e';
+            } else {
+                // Para iPhone, verifica se já foi ativado antes
+                const saved = localStorage.getItem('audio_activated_ios');
+                if (saved === 'true') {
+                    audioActivated = true;
+                    const statusSpan = document.getElementById('audioStatus');
+                    statusSpan.innerHTML = '✅ Áudio ativo';
+                    statusSpan.style.color = '#22c55e';
+                } else {
+                    audioActivated = false;
+                    const statusSpan = document.getElementById('audioStatus');
+                    statusSpan.innerHTML = '🔇 Ativação necessária (iPhone)';
+                    statusSpan.style.color = '#f97316';
+                }
+            }
+        }
+        
+        // Configurar badge do dispositivo
+        function updateDeviceBadge() {
+            const badge = document.getElementById('deviceBadge');
+            if (isIOSDevice) {
+                badge.innerHTML = '📱 iPhone';
+                badge.style.background = '#f97316';
+            } else {
+                badge.innerHTML = '💻 Android/PC';
+                badge.style.background = '#22c55e';
+            }
+        }
+        
+        document.getElementById('prevBtn').addEventListener('click', () => navegar(1));
+        document.getElementById('nextBtn').addEventListener('click', () => navegar(-1));
         document.getElementById('muteCheckbox').addEventListener('change', (e) => { isMuted = e.target.checked; });
         document.getElementById('resetVolumesBtn').addEventListener('click', resetVolumes);
         
@@ -1873,7 +2035,8 @@
             }
         });
         
-        document.getElementById('playBtn').addEventListener('click', startMetronome);
+        const playBtn = document.getElementById('playBtn');
+        playBtn.addEventListener('click', startMetronome);
         document.getElementById('stopBtn').addEventListener('click', stopMetronome);
         
         const searchFabBtn = document.getElementById('searchFabBtn');
@@ -1921,13 +2084,9 @@
             });
         }
         
-        loadSavedVolumes();
-        updateHymnInfo();
-        initAudio();
-
-        // Usando 'change' em vez de 'input' - atualiza apenas quando soltar o mouse
+        const speedSlider = document.getElementById('speedSlider');
         speedSlider.addEventListener('change', function() {
-            if (currentHymn.velX3 === "S") {
+            if (currentHymn && currentHymn.velX3 === "S") {
                 const bpmValue = Math.floor(this.value / 3) * 3;
                 document.getElementById('currentSpeed').innerHTML = `${bpmValue} (${bpmValue/3}<img src="imagens/seminimapontuada.jpg" class="figure-image" alt="semínima pontuada">)`;
             } else {
@@ -1938,193 +2097,65 @@
             if (metronomeInterval) {
                 startMetronome();
             }
-        });        
-
-        // ========== SISTEMA DE ÁUDIO PARA IPHONE ==========
-        let audioElements = {
-            forte: null,
-            medio: null
-        };
-        let isAudioAuthorized = false;
-        let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-        // Inicializar elementos de áudio
-        function initAudioElements() {
-            if (audioElements.forte && audioElements.medio) return;
-            
-            audioElements.forte = new Audio('sons/agudo.mp3');
-            audioElements.medio = new Audio('sons/grave.mp3');
-            
-            audioElements.forte.preload = 'auto';
-            audioElements.medio.preload = 'auto';
-            audioElements.forte.volume = 1.0;
-            audioElements.medio.volume = 1.0;
-            
-            console.log('Elementos de áudio criados');
-        }
-
-        // Função para autorizar som no iPhone
-        async function authorizeAudio() {
-            console.log('Autorizando áudio...');
-            
-            if (!audioElements.forte) {
-                initAudioElements();
-            }
-            
-            try {
-                // Tenta tocar e pausar imediatamente para autorizar
-                const authorize = async (audio) => {
-                    if (!audio) return false;
-                    audio.volume = 0.1;
-                    await audio.play();
-                    audio.pause();
-                    audio.currentTime = 0;
-                    audio.volume = 1.0;
-                    return true;
-                };
+        });
+        
+        // Configuração do modal de ativação de áudio (apenas para iOS)
+        const testSoundBtn = document.getElementById('testSoundBtn');
+        const confirmationArea = document.getElementById('confirmationArea');
+        const testSoundArea = document.getElementById('testSoundArea');
+        const muteGuideArea = document.getElementById('muteGuideArea');
+        const confirmYesBtn = document.getElementById('confirmYesBtn');
+        const confirmNoBtn = document.getElementById('confirmNoBtn');
+        const retryTestBtn = document.getElementById('retryTestBtn');
+        
+        if (testSoundBtn) {
+            testSoundBtn.addEventListener('click', async () => {
+                await initAudio();
+                const played = await playTestSound();
                 
-                await authorize(audioElements.forte);
-                await authorize(audioElements.medio);
-                
-                isAudioAuthorized = true;
-                console.log('✅ Áudio autorizado com sucesso!');
-                
-                // Esconder botão de autorização
-                const authBtn = document.getElementById('authorizeAudioBtn');
-                if (authBtn) authBtn.style.display = 'none';
-                
-                // Mostrar mensagem de sucesso
-                const soundInfo = document.getElementById('soundInfo');
-                if (soundInfo) {
-                    const originalText = soundInfo.innerHTML;
-                    soundInfo.innerHTML = '✅ Áudio autorizado! Agora você pode usar o metrônomo. ' + originalText;
-                    setTimeout(() => {
-                        soundInfo.innerHTML = originalText;
-                    }, 3000);
-                }
-                
-                return true;
-                
-            } catch (error) {
-                console.error('Erro ao autorizar áudio:', error);
-                alert('Toque no botão "Autorizar Som" novamente para ativar o áudio.');
-                return false;
-            }
-        }
-
-        // Função para tocar som (versão simplificada)
-        async function playAuthorizedSound(type, volume) {
-            if (isMuted) return;
-            
-            if (!isAudioAuthorized) {
-                console.log('Áudio não autorizado. Clique no botão "Autorizar Som" primeiro.');
-                return;
-            }
-            
-            let audio = type === 'forte' ? audioElements.forte : audioElements.medio;
-            
-            if (!audio) {
-                initAudioElements();
-                audio = type === 'forte' ? audioElements.forte : audioElements.medio;
-            }
-            
-            // Clona para permitir sobreposição
-            const soundClone = audio.cloneNode();
-            soundClone.volume = Math.min(volume * 1.2, 1.5);
-            soundClone.currentTime = 0;
-            
-            try {
-                const playPromise = soundClone.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.error('Erro ao tocar:', error);
-                        if (error.name === 'NotAllowedError') {
-                            isAudioAuthorized = false;
-                            const authBtn = document.getElementById('authorizeAudioBtn');
-                            if (authBtn) authBtn.style.display = 'flex';
-                            alert('Clique no botão "Autorizar Som" para ativar o áudio novamente.');
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-            }
-        }
-
-        // Substituir a função playSoundWithRules
-        async function playSoundWithRules(beatNumber, isSubdivision = false, timeSignature) {
-            if (isMuted) return;
-            if (!isAudioAuthorized) return;
-            
-            const isSimple = isSimpleTime(timeSignature);
-            let soundType = 'medio';
-            let volume = 1.0;
-            
-            if (isSimple) {
-                if (isSubdivision) {
-                    soundType = 'medio';
-                    volume = volumeSettings.simpleSubdivisao;
+                if (played !== false) {
+                    testSoundArea.style.display = 'none';
+                    confirmationArea.style.display = 'block';
+                    muteGuideArea.style.display = 'none';
                 } else {
-                    if (beatNumber === 1) {
-                        soundType = 'forte';
-                        volume = volumeSettings.simpleAgudoForte;
-                    } else {
-                        soundType = 'medio';
-                        volume = volumeSettings.simpleGraveForte;
-                    }
+                    testSoundArea.style.display = 'none';
+                    muteGuideArea.style.display = 'block';
+                    confirmationArea.style.display = 'none';
                 }
-            } else {
-                if (isSubdivision) {
-                    soundType = 'medio';
-                    volume = volumeSettings.compoundSubdivisao;
-                } else {
-                    if (beatNumber === 1) {
-                        soundType = 'forte';
-                        volume = volumeSettings.compoundAgudoForte;
-                    } else if (beatNumber === 4 || beatNumber === 7 || beatNumber === 10) {
-                        soundType = 'forte';
-                        volume = volumeSettings.compoundAgudoFraco;
-                    } else {
-                        soundType = 'medio';
-                        volume = volumeSettings.compoundGraveForte;
-                    }
+            });
+        }
+        
+        if (confirmYesBtn) {
+            confirmYesBtn.addEventListener('click', () => {
+                activateAudio();
+                // Após ativar, toca o metrônomo se foi chamado
+                if (currentHymn) {
+                    startMetronome();
                 }
-            }
-            
-            await playAuthorizedSound(soundType, volume);
+            });
         }
-
-        // Modificar a função startMetronome
-        async function startMetronome() {
-            if (!isAudioAuthorized) {
-                alert('⚠️ Primeiro clique no botão "🔊 Autorizar Som" para ativar o áudio no iPhone!');
-                return;
-            }
-            
-            if (!currentHymn) {
-                if (!processHymnInput()) return;
-                updateHymnInfo();
-            }
-            
-            stopMetronome();
-            
-            let bpm = parseInt(document.getElementById('speedSlider').value);
-            let intervalMs;
-            
-            if (isDoubleSpeedMode) {
-                intervalMs = (60 / (bpm * 2)) * 1000;
-            } else {
-                intervalMs = (60 / bpm) * 1000;
-            }
-            
-            currentMovementIndex = 0;
-            await executeBeat();
-            
-            metronomeInterval = setInterval(async () => {
-                await executeBeat();
-            }, intervalMs);
+        
+        if (confirmNoBtn) {
+            confirmNoBtn.addEventListener('click', () => {
+                testSoundArea.style.display = 'none';
+                confirmationArea.style.display = 'none';
+                muteGuideArea.style.display = 'block';
+            });
         }
-
+        
+        if (retryTestBtn) {
+            retryTestBtn.addEventListener('click', async () => {
+                testSoundArea.style.display = 'block';
+                confirmationArea.style.display = 'none';
+                muteGuideArea.style.display = 'none';
+            });
+        }
+        
+        loadSavedVolumes();
+        checkAudioActivation();
+        updateDeviceBadge();
+        updateHymnInfo();
+        initAudio();
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
