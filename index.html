@@ -2188,6 +2188,66 @@
             }
         });
 
+        // Função de busca
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        function performSearch() {
+            const term = searchInput.value.toLowerCase().trim();
+            
+            if (term.length === 0) {
+                searchResults.innerHTML = '<div class="search-loading">Digite para buscar...</div>';
+                return;
+            }
+            
+            if (term.length < 2) {
+                searchResults.innerHTML = '<div class="search-loading">Digite pelo menos 2 caracteres...</div>';
+                return;
+            }
+            
+            const results = [];
+            
+            // Buscar nos hinos
+            for (const [key, hymn] of Object.entries(hymnsData)) {
+                if (hymn.nome && hymn.nome.toLowerCase().includes(term)) {
+                    results.push({
+                        key: key,
+                        nome: hymn.nome,
+                        compasso: hymn.compasso
+                    });
+                }
+            }
+            
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="no-results">❌ Nenhum hino encontrado</div>';
+                return;
+            }
+            
+            // Exibir resultados
+            searchResults.innerHTML = results.map(result => `
+                <div class="search-result-item" data-key="${result.key}">
+                    <div class="result-number">${result.key.replace('48', 'Coro ')}</div>
+                    <div class="result-name">${result.nome}</div>
+                    <div class="result-compasso">${result.compasso}</div>
+                </div>
+            `).join('');
+            
+            // Adicionar evento de clique nos resultados
+            document.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const key = item.dataset.key;
+                    const displayValue = key.startsWith('C') ? key.replace('C', 'coro ') : key;
+                    document.getElementById('hymnInput').value = displayValue;
+                    updateHymnInfo();
+                    searchModal.classList.remove('active');
+                    searchInput.value = '';
+                });
+            });
+        }
+
+        // Eventos da busca
+        searchInput.addEventListener('input', performSearch);
+        
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
