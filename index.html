@@ -2057,6 +2057,47 @@
                 badge.style.background = '#22c55e';
             }
         }
+
+        // Função para atualizar hino a partir do input
+        function updateHymnFromInput() {
+            if (processHymnInput()) {
+                updateHymnInfo();
+                // Limpa qualquer mensagem de erro
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.style.display = 'none';
+                
+                // Se o metrônomo estiver tocando, reinicia para aplicar as novas configurações
+                if (metronomeInterval) {
+                    startMetronome();
+                }
+            }
+        }
+
+        // Adicionar evento de tecla Enter no campo hymnInput
+        const hymnInput = document.getElementById('hymnInput');
+        hymnInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                updateHymnFromInput();
+            }
+        });
+
+        // Adicionar evento de blur (quando perder o foco) para atualizar automaticamente
+        hymnInput.addEventListener('blur', () => {
+            updateHymnFromInput();
+        });
+
+        // Garantir que o formato "coro X" seja mantido ao perder o foco
+        hymnInput.addEventListener('change', () => {
+            let value = hymnInput.value.trim().toLowerCase();
+            const coroMatch = value.match(/^coro\s*(\d+)$/i);
+            if (coroMatch) {
+                const num = parseInt(coroMatch[1]);
+                if (num >= 1 && num <= 6) {
+                    hymnInput.value = `coro ${num}`;
+                }
+            }
+        });
         
         document.getElementById('prevBtn').addEventListener('click', () => navegar(-1));
         document.getElementById('nextBtn').addEventListener('click', () => navegar(1));
@@ -2257,4 +2298,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
