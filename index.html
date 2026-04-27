@@ -1083,7 +1083,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="imagens/metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-16</h1>
+            <h1><img src="imagens/metronomo.png" style="width: 28px; height: 28px; vertical-align: middle; margin-right: 8px;"> Metrônomo CCB v-17</h1>
             <p>Hinos 1-480 | Coro 1-6 | <span id="deviceBadge" class="device-badge"></span></p>
         </div>
         
@@ -1092,7 +1092,7 @@
                 <div class="hymn-nav">
                     <button class="nav-btn" id="prevBtn">◀</button>
                     <div class="hymn-input-group">
-                        <input type="text" id="hymnInput" class="hymn-input" value="1" autocomplete="off" inputmode="numeric">
+                        <input type="text" id="hymnInput" class="hymn-input" value="1" autocomplete="off" inputmode="text">
                     </div>
                     <button class="nav-btn" id="nextBtn">▶</button>
                 </div>
@@ -1983,7 +1983,6 @@
             
             const chaveSelecionada = chaves[novaPosicao];
             document.getElementById('hymnInput').value = chaveSelecionada;
-
             if (chaveSelecionada > 480) {
                 document.getElementById('hymnInput').value = chaveSelecionada.replace('48', 'coro ');
             } else {
@@ -2060,13 +2059,14 @@
 
         // Função para atualizar hino a partir do input
         function updateHymnFromInput() {
+            validateAndProcessHymnInput();
+            
             if (processHymnInput()) {
                 updateHymnInfo();
-                // Limpa qualquer mensagem de erro
                 const errorDiv = document.getElementById('errorMessage');
                 errorDiv.style.display = 'none';
                 
-                // Se o metrônomo estiver tocando, reinicia para aplicar as novas configurações
+                // Se o metrônomo estiver tocando, reinicia
                 if (metronomeInterval) {
                     startMetronome();
                 }
@@ -2075,10 +2075,14 @@
 
         // Adicionar evento de tecla Enter no campo hymnInput
         const hymnInput = document.getElementById('hymnInput');
-        hymnInput.addEventListener('keypress', (e) => {
+
+        hymnInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 updateHymnFromInput();
+            } else if (e.key.toLowerCase() === 'c') {
+                e.preventDefault();  // <--- FALTA ISSO!
+                hymnInput.value = "coro "
             }
         });
 
@@ -2235,7 +2239,6 @@
 
         function performSearch() {
             const term = searchInput.value.toLowerCase().trim();
-            
             if (term.length === 0) {
                 searchResults.innerHTML = '<div class="search-loading">Digite para buscar...</div>';
                 return;
@@ -2286,8 +2289,205 @@
             });
         }
 
+        // Função para validar e processar a entrada do hino
+        function validateAndProcessHymnInput() {
+            let input = document.getElementById('hymnInput').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            // Remove espaços extras no início e fim
+            input = input.trim();
+            
+            // Se estiver vazio, volta para o último valor válido
+            if (input === '') {
+                document.getElementById('hymnInput').value = currentHymn ? 
+                    (currentHymn.id ? (currentHymn.id.startsWith('C') ? `coro ${currentHymn.id.substring(1)}` : currentHymn.id) : '1') : '1';
+                    return;
+            }
+            
+            // Verifica se começa com C ou c (maiúsculo ou minúsculo)
+            const startsWithC = /^c\s*$/i.test(input) || /^c\s+\d*$/i.test(input);
+            
+            if (startsWithC) {
+                // Se for apenas "c" ou "c " ou "c 123", transforma para "coro "
+                let number = input.replace(/^c\s*/i, '').trim();
+                if (number === '') {
+                    //document.getElementById('hymnInput').value = 'coro ';
+                    return;
+                }
+                // Se tiver número, mantém como "coro X"
+                if (/^\d+$/.test(number)) {
+                    const num = parseInt(number);
+                    if (num >= 1 && num <= 6) {
+                        document.getElementById('hymnInput').value = `coro ${num}`;
+                    } else {
+                        document.getElementById('hymnInput').value = 'coro ';
+                        errorDiv.textContent = 'Número do coro deve ser entre 1 e 6';
+                        errorDiv.style.display = 'block';
+                        setTimeout(() => errorDiv.style.display = 'none', 2000);
+                    }
+                } else {
+                    document.getElementById('hymnInput').value = 'coro ';
+                }
+                return;
+            }
+            
+            // Verifica se começa com "coro" (completo)
+            const startsWithCoro = /^coro\s*/i.test(input);
+            if (startsWithCoro) {
+                let number = input.replace(/^coro\s*/i, '').trim();
+                if (number === '') {
+                    document.getElementById('hymnInput').value = 'coro ';
+                    return;
+                }
+                if (/^\d+$/.test(number)) {
+                    const num = parseInt(number);
+                    if (num >= 1 && num <= 6) {
+                        document.getElementById('hymnInput').value = `coro ${num}`;
+                    } else {
+                        document.getElementById('hymnInput').value = 'coro ';
+                        errorDiv.textContent = 'Número do coro deve ser entre 1 e 6';
+                        errorDiv.style.display = 'block';
+                        setTimeout(() => errorDiv.style.display = 'none', 2000);
+                    }
+                } else {
+                    //document.getElementById('hymnInput').value = 'coro ';
+                }
+                return;
+            }
+            
+            // Para números puros
+            if (/^\d+$/.test(input)) {
+                const num = parseInt(input);
+                if (num >= 1 && num <= 480) {
+                    // Número válido, mantém como está
+                    document.getElementById('hymnInput').value = num.toString();
+                } else {
+                    errorDiv.textContent = 'Número inválido (1-480)';
+                    errorDiv.style.display = 'block';
+                    setTimeout(() => errorDiv.style.display = 'none', 2000);
+                    // Restaura o valor anterior
+                    if (currentHymn) {
+                        const restoreValue = currentHymn.id ? 
+                            (currentHymn.id.startsWith('C') ? `coro ${currentHymn.id.substring(1)}` : currentHymn.id) : '1';
+                        document.getElementById('hymnInput').value = restoreValue;
+                    }
+                }
+                return;
+            }
+            
+            // Se chegou aqui, entrada é inválida
+            errorDiv.textContent = 'Digite apenas números (1-480) ou "coro 1" a "coro 6"';
+            errorDiv.style.display = 'block';
+            setTimeout(() => errorDiv.style.display = 'none', 3000);
+            
+            // Restaura o valor anterior
+            if (currentHymn) {
+                const restoreValue = currentHymn.id ? 
+                    (currentHymn.id.startsWith('C') ? `coro ${currentHymn.id.substring(1)}` : currentHymn.id) : '1';
+                document.getElementById('hymnInput').value = restoreValue;
+            } else {
+                document.getElementById('hymnInput').value = '1';
+            }
+        }
+
+        // Função para autocompletar "coro" quando digitar "c"
+        function autoCompleteCoro() {
+            const input = document.getElementById('hymnInput');
+            let value = input.value;
+            const cursorPos = input.selectionStart;
+            
+            // Verifica se o usuário acabou de digitar "c" (apenas uma letra)
+            if (value.toLowerCase() === 'c') {
+                input.value = 'coro ';
+                // Posiciona o cursor depois do espaço
+                input.setSelectionRange(5, 5);
+                return;
+            }
+            
+            // Verifica se começou a digitar "co" ou "cor"
+            if (/^c$/i.test(value) || /^co$/i.test(value) || /^cor$/i.test(value)) {
+                input.value = 'coro ';
+                input.setSelectionRange(5, 5);
+                return;
+            }
+            
+            // Se começou com "c" seguido de espaço
+            if (/^c\s+$/i.test(value)) {
+                input.value = 'coro ';
+                input.setSelectionRange(5, 5);
+                return;
+            }
+            
+            // Se começou com "c" e número (ex: "c1", "c2")
+            const cWithNumber = /^c(\d+)$/i.exec(value);
+            if (cWithNumber) {
+                const num = parseInt(cWithNumber[1]);
+                if (num >= 1 && num <= 6) {
+                    input.value = `coro ${num}`;
+                    input.setSelectionRange(input.value.length, input.value.length);
+                } else {
+                    input.value = 'coro ';
+                    input.setSelectionRange(5, 5);
+                }
+                return;
+            }
+        }
+
+        // Função para permitir apenas números e letra C/c durante a digitação
+        function filterHymnInput(e) {
+            const input = document.getElementById('hymnInput');
+            let value = input.value;
+            
+            // Obtém a tecla pressionada
+            let key = e.key;
+            
+            // Permite navegação (setas, home, end, delete, backspace, tab, enter)
+            const navigationKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'Delete', 'Backspace', 'Tab', 'Enter'];
+            if (navigationKeys.includes(key)) {
+                return;
+            }
+            
+            // Permite Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+            if (e.ctrlKey && (key === 'a' || key === 'c' || key === 'v' || key === 'x')) {
+                return;
+            }
+            
+            // Verifica se é número
+            if (/^\d$/.test(key)) {
+                return; // Permite número
+            }
+            
+            // Verifica se é C ou c
+            if (key === 'c' || key === 'C') {
+                // Se já tem "coro" no início, não permite mais letras
+                if (/^coro\s/i.test(value)) {
+                    e.preventDefault();
+                    return;
+                }
+                return; // Permite C/c
+            }
+            
+            // Para qualquer outra tecla, bloqueia
+            e.preventDefault();
+        }
+
+        // Configurar todos os eventos do hymnInput
+        function setupHymnInputEvents() {
+            const hymnInput = document.getElementById('hymnInput');
+            
+            // Quando perder o foco
+            hymnInput.addEventListener('blur', () => {
+                updateHymnFromInput();
+            });
+        }
+
         // Eventos da busca
         searchInput.addEventListener('input', performSearch);
+
+        // Inicializar os eventos quando a página carregar
+        // Adicione esta linha no final do script, antes do fechamento </script>
+        setupHymnInputEvents();
+
         
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
