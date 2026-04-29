@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Recitação Rítmica • Metrônomo e Verso do Guardião</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #1a2a2f 0%, #0e1a1f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Times New Roman', 'Garamond', serif;
+            padding: 2rem 1.5rem;
+        }
+
+        .verse-container {
+            max-width: 1000px;
+            width: 100%;
+            background: #fef7e8;
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 200, 0.6);
+            padding: 2rem 2rem 1.8rem 2rem;
+            border: 1px solid #dac58c;
+        }
+
+        /* texto contínuo, como escrita normal */
+        .verse-text {
+            font-size: 1.75rem;
+            line-height: 2.3rem;
+            color: #2c2416;
+            text-align: left;
+            word-break: break-word;
+            background: #fffcf0;
+            padding: 1.8rem 2rem;
+            border-radius: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            box-shadow: inset 0 0 0 1px #f3e9cf, 0 4px 12px rgba(0, 0, 0, 0.05);
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        .verse-text .syllable {
+            display: inline;
+            background: none;
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+            font-size: inherit;
+            font-weight: inherit;
+            color: inherit;
+            box-shadow: none;
+            border-bottom: none;
+            transition: all 0.08s ease;
+            cursor: default;
+            white-space: normal;
+        }
+
+        /* destaque da sílaba corrente com cor vibrante */
+        .verse-text .syllable.highlight {
+            background: #f5bc70;
+            color: #2d2412;
+            text-shadow: 0 0 2px #fff0bb;
+            border-radius: 0.3rem;
+            padding: 0 0.1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-weight: 550;
+        }
+
+        .progress-panel {
+            margin-top: 1.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            background: #e5d8b5;
+            padding: 0.7rem 1.2rem;
+            border-radius: 3rem;
+        }
+
+        .info {
+            font-family: 'Segoe UI', monospace;
+            background: #2c2a1e30;
+            backdrop-filter: blur(2px);
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #3e3320;
+        }
+
+        .info span {
+            color: #b45f1b;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .metronome-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #2c2416;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            color: #ffe1a0;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        .beat-indicator {
+            width: 18px;
+            height: 18px;
+            background-color: #eb9e3e;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 2px orange;
+            transition: 0.05s linear;
+        }
+
+        .beat-indicator.active {
+            background-color: #ffd966;
+            box-shadow: 0 0 12px #ffbb44;
+            transform: scale(1.2);
+        }
+
+        button {
+            background: #6b4c2c;
+            border: none;
+            padding: 0.5rem 1.4rem;
+            border-radius: 2.5rem;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #fff3e0;
+            cursor: pointer;
+            transition: 0.1s;
+            font-family: inherit;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        button:hover {
+            background: #8b623c;
+            transform: scale(0.96);
+            color: white;
+        }
+
+        .legend {
+            font-size: 0.7rem;
+            background: #d8cbab;
+            padding: 0.2rem 0.9rem;
+            border-radius: 2rem;
+            color: #4a3a21;
+        }
+
+        @media (max-width: 680px) {
+            .verse-text {
+                font-size: 1.3rem;
+                line-height: 1.9rem;
+                padding: 1.2rem;
+            }
+            .progress-panel {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="verse-container">
+    <!-- texto contínuo, cada sílaba é um span inline -->
+    <div id="verseTextContainer" class="verse-text"></div>
+
+    <div class="progress-panel">
+        <div class="info">📖 <span id="currentIdxDisplay">-</span> / <span id="totalCountDisplay">0</span></div>
+        <div class="info">⏱️ <span id="remainingTimeInfo">—</span> ms</div>
+        <div class="metronome-badge">
+            <span>🎵 Metrônomo</span>
+            <span id="metronomeBeatIcon" class="beat-indicator"></span>
+            <span>500ms</span>
+        </div>
+        <button id="resetButton">🔁 Reiniciar recitação</button>
+        <div class="legend">✨ base 500ms × numeral → cada sílaba destacada no ritmo | metrônomo audível + visual a cada 500ms</div>
+    </div>
+</div>
+
+<script>
+    // ======================= DADOS ORIGINAIS =======================
+    const rawData = [
+        "2Cris|1to |1meu |2Mes|2tre |2e |1meu |1Se|4nhor, |2Eu |1Te |1a|",
+        "2do|1ro, |1por |2fé, |1com |1fer|4vor, |2Ro|1go |1que |2guar|2des |",
+        "2meu |1co|1ra|4ção, |2Vem |1pro|1te|2gê-|1lo, |1com |",
+        "2Tu|1a |1un|4ção |2E |1de|1fen|2dê-|8lo, |1ó |2meu |1Guar|1di|4ão.|"
+    ];
+
+    // BASE DE TEMPO = 500 MILISSEGUNDOS (conforme solicitação)
+    const BASE_MS = 500;
+    
+    // Parsing: extrai texto sem numerais e guarda o fator (numeral da sílaba)
+    function parseSyllablesFromData(lines) {
+        const syllables = [];
+        for (let line of lines) {
+            const parts = line.split('|');
+            for (let part of parts) {
+                if (part.trim() === "") continue;
+                const match = part.match(/^(\d+)(.*)$/);
+                if (match) {
+                    const numeral = parseInt(match[1], 10);
+                    const text = match[2];
+                    syllables.push({
+                        text: text,
+                        factor: numeral,
+                    });
+                } else {
+                    syllables.push({ text: part, factor: 1 });
+                }
+            }
+        }
+        return syllables;
+    }
+
+    let syllablesList = parseSyllablesFromData(rawData);
+    
+    // Controle da animação e metrônomo
+    let currentIndex = 0;
+    let isRunning = false;
+    let nextStepTimeout = null;
+    let metronomeInterval = null;     // intervalo para a batida do metrônomo (500ms)
+    let audioContext = null;           // Web Audio API para o som do metrônomo
+    let isAudioInitialized = false;
+    
+    // Elementos DOM
+    const textContainer = document.getElementById("verseTextContainer");
+    const currentIdxSpan = document.getElementById("currentIdxDisplay");
+    const totalCountSpan = document.getElementById("totalCountDisplay");
+    const remainingTimeSpan = document.getElementById("remainingTimeInfo");
+    const resetBtn = document.getElementById("resetButton");
+    const beatIcon = document.getElementById("metronomeBeatIcon");
+    
+    // ---------- Inicialização do AudioContext (som do metrônomo) ----------
+    // O navegador exige interação do usuário para ativar áudio.
+    // Vamos inicializar quando o usuário clicar em qualquer lugar ou no botão reset,
+    // mas também podemos tentar iniciar na primeira batida automática (requer user gesture).
+    // Para melhor experiência, ativamos o áudio no primeiro clique ou ao reset.
+    function initAudio() {
+        if (audioContext && audioContext.state !== 'closed') return audioContext;
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            audioContext = new AudioCtx();
+            return audioContext;
+        } catch(e) {
+            console.warn("Web Audio API não suportada, metrônomo sem som.");
+            return null;
+        }
+    }
+    
+    // Toca um 'click' seco estilo metrônomo
+    function playMetronomeClick() {
+        if (!audioContext) {
+            // tenta inicializar novamente
+            initAudio();
+            if (!audioContext) return;
+        }
+        // Garantir que o AudioContext esteja ativo (resume se suspended)
+        if (audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+                playClickSound();
+            }).catch(e => console.log("audio resume falhou", e));
+        } else {
+            playClickSound();
+        }
+    }
+    
+    function playClickSound() {
+        if (!audioContext) return;
+        const now = audioContext.currentTime;
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 880;  // tom agudo estilo metrônomo
+        gainNode.gain.value = 0.25;
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, now + 0.2);
+        oscillator.stop(now + 0.2);
+    }
+    
+    // Efeito visual do metrônomo (piscar o ícone)
+    let lastBeatActive = false;
+    function triggerMetronomeVisual() {
+        if (!beatIcon) return;
+        beatIcon.classList.add('active');
+        setTimeout(() => {
+            beatIcon.classList.remove('active');
+        }, 80);
+    }
+    
+    // Batida completa: som + visual a cada 500ms
+    function metronomeTick() {
+        if (!isRunning) return;
+        // Som
+        if (audioContext && audioContext.state === 'running') {
+            playMetronomeClick();
+        } else if (audioContext && audioContext.state === 'suspended') {
+            // tenta retomar se possível (mas geralmente precisa de gesto)
+            audioContext.resume().then(() => {
+                playMetronomeClick();
+            }).catch(()=>{});
+        } else if (!audioContext) {
+            // se não foi iniciado, tenta iniciar sem tocar ainda
+            initAudio();
+        }
+        triggerMetronomeVisual();
+    }
+    
+    // Inicia o metrônomo periódico (a cada 500ms) enquanto a recitação estiver ativa
+    function startMetronome() {
+        if (metronomeInterval) clearInterval(metronomeInterval);
+        metronomeInterval = setInterval(() => {
+            if (isRunning) {
+                metronomeTick();
+            }
+        }, BASE_MS); // 500ms exatos
+    }
+    
+    function stopMetronome() {
+        if (metronomeInterval) {
+            clearInterval(metronomeInterval);
+            metronomeInterval = null;
+        }
+    }
+    
+    // Resumo: o metrônomo toca a cada 500ms independente da duração da sílaba,
+    // mas a duração da sílaba é múltipla de 500ms (BASE_MS * fator).
+    // Logo as batidas e o ritmo das sílabas ficam sincronizados quando o fator é inteiro.
+    
+    // ---------- Construção do texto normal contínuo ----------
+    function buildContinuousText() {
+        textContainer.innerHTML = "";
+        for (let i = 0; i < syllablesList.length; i++) {
+            const syl = syllablesList[i];
+            const span = document.createElement("span");
+            span.className = "syllable";
+            span.textContent = syl.text;
+            span.setAttribute("data-factor", syl.factor);
+            span.setAttribute("data-idx", i);
+            textContainer.appendChild(span);
+        }
+        totalCountSpan.innerText = syllablesList.length;
+        currentIdxSpan.innerText = "0";
+        remainingTimeSpan.innerText = "—";
+    }
+    
+    // Atualiza destaque visual da sílaba atual
+    function updateHighlight(index) {
+        const allSpans = document.querySelectorAll('#verseTextContainer .syllable');
+        allSpans.forEach(span => span.classList.remove('highlight'));
+        if (index >= 0 && index < allSpans.length) {
+            allSpans[index].classList.add('highlight');
+            allSpans[index].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+        }
+    }
+    
+    function updateInfoPanel(index) {
+        if (index >= 0 && index < syllablesList.length) {
+            currentIdxSpan.innerText = index + 1;
+            const factor = syllablesList[index].factor;
+            const durationMs = BASE_MS * factor;
+            remainingTimeSpan.innerText = `${durationMs} ms (fator ${factor} × ${BASE_MS}ms)`;
+        } else {
+            remainingTimeSpan.innerText = "---";
+        }
+        totalCountSpan.innerText = syllablesList.length;
+    }
+    
+    function clearTimer() {
+        if (nextStepTimeout) {
+            clearTimeout(nextStepTimeout);
+            nextStepTimeout = null;
+        }
+    }
+    
+    function finishRecitation() {
+        isRunning = false;
+        clearTimer();
+        // desliga o metrônomo ao final
+        stopMetronome();
+        // remove todos os destaques
+        const allSpans = document.querySelectorAll('#verseTextContainer .syllable');
+        allSpans.forEach(span => span.classList.remove('highlight'));
+        currentIdxSpan.innerText = syllablesList.length;
+        remainingTimeSpan.innerText = "✓ Recitação concluída";
+        // garantia: parar ícone de batida
+        if (beatIcon) beatIcon.classList.remove('active');
+    }
+    
+    // Função principal que programa o destaque da sílaba e o próximo avanço
+    function highlightCurrentAndScheduleNext() {
+        if (!isRunning) return;
+        if (currentIndex >= syllablesList.length) {
+            finishRecitation();
+            return;
+        }
+        
+        const currentSyllable = syllablesList[currentIndex];
+        const factor = currentSyllable.factor;
+        const durationMs = BASE_MS * factor;   // destaque mantido por 500ms * numeral
+        
+        // aplica destaque visual e atualiza info
+        updateHighlight(currentIndex);
+        updateInfoPanel(currentIndex);
+        
+        // agenda a transição para a próxima sílaba
+        clearTimer();
+        nextStepTimeout = setTimeout(() => {
+            if (isRunning) {
+                currentIndex++;
+                if (currentIndex < syllablesList.length) {
+                    highlightCurrentAndScheduleNext();
+                } else {
+                    finishRecitation();
+                }
+            }
+        }, durationMs);
+    }
+    
+    // Iniciar recitação com metrônomo
+    function startRecitation() {
+        // Interrompe qualquer execução anterior
+        if (isRunning) {
+            clearTimer();
+            stopMetronome();
+            isRunning = false;
+        }
+        
+        // Reinicia índices
+        currentIndex = 0;
+        isRunning = true;
+        
+        // Remove destaques anteriores
+        const allSpans = document.querySelectorAll('#verseTextContainer .syllable');
+        allSpans.forEach(span => span.classList.remove('highlight'));
+        
+        if (syllablesList.length === 0) {
+            isRunning = false;
+            return;
+        }
+        
+        // Inicializa áudio (se ainda não foi inicializado por gesto do usuário)
+        if (!audioContext) {
+            initAudio();
+        }
+        // Tenta retomar o áudio se estiver suspenso (útil após clique do usuário)
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().catch(e => console.log("áudio ainda suspenso, aguardando interação"));
+        }
+        
+        // Inicia o metrônomo periódico (batidas a cada 500ms)
+        startMetronome();
+        
+        // Inicia o ciclo de destaques das sílabas
+        highlightCurrentAndScheduleNext();
+    }
+    
+    // Reinício completo (botão)
+    function resetAndRestart() {
+        if (isRunning) {
+            clearTimer();
+            stopMetronome();
+            isRunning = false;
+        }
+        currentIndex = 0;
+        const allSpans = document.querySelectorAll('#verseTextContainer .syllable');
+        allSpans.forEach(span => span.classList.remove('highlight'));
+        currentIdxSpan.innerText = "0";
+        remainingTimeSpan.innerText = "—";
+        
+        // Certifica que áudio possa ser ativado no primeiro reset (após interação)
+        if (!audioContext) {
+            initAudio();
+        }
+        // Se o áudio ainda estiver suspenso, a batida do metrônomo tentará resume automaticamente no tick.
+        startRecitation();
+    }
+    
+    // Para garantir que o áudio seja ativado por um gesto explícito do usuário (necessário em navegadores)
+    function enableAudioOnUserGesture() {
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+                console.log("✅ Áudio do metrônomo ativado pelo clique do usuário");
+                // Pequeno beep de teste opcional? melhor não atrapalhar.
+            }).catch(err => console.warn("falha ao retomar áudio", err));
+        } else if (!audioContext) {
+            initAudio();
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+    }
+    
+    // Adiciona evento global para ativar áudio no primeiro clique/touch (boa UX)
+    function bindAudioActivation() {
+        const activationEvents = ['click', 'touchstart', 'keydown'];
+        const activate = () => {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    console.log("Metrônomo: áudio ativado por interação.");
+                }).catch(()=>{});
+            } else if (!audioContext) {
+                initAudio();
+                if (audioContext) audioContext.resume().catch(()=>{});
+            }
+            // remove listeners após ativação para não ficar repetindo
+            activationEvents.forEach(ev => document.body.removeEventListener(ev, activate));
+        };
+        activationEvents.forEach(ev => document.body.addEventListener(ev, activate, { once: false }));
+        // também no botão reset já vai chamar resetAndRestart
+    }
+    
+    // ---------- Inicialização da UI e início automático ----------
+    buildContinuousText();
+    bindAudioActivation();  // permite ativar som ao interagir com página
+    
+    // Aguarda um pouco e começa a recitação (metrônomo visual começa, mas som aguardará clique)
+    setTimeout(() => {
+        startRecitation();
+    }, 100);
+    
+    // Botão reset: reinicia e também força tentativa de áudio
+    resetBtn.addEventListener("click", () => {
+        enableAudioOnUserGesture();
+        resetAndRestart();
+    });
+    
+    // Limpeza completa ao descarregar
+    window.addEventListener("beforeunload", () => {
+        if (nextStepTimeout) clearTimeout(nextStepTimeout);
+        if (metronomeInterval) clearInterval(metronomeInterval);
+        if (audioContext) audioContext.close();
+    });
+    
+    // Log info
+    console.log(`✅ Configuração: BASE_MS = ${BASE_MS}ms. Metrônomo toca a cada ${BASE_MS}ms. Cada sílaba destaque = ${BASE_MS}ms * (numeral).`);
+</script>
+</body>
+</html>
